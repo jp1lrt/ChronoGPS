@@ -62,7 +62,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 
 ### exeで使う場合（推奨）
 
-1. `ChronoGPS.exe`、`icon.png`、`icon.ico` を同じフォルダに置く
+1. `ChronoGPS.exe`、`icon.ico` を同じフォルダに置く
 2. `ChronoGPS.exe` を右クリック →「管理者として実行」
 
 ### Pythonスクリプトで使う場合
@@ -183,6 +183,41 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 - 公式ダウンロードは必ず GitHub Releases（上のリンク）から行ってください。非公式サイトやサードパーティの配布は避けてください。  
 - 可能であればビルドにコード署名（Authenticode）を施し、配布物に署名情報を添付します。署名済みバイナリは Windows の警告が軽減されます。  
 - ウイルススキャンの結果（VirusTotal 等）を公開することも検討してください。
+
+---
+
+### 日本語 — ダウンロード後の検証手順
+
+1. GitHub から公開鍵を取得してインポート:
+   ```bash
+   # Linux / macOS
+   curl -s https://github.com/jp1lrt.gpg | gpg --import
+
+   # Windows (PowerShell)
+   Invoke-WebRequest -Uri https://github.com/jp1lrt.gpg -OutFile mypubkey.asc
+   gpg --import mypubkey.asc
+   ```
+
+2. `checksums.txt` の署名を検証:
+   ```bash
+   gpg --verify checksums.txt.asc checksums.txt
+   ```
+   出力に「正しい署名（Good signature）」が表示され、次を確認してください:
+   - 鍵ID: `864FA6445EE4D4E3`
+   - UID: `Yoshiharu Tsukuura <jp1lrt@jarl.com>`
+
+3. 配布ファイルの SHA256 を計算して `checksums.txt` と照合:
+   ```powershell
+   # Windows PowerShell
+   Get-FileHash ChronoGPS.exe -Algorithm SHA256
+
+   # Linux / macOS
+   sha256sum ChronoGPS.exe
+   ```
+   計算結果のハッシュが `checksums.txt` の該当行と完全に一致することを確認してください。
+
+4. 注意:
+   - 署名が別の鍵を示す、または「不正な署名」の場合は配布物を信頼せず、リポジトリの管理者に連絡してください
 
 ---
 
