@@ -141,12 +141,6 @@ ChronoGPS uses GNSS primary satellites and NTP for time sync, a design comparabl
 
 ---
 
-## Known Limitations
-
-- "Start with Windows" option is not yet functional (planned for next version)
-
----
-
 ## File Structure
 
 ```
