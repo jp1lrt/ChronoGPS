@@ -164,8 +164,9 @@ ChronoGPS/
 
 公式の配布は GitHub Releases を通じて行います。常に最新版は Releases の「Latest」を参照してください。
 
-- 最新リリース（常に最新のビルド）: https://github.com/jp1lrt/gps-time-sync/releases/latest  
-- 例（タグで配布される単一ファイル）: https://github.com/jp1lrt/gps-time-sync/releases/download/v2.3.0/ChronoGPS.exe
+- 最新リリース（常に最新のビルド）: https://github.com/jp1lrt/gps-time-sync/releases/latest
+- [ChronoGPS.exe](https://github.com/jp1lrt/gps-time-sync/releases/latest/download/ChronoGPS.exe) — Windows実行ファイル
+- [icon.ico](https://github.com/jp1lrt/gps-time-sync/releases/latest/download/icon.ico) — アプリアイコン
 
 配布物（例）
 - ChronoGPS.exe — Windows 実行ファイル（PyInstaller ビルド）
