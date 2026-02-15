@@ -450,6 +450,24 @@ class GPSTimeSyncGUI:
         if 'offset_label' in self.widgets:
             self.widgets['offset_label'].config(text=self.loc.get('time_error') or "Time Error")
 
+        # 衛星情報フレームのラベル
+        if 'summary_frame' in self.widgets:
+            self.widgets['summary_frame'].config(text=self.loc.get('summary') or "Summary")
+        if 'sat_inuse_label_text' in self.widgets:
+            self.widgets['sat_inuse_label_text'].config(text=self.loc.get('satellites_in_use') or "Satellites in use")
+        if 'sat_visible_label_text' in self.widgets:
+            self.widgets['sat_visible_label_text'].config(text=self.loc.get('satellites_visible') or "Satellites visible")
+        if 'gps_frame_sat' in self.widgets:
+            self.widgets['gps_frame_sat'].config(text=self.loc.get('gps_usa') or "GPS (US)")
+        if 'sbas_frame_sat' in self.widgets:
+            self.widgets['sbas_frame_sat'].config(text=self.loc.get('sbas_label') or "SBAS/MSAS/WAAS")
+        if 'glo_frame_sat' in self.widgets:
+            self.widgets['glo_frame_sat'].config(text=self.loc.get('glonass_russia') or "GLONASS (Russia)")
+        if 'bei_frame_sat' in self.widgets:
+            self.widgets['bei_frame_sat'].config(text=self.loc.get('beidou_china') or "BeiDou (China)")
+        if 'galileo_frame_sat' in self.widgets:
+            self.widgets['galileo_frame_sat'].config(text=self.loc.get('galileo_eu') or "Galileo (EU)")
+
         # GPS Sync Mode（条件付き表示）
         if 'gps_sync_mode_label' in self.widgets:
             self.widgets['gps_sync_mode_label'].config(text=self.loc.get('gps_sync_mode') or "GPS Sync Mode / GPS同期モード")
