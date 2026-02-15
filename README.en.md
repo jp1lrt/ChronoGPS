@@ -167,6 +167,40 @@ See README.md for detailed instructions (Japanese).
 
 ---
 
+### English — Verify downloaded release files
+
+1. Import the maintainer's public key from GitHub:
+   ```bash
+   # Linux / macOS
+   curl -s https://github.com/jp1lrt.gpg | gpg --import
+
+   # Windows (PowerShell)
+   Invoke-WebRequest -Uri https://github.com/jp1lrt.gpg -OutFile mypubkey.asc
+   gpg --import mypubkey.asc
+   ```
+
+2. Verify the detached signature on `checksums.txt`:
+   ```bash
+   gpg --verify checksums.txt.asc checksums.txt
+   ```
+   You should see a "Good signature" (or 日本語環境で「正しい署名"). Confirm the key id and UID:
+   - Key ID: `864FA6445EE4D4E3`
+   - UID: `Yoshiharu Tsukuura <jp1lrt@jarl.com>`
+
+3. Compute the SHA256 of the downloaded asset and compare with `checksums.txt`:
+   ```powershell
+   # Windows PowerShell
+   Get-FileHash ChronoGPS.exe -Algorithm SHA256
+
+   # Linux / macOS
+   sha256sum ChronoGPS.exe
+   ```
+   Ensure the printed hash exactly matches the corresponding line in `checksums.txt`.
+
+4. If the signature is invalid or the key/UID differs, do NOT trust the files and contact the project maintainer.
+
+---
+
 ## License
 
 MIT License — © 2026 Yoshiharu Tsukuura (JP1LRT)
