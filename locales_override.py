@@ -1,50 +1,11 @@
 EXTRA_LOCALES = {
     'en': {
         'app_title': 'ChronoGPS',
-        'app_version': '2.3',
-        'app_version_text': 'Version: 2.3',
+        'app_version': '2.3.2',
+        'app_version_text': 'Version: 2.3.2',
         'about_title': 'About',
-        'about_text': 'ChronoGPS — GPS/NTP Time Synchronization Tool\nVersion: 2.3',
-        'credits': 'Developed by Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'fr': {
-        'credits': 'Développé par Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'es': {
-        'credits': 'Desarrollado por Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'de': {
-        'credits': 'Entwickelt von Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'zh': {
-        'credits': '开发者: Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'zh-tw': {
-        'credits': '開發者: Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'ko': {
-        'credits': '개발자: Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'pt': {
-        'credits': 'Desenvolvido por Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'it': {
-        'credits': 'Sviluppato da Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'nl': {
-        'credits': 'Ontwikkeld door Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'ru': {
-        'credits': 'Разработано: Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'pl': {
-        'credits': 'Autor: Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'tr': {
-        'credits': 'Geliştiren: Yoshiharu Tsukuura (@jp1lrt)',
-    },
-    'sv': {
-        'credits': 'Utvecklad av Yoshiharu Tsukuura (@jp1lrt)',
+        'about_text': 'ChronoGPS — GPS/NTP Time Synchronization Tool\nVersion: 2.3.2',
+        'credits': 'Developed by @jp1lrt',
         'github_url': 'https://github.com/jp1lrt/gps-time-sync',
         'github_label': 'Project on GitHub',
         'donate_url': 'https://www.paypal.me/jp1lrt',
@@ -56,11 +17,11 @@ EXTRA_LOCALES = {
     },
     'ja': {
         'app_title': 'ChronoGPS',
-        'app_version': '2.3',
-        'app_version_text': 'バージョン: 2.3',
+        'app_version': '2.3.2',
+        'app_version_text': 'バージョン: 2.3.2',
         'about_title': 'このアプリについて',
-        'about_text': 'ChronoGPS — GPS/NTP 時刻同期ツール\nバージョン: 2.3',
-        'credits': '作成者: 津久浦 慶治 (@jp1lrt)',
+        'about_text': 'ChronoGPS — GPS/NTP 時刻同期ツール\nバージョン: 2.3.2',
+        'credits': '作成者: @jp1lrt',
         'github_url': 'https://github.com/jp1lrt/gps-time-sync',
         'github_label': 'GitHub プロジェクト',
         'donate_url': 'https://www.paypal.me/jp1lrt',
