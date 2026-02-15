@@ -148,8 +148,9 @@ ChronoGPS/
 
 Official binaries are distributed via GitHub Releases. Always check the "Latest" release.
 
-- Latest release: https://github.com/jp1lrt/gps-time-sync/releases/latest  
-- Example direct download: https://github.com/jp1lrt/gps-time-sync/releases/download/v2.3.0/ChronoGPS.exe
+- Latest release: https://github.com/jp1lrt/gps-time-sync/releases/latest
+- [ChronoGPS.exe](https://github.com/jp1lrt/gps-time-sync/releases/latest/download/ChronoGPS.exe) — Windows executable
+- [icon.ico](https://github.com/jp1lrt/gps-time-sync/releases/latest/download/icon.ico) — Application icon
 
 Included files:
 - ChronoGPS.exe — Windows executable (PyInstaller build)
@@ -164,6 +165,40 @@ Compare the printed hash with the corresponding line in `checksums.txt` attached
 
 ## Usage
 See README.md for detailed instructions (Japanese).
+
+---
+
+### English — Verify downloaded release files
+
+1. Import the maintainer's public key from GitHub:
+   ```bash
+   # Linux / macOS
+   curl -s https://github.com/jp1lrt.gpg | gpg --import
+
+   # Windows (PowerShell)
+   Invoke-WebRequest -Uri https://github.com/jp1lrt.gpg -OutFile mypubkey.asc
+   gpg --import mypubkey.asc
+   ```
+
+2. Verify the detached signature on `checksums.txt`:
+   ```bash
+   gpg --verify checksums.txt.asc checksums.txt
+   ```
+   You should see a "Good signature" (or 日本語環境で「正しい署名"). Confirm the key id and UID:
+   - Key ID: `864FA6445EE4D4E3`
+   - UID: `Yoshiharu Tsukuura <jp1lrt@jarl.com>`
+
+3. Compute the SHA256 of the downloaded asset and compare with `checksums.txt`:
+   ```powershell
+   # Windows PowerShell
+   Get-FileHash ChronoGPS.exe -Algorithm SHA256
+
+   # Linux / macOS
+   sha256sum ChronoGPS.exe
+   ```
+   Ensure the printed hash exactly matches the corresponding line in `checksums.txt`.
+
+4. If the signature is invalid or the key/UID differs, do NOT trust the files and contact the project maintainer.
 
 ---
 
