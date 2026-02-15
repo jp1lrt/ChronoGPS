@@ -12,6 +12,19 @@ Runs safely in "Monitor-Only" mode even without administrator privileges.
 
 ---
 
+## Design Philosophy
+
+ChronoGPS is designed with one simple goal:
+**to provide accurate time with minimal user intervention.**
+
+- Use GPS or NTP depending on availability and environment
+- Perform synchronization safely in the background while keeping the UI stable
+- Provide a reliable time reference for FT8 and measurement use cases
+
+Rather than visual effects, the focus is on **accuracy, stability, and long-term operation**.
+
+---
+
 ## Features
 
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
@@ -50,7 +63,7 @@ Choose at startup:
 
 ### Using the exe (Recommended)
 
-1. Place `ChronoGPS.exe`, `icon.png`, and `icon.ico` in the same folder
+1. Place `ChronoGPS.exe`, and `icon.ico` in the same folder
 2. Right-click `ChronoGPS.exe` → "Run as administrator"
 
 ### Running from source
@@ -91,6 +104,18 @@ Output: `dist\ChronoGPS.exe`
 
 If your FT8 timing is slightly off, enter an offset value (seconds) and click "Apply".  
 Quick ±0.1s adjustment buttons are also available.
+
+---
+
+## About Displayed Time Differences
+
+You may occasionally see small differences between the displayed
+System Time, GPS Time, and NTP Time.
+
+These differences are caused by update timing and display refresh intervals.
+They do **not** indicate an error in actual time synchronization.
+
+The internal synchronization logic maintains millisecond-level accuracy.
 
 ---
 
