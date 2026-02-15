@@ -160,6 +160,32 @@ ChronoGPS/
 
 ---
 
+## ダウンロード
+
+公式の配布は GitHub Releases を通じて行います。常に最新版は Releases の「Latest」を参照してください。
+
+- 最新リリース（常に最新のビルド）: https://github.com/jp1lrt/gps-time-sync/releases/latest  
+- 例（タグで配布される単一ファイル）: https://github.com/jp1lrt/gps-time-sync/releases/download/v2.3.0/ChronoGPS.exe
+
+配布物（例）
+- ChronoGPS.exe — Windows 実行ファイル（PyInstaller ビルド）
+- icon.ico — アプリケーションアイコン
+- checksums.txt — 各ファイルの SHA256 チェックサム
+
+ダウンロードしたバイナリの検証（PowerShell）
+```powershell
+# SHA256 ハッシュを表示
+Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
+```
+出力されたハッシュを releases に添付された `checksums.txt` の該当行と照合してください。
+
+セキュリティ上の注意
+- 公式ダウンロードは必ず GitHub Releases（上のリンク）から行ってください。非公式サイトやサードパーティの配布は避けてください。  
+- 可能であればビルドにコード署名（Authenticode）を施し、配布物に署名情報を添付します。署名済みバイナリは Windows の警告が軽減されます。  
+- ウイルススキャンの結果（VirusTotal 等）を公開することも検討してください。
+
+---
+
 ## ライセンス
 
 MIT License — © 2026 津久浦 慶治 (JP1LRT)
