@@ -1,7 +1,10 @@
 """
 GPS/NTP 時刻同期ツール GUI（FT8オフセット0.1秒刻み対応版）
-全13言語対応 + システムトレイ + 自動スタート + FT8時刻オフセット（0.1秒刻み）
+全15言語対応 + システムトレイ + 自動スタート + FT8時刻オフセット（0.1秒刻み）
 About ウィンドウは NMEATime2 風（大アイコン + 情報）・寄付ボタンあり（PayPal.Me @jp1lrt）
+
+Author: 津久浦 慶治 / Yoshiharu Tsukuura  callsign JP1LRT (@jp1lrt)
+License: MIT
 """
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox

@@ -1,4 +1,10 @@
-"""メインアプリケーション"""
+"""
+ChronoGPS — GPS/NTP 時刻同期ツール
+メインアプリケーション
+
+Author: 津久浦 慶治 / Yoshiharu Tsukuura  callsign JP1LRT (@jp1lrt)
+License: MIT
+"""
 import sys
 import os
 import tkinter as tk
