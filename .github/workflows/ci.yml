@@ -1,0 +1,99 @@
+# CI: lint, test, and optional Windows build for releases
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint (flake8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install flake8
+      - name: Run flake8
+        run: |
+          # Fail the job if flake8 finds issues
+          flake8 .
+
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest
+      - name: Run tests
+        run: |
+          # If there are no tests, this will gracefully exit 0
+          if [ -d tests ] || ls test*.py 1> /dev/null 2>&1; then
+            pytest -q
+          else
+            echo "No tests found; skipping pytest."
+          fi
+
+  build-windows:
+    name: Build Windows exe (PyInstaller) for tags
+    runs-on: windows-latest
+    needs: [lint, test]
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+          pip install pyinstaller
+      - name: Build exe with PyInstaller
+        working-directory: ${{ github.workspace }}
+        shell: pwsh
+        run: |
+          # Adjust the pyinstaller command as needed for your project layout
+          pyinstaller --onefile --windowed --icon=icon.ico --name=ChronoGPS main.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChronoGPS-windows-exe-${{ github.ref_name }}
+          path: dist/*.exe
