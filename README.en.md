@@ -144,6 +144,29 @@ ChronoGPS/
 
 ---
 
+## Download
+
+Official binaries are distributed via GitHub Releases. Always check the "Latest" release.
+
+- Latest release: https://github.com/jp1lrt/gps-time-sync/releases/latest  
+- Example direct download: https://github.com/jp1lrt/gps-time-sync/releases/download/v2.3.0/ChronoGPS.exe
+
+Included files:
+- ChronoGPS.exe — Windows executable (PyInstaller build)
+- icon.ico — Application icon
+- checksums.txt — SHA256 checksums for release files
+
+Verify downloaded binary (PowerShell):
+```powershell
+Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
+```
+Compare the printed hash with the corresponding line in `checksums.txt` attached to the release.
+
+## Usage
+See README.md for detailed instructions (Japanese).
+
+---
+
 ## License
 
 MIT License — © 2026 Yoshiharu Tsukuura (JP1LRT)
