@@ -30,7 +30,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 
 ## Why ChronoGPS?
 設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
-- 🔗 Why ChronoGPS (Discussion): [<URL>](https://github.com/jp1lrt/ChronoGPS/discussions/3)
+- 🔗 Why ChronoGPS (Discussion): <URL>https://github.com/jp1lrt/ChronoGPS/discussions/3
 
 ---
 
