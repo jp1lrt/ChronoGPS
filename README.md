@@ -204,7 +204,7 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 セキュリティ上の注意
 - 公式ダウンロードは必ず GitHub Releases（上のリンク）から行ってください。非公式サイトやサードパーティの配布は避けてください。  
-- 可能であればビルドにコード署名（Authenticode）を施し、配布物に署名情報を添付します。署名済みバイナリは Windows の警告が軽減されます。  
+- 配布物には GPG 署名（`checksums.txt.asc`）を添付しています。なお、Windows Authenticode 署名（SmartScreen 警告の抑制）は現在未対応です。  
 - ウイルススキャンの結果（VirusTotal 等）を公開することも検討してください。
 
 ---
