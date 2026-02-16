@@ -28,6 +28,12 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 
 ---
 
+## Why ChronoGPS?
+設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
+- 🔗 Why ChronoGPS (Discussion): [<URL>](https://github.com/jp1lrt/ChronoGPS/discussions/3)
+
+---
+
 ## 特徴
 
 - 🌐 **NTP同期（RFC 5905準拠）** — 64bitタイムスタンプ、t1/t2/t3/t4によるoffset/delay計算、msオーダーの高精度補正
@@ -256,3 +262,9 @@ MIT License — © 2026 津久浦 慶治 (JP1LRT)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.me/jp1lrt)
 [![Coffee](https://img.shields.io/badge/Coffee-☕-yellow)](https://www.paypal.me/jp1lrt)
+
+---
+
+## Why ChronoGPS?
+設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
+- 🔗 Why ChronoGPS (Discussion): [<URL>](https://github.com/jp1lrt/ChronoGPS/discussions/3)
