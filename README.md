@@ -255,7 +255,7 @@ MIT License — © 2026 津久浦 慶治 (JP1LRT)
 ## 作者
 
 **津久浦 慶治 / Yoshiharu Tsukuura**  
-アマチュア無線局 **JP1LRT** / [@jp1lrt](https://github.com/jp1lrt/gps-time-sync)
+アマチュア無線局 **JP1LRT** / [@jp1lrt](https://github.com/jp1lrt/ChronoGPS)
 
 ---
 
