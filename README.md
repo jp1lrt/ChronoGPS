@@ -267,4 +267,4 @@ MIT License — © 2026 津久浦 慶治 (JP1LRT)
 
 ## Why ChronoGPS?
 設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
-- 🔗 Why ChronoGPS (Discussion): [<URL>](https://github.com/jp1lrt/ChronoGPS/discussions/3)
+- 🔗 Why ChronoGPS (Discussion): <URL>[https://github.com/jp1lrt/ChronoGPS/discussions/3](https://github.com/jp1lrt/ChronoGPS/discussions/3)
