@@ -1,3 +1,7 @@
+> [!NOTE]
+> 本プロジェクトは旧名称 `gps-time-sync` から変更されました。
+> This project was formerly known as `gps-time-sync`.
+
 # ChronoGPS
 
 **GPS / NTP 時刻同期ツール — Windows向け**
