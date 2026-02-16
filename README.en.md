@@ -192,6 +192,9 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 ```
 Compare the printed hash with the corresponding line in `checksums.txt` attached to the release.
 
+All releases are signed with GPG (`checksums.txt.asc`).
+Note: Windows Authenticode signing (which suppresses SmartScreen warnings) is not currently implemented.
+
 ## Usage
 See README.md for detailed instructions (Japanese).
 
