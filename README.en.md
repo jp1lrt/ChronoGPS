@@ -25,6 +25,16 @@ Rather than visual effects, the focus is on **accuracy, stability, and long-term
 
 ---
 
+## Why ChronoGPS?
+
+If you are interested in the design philosophy behind ChronoGPS —  
+including transparency, how administrator privileges are handled, and the idea of a “monitor-only mode” —  
+please see the detailed discussion below:
+
+- 🔗 **Why ChronoGPS (Discussion)**: <URL>https://github.com/jp1lrt/ChronoGPS/discussions/3
+
+---
+
 ## Features
 
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
@@ -243,3 +253,9 @@ and help support future development ☕
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.me/jp1lrt)
 [![Coffee](https://img.shields.io/badge/Coffee-☕-yellow)](https://www.paypal.me/jp1lrt)
+
+---
+
+## Why ChronoGPS?
+- 🔗 **Why ChronoGPS (Discussion)**: <URL>https://github.com/jp1lrt/ChronoGPS/discussions/3
+
