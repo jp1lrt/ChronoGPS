@@ -177,9 +177,9 @@ ChronoGPS/
 
 Official binaries are distributed via GitHub Releases. Always check the "Latest" release.
 
-- Latest release: https://github.com/jp1lrt/gps-time-sync/releases/latest
-- [ChronoGPS.exe](https://github.com/jp1lrt/gps-time-sync/releases/latest/download/ChronoGPS.exe) — Windows executable
-- [icon.ico](https://github.com/jp1lrt/gps-time-sync/releases/latest/download/icon.ico) — Application icon
+- Latest release: https://github.com/jp1lrt/ChronoGPS/releases/latest
+- [ChronoGPS.exe](https://github.com/jp1lrt/ChronoGPS/releases/latest/download/ChronoGPS.exe) — Windows executable
+- [icon.ico](https://github.com/jp1lrt/ChronoGPS/releases/latest/download/icon.ico) — Application icon
 
 Included files:
 - ChronoGPS.exe — Windows executable (PyInstaller build)
