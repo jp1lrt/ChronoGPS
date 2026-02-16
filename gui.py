@@ -471,6 +471,14 @@ class GPSTimeSyncGUI:
         if 'galileo_frame_sat' in self.widgets:
             self.widgets['galileo_frame_sat'].config(text=self.loc.get('galileo_eu') or "Galileo (EU)")
 
+        # 衛星テーブルのカラムヘッダーを更新
+        for tree in [self.gps_tree, self.sbas_tree, self.glo_tree, self.bei_tree, self.galileo_tree]:
+            if tree:
+                tree.heading('ID', text=self.loc.get('sat_id') or "ID")
+                tree.heading('SNR', text=self.loc.get('snr') or "SNR")
+                tree.heading('Elev', text=self.loc.get('elevation') or "Elevation")
+                tree.heading('Azim', text=self.loc.get('azimuth') or "Azimuth")
+
         # GPS Sync Mode（条件付き表示）
         if 'gps_sync_mode_label' in self.widgets:
             self.widgets['gps_sync_mode_label'].config(text=self.loc.get('gps_sync_mode') or "GPS Sync Mode / GPS同期モード")
