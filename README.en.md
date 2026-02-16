@@ -259,3 +259,4 @@ and help support future development ☕
 ## Why ChronoGPS?
 - 🔗 **Why ChronoGPS (Discussion)**: <URL>https://github.com/jp1lrt/ChronoGPS/discussions/3
 
+Note: This project was formerly known as gps-time-sync.
