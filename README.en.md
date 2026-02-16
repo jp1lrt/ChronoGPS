@@ -200,6 +200,19 @@ See README.md for detailed instructions (Japanese).
 
 ---
 
+## False Positive Warnings from Antivirus Software
+
+Some antivirus software may flag ChronoGPS.exe as suspicious.
+This is a known false positive caused by heuristic detection of PyInstaller-built executables.
+The application contains no malicious code.
+
+All source code is publicly available and you can build the exe yourself.
+
+- VirusTotal scan results: https://www.virustotal.com/gui/file/6f1730b70658c9040bc9653ce7ac1a915afc0b66d5734f1351c2502b87f3c2b8/detection
+- This has been reported to Microsoft as an incorrect detection
+
+---
+
 ### English — Verify downloaded release files
 
 1. Import the maintainer's public key from GitHub:
