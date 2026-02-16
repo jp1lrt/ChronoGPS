@@ -209,6 +209,19 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ---
 
+## ウイルス対策ソフトによる誤検知について
+
+一部のウイルス対策ソフトが ChronoGPS.exe を誤検知する場合があります。
+これは PyInstaller でビルドされた exe に対してヒューリスティック検出が反応するもので、
+悪意のあるコードは含まれていません。
+
+ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
+
+- VirusTotal スキャン結果: https://www.virustotal.com/gui/file/6f1730b70658c9040bc9653ce7ac1a915afc0b66d5734f1351c2502b87f3c2b8/detection
+- 誤検知であることを Microsoft に報告済みです。
+
+---
+
 ### 日本語 — ダウンロード後の検証手順
 
 1. GitHub から公開鍵を取得してインポート:
