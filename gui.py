@@ -114,6 +114,7 @@ class GPSTimeSyncGUI:
 
         self._create_menu()
         self._create_widgets()
+        self._update_ui_language()  # ウィジェット作成後に言語を適用
         self._update_ports()
         self._load_settings_to_ui()
 
@@ -231,32 +232,26 @@ class GPSTimeSyncGUI:
         self.help_menu = help_menu
 
     def _change_language(self, lang_code):
-        """言語を変更（即座に反映）"""
-        # 1) 言語を Localization にセット
+        """言語を変更（タブを作り直して完全反映）"""
+        # 1) 言語をセット・保存
         self.loc.set_language(lang_code)
-
-        # 2) 設定に保存
         self.config.set('language', value=lang_code)
         self.config.save()
 
-        # 3) 画面上のウィジェットをローカライズする既存処理
-        #    （あなたの実装で定義されている更新処理を呼びます）
-        self._update_ui_language()
-
-        # -------- ここから追加（必須） --------
-        # override があれば再適用（locales_override を使っている場合）
+        # 2) override を再適用
         try:
             self._apply_locales_override()
         except Exception:
-            # 問題があっても落ちないように静かに無視
             pass
 
-        # メニューを作り直して、メニューのラベル類を即時に翻訳反映させる
+        # 3) タブを作り直す（根本解決）
+        self._rebuild_tabs()
+
+        # 4) メニューを作り直す
         try:
             self._create_menu()
         except Exception:
             pass
-        # -------- ここまで追加 --------
 
         # 以降は既存処理（言語名取得・通知など）
         lang_names = {
@@ -527,6 +522,41 @@ class GPSTimeSyncGUI:
         if 'reset_default_btn' in self.widgets:
             self.widgets['reset_default_btn'].config(text=self.loc.get('reset_default') or "Reset to Default")
 
+        # その他ボタン・チェックボックス
+        if 'refresh_btn' in self.widgets:
+            self.widgets['refresh_btn'].config(text=self.loc.get('refresh') or "Refresh")
+        if 'ntp_auto_check' in self.widgets:
+            self.widgets['ntp_auto_check'].config(text=self.loc.get('ntp_auto_sync') or "NTP Auto Sync")
+
+        # インターバルコンボボックスの中身を更新
+        interval_values = [
+            self.loc.get('interval_5min') or "5 min",
+            self.loc.get('interval_10min') or "10 min",
+            self.loc.get('interval_30min') or "30 min",
+            self.loc.get('interval_1hour') or "1 hour",
+            self.loc.get('interval_6hour') or "6 hours"
+        ]
+        if hasattr(self, 'gps_interval_combo'):
+            idx = self.gps_interval_combo.current()
+            self.gps_interval_combo.config(values=interval_values)
+            self.gps_interval_combo.current(idx)
+        if hasattr(self, 'ntp_interval_combo'):
+            idx = self.ntp_interval_combo.current()
+            self.ntp_interval_combo.config(values=interval_values)
+            self.ntp_interval_combo.current(idx)
+
+        # メインボタンのテキスト更新
+        if 'start_btn' in self.widgets:
+            self.widgets['start_btn'].config(text=self.loc.get('start') or "Start")
+        if 'stop_btn' in self.widgets:
+            self.widgets['stop_btn'].config(text=self.loc.get('stop') or "Stop")
+        if 'sync_gps_btn' in self.widgets:
+            self.widgets['sync_gps_btn'].config(text=self.loc.get('sync_gps') or "Sync GPS")
+        if 'sync_ntp_btn' in self.widgets:
+            self.widgets['sync_ntp_btn'].config(text=self.loc.get('sync_ntp') or "Sync NTP")
+        if 'debug_check' in self.widgets:
+            self.widgets['debug_check'].config(text=self.loc.get('debug_mode') or "Debug Mode")
+
         # Info タブのクレジットラベルを更新（存在する場合）
         if hasattr(self, 'credits_label'):
             self.credits_label.config(text=self.loc.get('credits') or "Developed by @jp1lrt")
@@ -534,6 +564,57 @@ class GPSTimeSyncGUI:
         # Informationセクションも更新
         if hasattr(self, 'info_text'):
             self._update_info_text()
+
+    def _rebuild_tabs(self):
+        """言語切り替え時にタブの中身を破棄して作り直す（根本解決）"""
+        # 現在のタブ位置を保存
+        try:
+            current_tab = self.notebook.index('current')
+        except Exception:
+            current_tab = 0
+
+        # 実行中の状態を保存
+        was_running = self.is_running
+
+        # 各タブの中身を全削除
+        for widget in self.tab_sync.winfo_children():
+            widget.destroy()
+        for widget in self.tab_satellite.winfo_children():
+            widget.destroy()
+        for widget in self.tab_options.winfo_children():
+            widget.destroy()
+
+        # タブ名を更新
+        self.notebook.tab(0, text=self.loc.get('tab_sync') or "Time Sync")
+        self.notebook.tab(1, text=self.loc.get('tab_satellite') or "Satellite Info")
+        self.notebook.tab(2, text=self.loc.get('options_tab') or "Options")
+
+        # widgets辞書をリセット
+        self.widgets = {}
+
+        # タブを作り直す
+        self._create_sync_tab()
+        self._create_satellite_tab()
+        self._create_options_tab()
+
+        # UI状態を復元
+        self._load_settings_to_ui()
+        self._update_ports()
+
+        # 実行中だったらボタン状態を復元
+        if was_running:
+            if 'start_btn' in self.widgets:
+                self.widgets['start_btn'].config(state='disabled')
+            if 'stop_btn' in self.widgets:
+                self.widgets['stop_btn'].config(state='normal')
+            if 'sync_gps_btn' in self.widgets:
+                self.widgets['sync_gps_btn'].config(state='normal')
+
+        # タブ位置を戻す
+        try:
+            self.notebook.select(current_tab)
+        except Exception:
+            pass
 
     def _create_widgets(self):
         # タブコントロール
