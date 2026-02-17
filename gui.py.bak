@@ -272,7 +272,7 @@ class GPSTimeSyncGUI:
         Donate は PayPal.Me (https://www.paypal.me/jp1lrt) に飛び、表示は @jp1lrt。
         """
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
-        about_text = self.loc.get('about_text') or f"{self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {self.loc.get('app_version') or '2.4.0'}"
+        about_text = self.loc.get('about_text') or f"{self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {self.loc.get('app_version') or '2.3.2'}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
         github_label = self.loc.get('github_label') or "Project on GitHub"
@@ -465,11 +465,9 @@ class GPSTimeSyncGUI:
             self.widgets['bei_frame_sat'].config(text=self.loc.get('beidou_china') or "BeiDou (China)")
         if 'galileo_frame_sat' in self.widgets:
             self.widgets['galileo_frame_sat'].config(text=self.loc.get('galileo_eu') or "Galileo (EU)")
-        if 'qzss_frame_sat' in self.widgets:
-            self.widgets['qzss_frame_sat'].config(text=self.loc.get('qzss_japan') or "QZSS (Japan)")
 
         # 衛星テーブルのカラムヘッダーを更新
-        for tree in [self.gps_tree, self.sbas_tree, self.glo_tree, self.bei_tree, self.galileo_tree, self.qzss_tree]:
+        for tree in [self.gps_tree, self.sbas_tree, self.glo_tree, self.bei_tree, self.galileo_tree]:
             if tree:
                 tree.heading('ID', text=self.loc.get('sat_id') or "ID")
                 tree.heading('SNR', text=self.loc.get('snr') or "SNR")
@@ -967,12 +965,6 @@ class GPSTimeSyncGUI:
         galileo_frame_sat.grid(row=1, column=1, sticky=(tk.W, tk.E, tk.N, tk.S), padx=5, pady=5)
         self.widgets['galileo_frame_sat'] = galileo_frame_sat
         self.galileo_tree = self._create_satellite_tree(galileo_frame_sat)
-
-        # QZSS
-        qzss_frame_sat = ttk.LabelFrame(sat_frame, text=self.loc.get('qzss_japan') or "QZSS (Japan)", padding="5")
-        qzss_frame_sat.grid(row=1, column=2, sticky=(tk.W, tk.E, tk.N, tk.S), padx=5, pady=5)
-        self.widgets['qzss_frame_sat'] = qzss_frame_sat
-        self.qzss_tree = self._create_satellite_tree(qzss_frame_sat)
 
         # グリッド設定（3列に変更）
         sat_frame.columnconfigure(0, weight=1)
@@ -1676,7 +1668,6 @@ class GPSTimeSyncGUI:
             self._update_tree(self.glo_tree, by_system.get('GLONASS', []))
             self._update_tree(self.bei_tree, by_system.get('BeiDou', []))
             self._update_tree(self.galileo_tree, by_system.get('Galileo', []))
-            self._update_tree(self.qzss_tree, by_system.get('QZSS', []))
 
         self.root.after(1000, self._update_satellite_info)
 

@@ -1,0 +1,40 @@
+{
+    "gps": {
+        "com_port": "COM8",
+        "baud_rate": 9600,
+        "auto_sync": false,
+        "sync_mode": "instant",
+        "sync_interval_index": 2
+    },
+    "ntp": {
+        "server": "pool.ntp.org",
+        "auto_sync": false,
+        "sync_interval_index": 2
+    },
+    "language": "ja",
+    "window": {
+        "width": 950,
+        "height": 1066,
+        "x": -993,
+        "y": -258
+    },
+    "debug": false,
+    "startup": {
+        "auto_start": false,
+        "start_minimized": false,
+        "sync_on_startup": false
+    },
+    "logging": {
+        "save_to_file": false,
+        "log_file": "gps_time_sync.log",
+        "max_log_size_mb": 10
+    },
+    "notifications": {
+        "enabled": false,
+        "notify_on_sync_fail": true,
+        "notify_on_sync_success": false
+    },
+    "ft8": {
+        "time_offset_seconds": 0.0
+    }
+}
