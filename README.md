@@ -55,7 +55,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 
 ![時刻同期画面](https://github.com/user-attachments/assets/4fa71a03-b5e2-4b1e-a9dc-778ae10dcbc8)
 
-![衛星情報画面](https://github.com/user-attachments/assets/2a95d658-2172-4ccd-830c-0f0d9796b028)
+![衛星情報画面](https://github.com/user-attachments/assets/2c49f20a-96fb-44ee-9d9e-5a2ac495b4c5)
 
 ---
 
