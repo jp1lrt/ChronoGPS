@@ -1,3 +1,6 @@
+> **Note**  
+> This project was formerly known as `gps-time-sync`.
+
 # ChronoGPS
 
 **GPS / NTP Time Synchronization Tool for Windows**
