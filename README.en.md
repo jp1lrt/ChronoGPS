@@ -43,7 +43,7 @@ please see the detailed discussion below:
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
 - 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention
 - ⏱️ **FT8 Time Offset** — Fine-tune clock in ±0.1s steps, designed for digital mode operation
-- 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS
+- 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
 - 🔒 **Non-Admin Support** — Choose "Restart as Admin" or "Monitor-Only" at launch
 - 🧵 **Thread-Safe GUI** — Worker thread + Queue + main thread updates prevent Tkinter freezes
 - 🌍 **15 Languages** — Japanese, English, French, Spanish, German, Chinese (Simplified/Traditional), Korean, Portuguese, Italian, Dutch, Russian, Polish, Turkish, Swedish
@@ -143,6 +143,9 @@ The internal synchronization logic maintains millisecond-level accuracy.
 SBAS satellites (MSAS in Japan) may be tracked but not appear as "In Use" — this is normal behavior.  
 SBAS provides augmentation corrections, not a primary clock signal.  
 ChronoGPS uses GNSS primary satellites and NTP for time sync, a design comparable to professional GNSS timing receivers.
+
+QZSS (Quasi-Zenith Satellite System / Michibiki) is Japan's regional satellite navigation system. It will appear in the satellite view tab if your receiver supports NMEA output for QZSS.  
+Some receivers disable QZSS NMEA output by default — an empty QZSS panel is normal behavior.
 
 ---
 
