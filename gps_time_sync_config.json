@@ -1,10 +1,10 @@
 {
     "gps": {
-        "com_port": "COM8",
+        "com_port": "COM3",
         "baud_rate": 9600,
         "auto_sync": false,
-        "sync_mode": "instant",
-        "sync_interval_index": 2
+        "sync_mode": "interval",
+        "sync_interval_index": 0
     },
     "ntp": {
         "server": "pool.ntp.org",
@@ -14,9 +14,9 @@
     "language": "ja",
     "window": {
         "width": 950,
-        "height": 1066,
-        "x": -993,
-        "y": -258
+        "height": 856,
+        "x": -994,
+        "y": -225
     },
     "debug": false,
     "startup": {

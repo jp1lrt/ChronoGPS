@@ -1,10 +1,10 @@
 EXTRA_LOCALES = {
     'en': {
         'app_title': 'ChronoGPS',
-        'app_version': '2.4.1',
-        'app_version_text': 'Version: 2.4.1',
+        'app_version': '2.4.2',
+        'app_version_text': 'Version: 2.4.2',
         'about_title': 'About',
-        'about_text': 'ChronoGPS — GPS/NTP Time Synchronization Tool\nVersion: 2.4.1',
+        'about_text': 'ChronoGPS — GPS/NTP Time Synchronization Tool\nVersion: 2.4.2',
         'credits': 'Developed by Yoshiharu Tsukuura  JP1LRT (@jp1lrt)',
         'github_url': 'https://github.com/jp1lrt/ChronoGPS',
         'github_label': 'Project on GitHub',
@@ -17,10 +17,10 @@ EXTRA_LOCALES = {
     },
     'ja': {
         'app_title': 'ChronoGPS',
-        'app_version': '2.4.1',
-        'app_version_text': 'バージョン: 2.4.1',
+        'app_version': '2.4.2',
+        'app_version_text': 'バージョン: 2.4.2',
         'about_title': 'このアプリについて',
-        'about_text': 'ChronoGPS — GPS/NTP 時刻同期ツール\nバージョン: 2.4.1',
+        'about_text': 'ChronoGPS — GPS/NTP 時刻同期ツール\nバージョン: 2.4.2',
         'credits': '作成者: 津久浦 慶治  JP1LRT (@jp1lrt)',
         'github_url': 'https://github.com/jp1lrt/ChronoGPS',
         'github_label': 'GitHub プロジェクト',

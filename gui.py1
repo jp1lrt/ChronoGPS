@@ -6,7 +6,6 @@ About ウィンドウは NMEATime2 風（大アイコン + 情報）・寄付ボ
 Author: 津久浦 慶治 / Yoshiharu Tsukuura  callsign JP1LRT (@jp1lrt)
 License: MIT
 """
-import sys
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import webbrowser
@@ -24,15 +23,6 @@ from config import Config
 from tray_icon import TrayIcon
 from autostart import AutoStart
 import os
-
-
-def get_resource_path(relative_path):
-    """PyInstallerのバンドルリソースへのパスを取得（デバッグ出力なし）"""
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(base_path, relative_path)
 
 class GPSTimeSyncGUI:
     def __init__(self, root):
@@ -65,14 +55,11 @@ class GPSTimeSyncGUI:
 
         # ウィンドウアイコン設定（icon.ico → icon.png の順で試みる）
         try:
-            icon_path = get_resource_path('icon.ico')
-            if os.path.exists(icon_path):
-                self.root.iconbitmap(icon_path)
-            else:
-                icon_png = get_resource_path('icon.png')
-                if os.path.exists(icon_png):
-                    from PIL import Image, ImageTk
-                    img = Image.open(icon_png).resize((32, 32), Image.LANCZOS)
+            if os.path.exists('icon.ico'):
+                self.root.iconbitmap('icon.ico')
+            elif os.path.exists('icon.png'):
+                from PIL import Image, ImageTk
+                img = Image.open('icon.png').resize((32, 32), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(img)
                 self.root.iconphoto(True, photo)
                 self._icon_photo = photo  # GC防止
@@ -98,7 +85,6 @@ class GPSTimeSyncGUI:
         self.is_running = False
         self.ntp_sync_timer = None
         self.gps_sync_timer = None
-        self._gps_next_sync_mono = None  # interval sync: 次回同期期限（monotonic）
 
         # GPS同期モードのスレッドセーフなコピー（_read_gpsスレッドから参照）
         self._gps_sync_mode = 'none'
@@ -324,9 +310,8 @@ class GPSTimeSyncGUI:
         # Left: large icon or placeholder
         icon_path = None
         for candidate in ('icon.png', 'app_icon.png', 'icon.ico'):
-            path = get_resource_path(candidate)
-            if os.path.exists(path):
-                icon_path = path
+            if os.path.exists(candidate):
+                icon_path = candidate
                 break
 
         if icon_path:
@@ -1272,13 +1257,9 @@ class GPSTimeSyncGUI:
             self._log(self.loc.get('gps_sync_interval_log') or f"GPS sync: interval ({interval_text})")
 
     def _start_gps_interval_sync(self):
-        """GPS定期同期開始（受信直後トリガ方式）
-        タイマーで突然 SetSystemTime するのではなく、
-        「期限が来たら次のGPS受信直後に1回だけ同期」する。
-        これにより NMEA整数秒のタイミングズレ（最大±1s）を排除する。
-        """
+        """GPS定期同期開始"""
         self._stop_gps_auto_sync()
-        self._gps_next_sync_mono = time.monotonic()  # 今すぐ許可（次の受信で即1回）
+        self._schedule_gps_sync()
 
     def _stop_gps_auto_sync(self):
         """GPS自動同期停止"""
@@ -1302,7 +1283,7 @@ class GPSTimeSyncGUI:
     def _gps_sync_callback(self):
         """GPS同期コールバック"""
         if self.parser.last_time and self.sync.is_admin:
-            success, msg = self.sync.sync_time_weak(self.parser.last_time)
+            success, msg = self.sync.sync_time(self.parser.last_time)
             if success:
                 self._log(f"⏰ GPS {self.loc.get('sync_success') or 'Sync success'}: {msg}")
             else:
@@ -1368,18 +1349,10 @@ class GPSTimeSyncGUI:
             self.ui_queue.put(('ntp_error', str(e)))
 
     def _process_ui_queue(self):
-        """メインスレッド: workerの結果を受け取りUI更新・時刻設定を行う（TclError対策済み）"""
+        """メインスレッド: workerの結果を受け取りUI更新・時刻設定を行う"""
         try:
-            # ウィンドウが既に閉じられている場合は、以後の処理もタイマー予約も行わない
-            if not self.root.winfo_exists():
-                return
-
             while True:
-                try:
-                    item = self.ui_queue.get_nowait()
-                except queue.Empty:
-                    break
-
+                item = self.ui_queue.get_nowait()
                 if not item:
                     continue
                 tag = item[0]
@@ -1394,6 +1367,8 @@ class GPSTimeSyncGUI:
                     self._gps_rx_mono = rx_mono
 
                 elif tag == 'gps_mode_reset':
+                    # 管理者権限なしでGPS即時同期が試みられた→UIもオフに戻す
+                    # _gps_mode_changing フラグで _on_gps_mode_change の再入を防ぐ
                     self._gps_mode_changing = True
                     try:
                         self.gps_sync_mode.set('none')
@@ -1406,6 +1381,7 @@ class GPSTimeSyncGUI:
                     self.ntp_time_value.config(text=ntp_time.strftime("%Y-%m-%d %H:%M:%S UTC"))
                     self._log(f"NTP: {ntp_time}, offset: {offset_ms/1000.0:.3f}s ({offset_ms:.2f}ms)")
 
+                    # offsetを使って補正時刻を作成
                     corrected_utc = datetime.now(timezone.utc) + timedelta(milliseconds=offset_ms)
 
                     if not self.sync.is_admin:
@@ -1441,16 +1417,10 @@ class GPSTimeSyncGUI:
                 except Exception:
                     pass
 
-        except (tk.TclError, RuntimeError):
-            # アプリ終了時のアクセスエラーを静かに無視
-            return
-
-        # ウィンドウが存在する場合のみ、次のタイマーを予約する
-        try:
-            if self.root.winfo_exists():
-                self.root.after(200, self._process_ui_queue)
-        except (tk.TclError, RuntimeError):
+        except queue.Empty:
             pass
+
+        self.root.after(200, self._process_ui_queue)
 
     def _save_settings(self, silent=False):
         """現在の設定を保存。silent=Trueの時はダイアログを出さない"""
@@ -1824,31 +1794,6 @@ class GPSTimeSyncGUI:
                                 self.ui_queue.put(('log', f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
                                 self._gps_sync_mode = 'none'
                                 self.ui_queue.put(('gps_mode_reset', None))
-
-                        elif self._gps_sync_mode == 'interval':
-                            # 期限が未設定なら今すぐ許可
-                            if self._gps_next_sync_mono is None:
-                                self._gps_next_sync_mono = time.monotonic()
-
-                            if time.monotonic() >= self._gps_next_sync_mono:
-                                if self.sync.is_admin:
-                                    # GPS受信直後に弱同期を実行（タイミングズレなし）
-                                    success, msg = self.sync.sync_time_weak(gps_time)
-                                    if success:
-                                        self.ui_queue.put(('log', f"⏰ GPS {self.loc.get('sync_success') or 'Sync success'}: {msg}"))
-                                    else:
-                                        self.ui_queue.put(('log', f"✗ GPS {self.loc.get('sync_failed') or 'Sync failed'}: {msg}"))
-
-                                    # 次回期限を更新
-                                    try:
-                                        interval_minutes = [5, 10, 30, 60, 360][self.gps_interval_combo.current()]
-                                    except Exception:
-                                        interval_minutes = 30
-                                    self._gps_next_sync_mono = time.monotonic() + interval_minutes * 60.0
-                                else:
-                                    self.ui_queue.put(('log', f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
-                                    self._gps_sync_mode = 'none'
-                                    self.ui_queue.put(('gps_mode_reset', None))
 
             except Exception as e:
                 self._log(f"❌ Error: {e}")
