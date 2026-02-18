@@ -1,11 +1,12 @@
 """
 GPS/NTP 時刻同期ツール GUI（FT8オフセット0.1秒刻み対応版）
-全15言語対応 + システムトレイ + 自動スタート + FT8時刻オフセット（0.1秒刻み）
+全16言語対応 + システムトレイ + 自動スタート + FT8時刻オフセット（0.1秒刻み）
 About ウィンドウは NMEATime2 風（大アイコン + 情報）・寄付ボタンあり（PayPal.Me @jp1lrt）
 
 Author: 津久浦 慶治 / Yoshiharu Tsukuura  callsign JP1LRT (@jp1lrt)
 License: MIT
 """
+import sys
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import webbrowser
@@ -23,6 +24,15 @@ from config import Config
 from tray_icon import TrayIcon
 from autostart import AutoStart
 import os
+
+
+def get_resource_path(relative_path):
+    """PyInstallerのバンドルリソースへのパスを取得（デバッグ出力なし）"""
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
 
 class GPSTimeSyncGUI:
     def __init__(self, root):
@@ -55,11 +65,14 @@ class GPSTimeSyncGUI:
 
         # ウィンドウアイコン設定（icon.ico → icon.png の順で試みる）
         try:
-            if os.path.exists('icon.ico'):
-                self.root.iconbitmap('icon.ico')
-            elif os.path.exists('icon.png'):
-                from PIL import Image, ImageTk
-                img = Image.open('icon.png').resize((32, 32), Image.LANCZOS)
+            icon_path = get_resource_path('icon.ico')
+            if os.path.exists(icon_path):
+                self.root.iconbitmap(icon_path)
+            else:
+                icon_png = get_resource_path('icon.png')
+                if os.path.exists(icon_png):
+                    from PIL import Image, ImageTk
+                    img = Image.open(icon_png).resize((32, 32), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(img)
                 self.root.iconphoto(True, photo)
                 self._icon_photo = photo  # GC防止
@@ -201,7 +214,7 @@ class GPSTimeSyncGUI:
             'ja': '日本語', 'en': 'English', 'fr': 'Français', 'es': 'Español',
             'de': 'Deutsch', 'zh': '中文（简体）', 'zh-tw': '中文（繁體）', 'ko': '한국어',
             'pt': 'Português', 'it': 'Italiano', 'nl': 'Nederlands', 'ru': 'Русский',
-            'pl': 'Polski', 'tr': 'Türkçe', 'sv': 'Svenska'
+            'pl': 'Polski', 'tr': 'Türkçe', 'sv': 'Svenska', 'id': 'Bahasa Indonesia'
         }
 
         # 利用可能な言語一覧を取得（無ければフォールバックのキーを使う）
@@ -258,7 +271,7 @@ class GPSTimeSyncGUI:
             'ja': '日本語', 'en': 'English', 'fr': 'Français', 'es': 'Español',
             'de': 'Deutsch', 'zh': '中文（简体）', 'zh-tw': '中文（繁體）', 'ko': '한국어',
             'pt': 'Português', 'it': 'Italiano', 'nl': 'Nederlands', 'ru': 'Русский',
-            'pl': 'Polski', 'tr': 'Türkçe', 'sv': 'Svenska'
+            'pl': 'Polski', 'tr': 'Türkçe', 'sv': 'Svenska', 'id': 'Bahasa Indonesia'
         }
         lang_name = lang_names.get(lang_code, lang_code)
         messagebox.showinfo(
@@ -272,7 +285,7 @@ class GPSTimeSyncGUI:
         Donate は PayPal.Me (https://www.paypal.me/jp1lrt) に飛び、表示は @jp1lrt。
         """
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
-        about_text = self.loc.get('about_text') or f"{self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {self.loc.get('app_version') or '2.4.0'}"
+        about_text = self.loc.get('about_text') or f"{self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {self.loc.get('app_version') or '2.4.1'}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
         github_label = self.loc.get('github_label') or "Project on GitHub"
@@ -310,8 +323,9 @@ class GPSTimeSyncGUI:
         # Left: large icon or placeholder
         icon_path = None
         for candidate in ('icon.png', 'app_icon.png', 'icon.ico'):
-            if os.path.exists(candidate):
-                icon_path = candidate
+            path = get_resource_path(candidate)
+            if os.path.exists(path):
+                icon_path = path
                 break
 
         if icon_path:
@@ -1349,10 +1363,18 @@ class GPSTimeSyncGUI:
             self.ui_queue.put(('ntp_error', str(e)))
 
     def _process_ui_queue(self):
-        """メインスレッド: workerの結果を受け取りUI更新・時刻設定を行う"""
+        """メインスレッド: workerの結果を受け取りUI更新・時刻設定を行う（TclError対策済み）"""
         try:
+            # ウィンドウが既に閉じられている場合は、以後の処理もタイマー予約も行わない
+            if not self.root.winfo_exists():
+                return
+
             while True:
-                item = self.ui_queue.get_nowait()
+                try:
+                    item = self.ui_queue.get_nowait()
+                except queue.Empty:
+                    break
+
                 if not item:
                     continue
                 tag = item[0]
@@ -1367,8 +1389,6 @@ class GPSTimeSyncGUI:
                     self._gps_rx_mono = rx_mono
 
                 elif tag == 'gps_mode_reset':
-                    # 管理者権限なしでGPS即時同期が試みられた→UIもオフに戻す
-                    # _gps_mode_changing フラグで _on_gps_mode_change の再入を防ぐ
                     self._gps_mode_changing = True
                     try:
                         self.gps_sync_mode.set('none')
@@ -1381,7 +1401,6 @@ class GPSTimeSyncGUI:
                     self.ntp_time_value.config(text=ntp_time.strftime("%Y-%m-%d %H:%M:%S UTC"))
                     self._log(f"NTP: {ntp_time}, offset: {offset_ms/1000.0:.3f}s ({offset_ms:.2f}ms)")
 
-                    # offsetを使って補正時刻を作成
                     corrected_utc = datetime.now(timezone.utc) + timedelta(milliseconds=offset_ms)
 
                     if not self.sync.is_admin:
@@ -1417,10 +1436,16 @@ class GPSTimeSyncGUI:
                 except Exception:
                     pass
 
-        except queue.Empty:
-            pass
+        except (tk.TclError, RuntimeError):
+            # アプリ終了時のアクセスエラーを静かに無視
+            return
 
-        self.root.after(200, self._process_ui_queue)
+        # ウィンドウが存在する場合のみ、次のタイマーを予約する
+        try:
+            if self.root.winfo_exists():
+                self.root.after(200, self._process_ui_queue)
+        except (tk.TclError, RuntimeError):
+            pass
 
     def _save_settings(self, silent=False):
         """現在の設定を保存。silent=Trueの時はダイアログを出さない"""
