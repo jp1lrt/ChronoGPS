@@ -41,7 +41,8 @@ please see the detailed discussion below:
 ## Features
 
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
-- 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention
+- 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention  
+Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering, maintaining ±0.1s accuracy
 - ⏱️ **FT8 Time Offset** — Fine-tune clock in ±0.1s steps, designed for digital mode operation
 - 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
 - 🔒 **Non-Admin Support** — Choose "Restart as Admin" or "Monitor-Only" at launch
@@ -214,7 +215,7 @@ The application contains no malicious code.
 
 All source code is publicly available and you can build the exe yourself.
 
-- VirusTotal scan results: [https://www.virustotal.com/gui/file/6f1730b70658c9040bc9653ce7ac1a915afc0b66d5734f1351c2502b87f3c2b8/detection](https://www.virustotal.com/gui/file/59c3ed8beae09d9f446539079df66ade007bb7e5b04af339ea68a9769945ebb3/detection)
+- VirusTotal scan results: https://www.virustotal.com/gui/file/392673eab8d9a4bf72e3e34505bdaf11e9b10b2b70df614be8a6e95f7ae64db3/detection
 - This has been reported to Microsoft as an incorrect detection
 
 ---

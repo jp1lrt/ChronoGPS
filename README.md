@@ -41,7 +41,8 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 ## 特徴
 
 - 🌐 **NTP同期（RFC 5905準拠）** — 64bitタイムスタンプ、t1/t2/t3/t4によるoffset/delay計算、msオーダーの高精度補正
-- 🛰️ **GPS同期** — オフ / 即時 / 定期の3モード、RMCベースのUTC時刻取得、重複同期防止ロジックあり
+- 🛰️ **GPS同期** — オフ / 即時 / 定期の3モード、RMCベースのUTC時刻取得、重複同期防止ロジックあり  
+  定期モードはGPS受信直後トリガ方式＋中央値フィルタ（ジッタ抑制）で±0.1秒以内を維持
 - ⏱️ **FT8オフセット** — ±0.1秒刻みで時刻を微調整するFT8デジタルモード専用機能
 - 📡 **衛星情報表示** — GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS をリアルタイム表示
 - 🔒 **非管理者対応** — 起動時に「管理者として再起動」または「モニタ専用で続行」を選択可能
@@ -220,7 +221,7 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
 
-- VirusTotal スキャン結果: [https://www.virustotal.com/gui/file/6f1730b70658c9040bc9653ce7ac1a915afc0b66d5734f1351c2502b87f3c2b8/detection](https://www.virustotal.com/gui/file/59c3ed8beae09d9f446539079df66ade007bb7e5b04af339ea68a9769945ebb3/detection)
+- VirusTotal スキャン結果: https://www.virustotal.com/gui/file/392673eab8d9a4bf72e3e34505bdaf11e9b10b2b70df614be8a6e95f7ae64db3/detection
 - 誤検知であることを Microsoft に報告済みです。
 
 ---
