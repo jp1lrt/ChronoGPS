@@ -208,3 +208,6 @@ __marimo__/
 
 *.bak
 gps_time_sync_config.json
+
+*.bak
+gps_time_sync_config.json
