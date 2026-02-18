@@ -41,7 +41,8 @@ please see the detailed discussion below:
 ## Features
 
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
-- 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention
+- 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention  
+Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering, maintaining ±0.1s accuracy
 - ⏱️ **FT8 Time Offset** — Fine-tune clock in ±0.1s steps, designed for digital mode operation
 - 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
 - 🔒 **Non-Admin Support** — Choose "Restart as Admin" or "Monitor-Only" at launch
