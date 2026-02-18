@@ -46,7 +46,7 @@ please see the detailed discussion below:
 - 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
 - 🔒 **Non-Admin Support** — Choose "Restart as Admin" or "Monitor-Only" at launch
 - 🧵 **Thread-Safe GUI** — Worker thread + Queue + main thread updates prevent Tkinter freezes
-- 🌍 **15 Languages** — Japanese, English, French, Spanish, German, Chinese (Simplified/Traditional), Korean, Portuguese, Italian, Dutch, Russian, Polish, Turkish, Swedish
+- 🌍 **16 Languages** — Japanese, English, French, Spanish, German, Chinese (Simplified/Traditional), Korean, Portuguese, Italian, Dutch, Russian, Polish, Turkish, Swedish, Indonesian
 - 🖥️ **Windows-Native UX** — System tray support, × button minimizes to tray, taskbar icon
 
 ---
@@ -214,7 +214,7 @@ The application contains no malicious code.
 
 All source code is publicly available and you can build the exe yourself.
 
-- VirusTotal scan results: https://www.virustotal.com/gui/file/6f1730b70658c9040bc9653ce7ac1a915afc0b66d5734f1351c2502b87f3c2b8/detection
+- VirusTotal scan results: [https://www.virustotal.com/gui/file/6f1730b70658c9040bc9653ce7ac1a915afc0b66d5734f1351c2502b87f3c2b8/detection](https://www.virustotal.com/gui/file/59c3ed8beae09d9f446539079df66ade007bb7e5b04af339ea68a9769945ebb3/detection)
 - This has been reported to Microsoft as an incorrect detection
 
 ---
