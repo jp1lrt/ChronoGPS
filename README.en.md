@@ -117,6 +117,16 @@ ChronoGPS uses **GNSS** (GPS, QZSS, etc.) as its time source.
 For FT8 / FT4 operation, **Instant Sync** is typically sufficient and recommended.  
 GNSS provides an absolute UTC reference, so a single calibration before operation is typically enough to achieve accurate system time.
 
+> [!NOTE]
+> The phrase “Instant Sync once is usually sufficient” does **not** mean
+> that GPS reception should be turned off afterward.
+>  
+> It means that **frequent system clock rewrites are unnecessary** once the
+> clock has been properly calibrated.
+>  
+> GPS reception may continue for monitoring, visualization, and verification
+> purposes without any issue.
+
 **Interval Sync (Weak Sync)** is intended for:
 - Monitoring clock drift during long sessions
 - Verifying GNSS reception stability
