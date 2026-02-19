@@ -34,7 +34,7 @@ If you are interested in the design philosophy behind ChronoGPS —
 including transparency, how administrator privileges are handled, and the idea of a “monitor-only mode” —  
 please see the detailed discussion below:
 
-- 🔗 **Why ChronoGPS (Discussion)**: <URL>https://github.com/jp1lrt/ChronoGPS/discussions/3
+- 🔗 **Why ChronoGPS (Discussion)**: https://github.com/jp1lrt/ChronoGPS/discussions/3
 
 ---
 
@@ -42,7 +42,7 @@ please see the detailed discussion below:
 
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
 - 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention  
-Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering, maintaining ±0.1s accuracy
+Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering to reduce jitter injection and support drift monitoring.
 - ⏱️ **FT8 Time Offset** — Fine-tune clock in ±0.1s steps, designed for digital mode operation
 - 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
 - 🔒 **Non-Admin Support** — Choose "Restart as Admin" or "Monitor-Only" at launch
@@ -120,6 +120,33 @@ is enough to achieve accurate system time.
 - Diagnostic and verification purposes
 
 For everyday FT8 / FT4 operation, **Instant Sync is recommended**.
+
+**Interval Sync is recommended for the following purposes:**
+- Monitoring long-term system clock drift
+- Verifying GNSS reception stability
+- Detection and validation of abnormal behavior
+
+For daily FT8 / FT4 operation, **Instant Sync is strongly recommended**.
+
+### Weak Sync (Interval) Behavior (v2.4.3 and later)
+
+**Interval Sync is not designed for continuous clock correction.**  
+It is a *weak synchronization* mode intended for drift monitoring and validation.  
+For FT8 / FT4 operation, **Instant Sync is recommended**.
+
+#### How it works
+- ChronoGPS continuously **collects GNSS time offset samples every second** (without modifying the OS clock).
+- When the configured interval is reached, the accumulated samples are evaluated to decide whether a correction is necessary.
+- If the median offset is within the threshold, ChronoGPS **intentionally skips applying `SetSystemTime`** to avoid injecting GNSS reception jitter into Windows.
+
+#### Gradual one-direction drift (this is normal)
+You may observe a gradual one-direction drift in the log, such as `-0.03s → -0.05s`.  
+In most cases, this is the **natural drift of the PC’s system clock**, not a synchronization error.  
+As long as the offset remains within the threshold, ChronoGPS will deliberately **not** correct it.
+
+#### Default weak-sync parameters
+- Threshold: **±0.2 seconds**
+- Sample window: **median of the last 30 seconds**
 
 ### NTP Sync
 
@@ -215,9 +242,6 @@ Compare the printed hash with the corresponding line in `checksums.txt` attached
 All releases are signed with GPG (`checksums.txt.asc`).
 Note: Windows Authenticode signing (which suppresses SmartScreen warnings) is not currently implemented.
 
-## Usage
-See README.md for detailed instructions (Japanese).
-
 ---
 
 ## False Positive Warnings from Antivirus Software
@@ -228,7 +252,7 @@ The application contains no malicious code.
 
 All source code is publicly available and you can build the exe yourself.
 
-- VirusTotal scan results: https://www.virustotal.com/gui/file/392673eab8d9a4bf72e3e34505bdaf11e9b10b2b70df614be8a6e95f7ae64db3/detection
+- VirusTotal scan results: https://www.virustotal.com/gui/file/7712744048d7757d9bf0fadacc347957eba04f235c36aa99322559e95e1a2ad8/detection
 - This has been reported to Microsoft as an incorrect detection
 
 ---
@@ -291,8 +315,5 @@ and help support future development ☕
 [![Coffee](https://img.shields.io/badge/Coffee-☕-yellow)](https://www.paypal.me/jp1lrt)
 
 ---
-
-## Why ChronoGPS?
-- 🔗 **Why ChronoGPS (Discussion)**: <URL>https://github.com/jp1lrt/ChronoGPS/discussions/3
 
 Note: This project was formerly known as gps-time-sync.
