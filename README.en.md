@@ -7,7 +7,7 @@
 
 A tool to accurately synchronize your Windows PC clock using a GPS receiver or NTP server.  
 Designed for high-precision time alignment required for FT8 and other digital amateur radio modes.  
-Runs safely in "Monitor-Only" mode even without administrator privileges.
+Runs safely in **Monitor-Only** mode even without administrator privileges.
 
 🌐 [日本語 README](README.md)
 
@@ -17,7 +17,7 @@ Runs safely in "Monitor-Only" mode even without administrator privileges.
 
 ## Design Philosophy
 
-ChronoGPS is designed with one simple goal:
+ChronoGPS is designed with one simple goal:  
 **to provide accurate time with minimal user intervention.**
 
 - Use GPS or NTP depending on availability and environment
@@ -31,7 +31,7 @@ Rather than visual effects, the focus is on **accuracy, stability, and long-term
 ## Why ChronoGPS?
 
 If you are interested in the design philosophy behind ChronoGPS —  
-including transparency, how administrator privileges are handled, and the idea of a “monitor-only mode” —  
+including transparency, how administrator privileges are handled, and the idea of a *monitor-only mode* —  
 please see the detailed discussion below:
 
 - 🔗 **Why ChronoGPS (Discussion)**: https://github.com/jp1lrt/ChronoGPS/discussions/3
@@ -42,10 +42,10 @@ please see the detailed discussion below:
 
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
 - 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention  
-Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering to reduce jitter injection and support drift monitoring.
+  Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering to reduce jitter injection and support drift monitoring.
 - ⏱️ **FT8 Time Offset** — Fine-tune clock in ±0.1s steps, designed for digital mode operation
 - 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
-- 🔒 **Non-Admin Support** — Choose "Restart as Admin" or "Monitor-Only" at launch
+- 🔒 **Non-Admin Support** — Choose *Restart as Admin* or *Monitor-Only* at launch
 - 🧵 **Thread-Safe GUI** — Worker thread + Queue + main thread updates prevent Tkinter freezes
 - 🌍 **16 Languages** — Japanese, English, French, Spanish, German, Chinese (Simplified/Traditional), Korean, Portuguese, Italian, Dutch, Russian, Polish, Turkish, Swedish, Indonesian
 - 🖥️ **Windows-Native UX** — System tray support, × button minimizes to tray, taskbar icon
@@ -77,8 +77,8 @@ Choose at startup:
 
 ### Using the exe (Recommended)
 
-1. Place `ChronoGPS.exe`, and `icon.ico` in the same folder
-2. Right-click `ChronoGPS.exe` → "Run as administrator"
+1. Place `ChronoGPS.exe` and `icon.ico` in the same folder
+2. Right-click `ChronoGPS.exe` → *Run as administrator*
 
 ### Running from source
 
@@ -88,6 +88,8 @@ python -m venv .venv
 pip install -r requirements.txt
 python main.py
 ```
+
+---
 
 ### Building the exe
 
@@ -105,68 +107,67 @@ Output: `dist\ChronoGPS.exe`
 
 1. Connect your GPS receiver to the PC
 2. Select the COM port and baud rate (usually 9600)
-3. Click "Start" to begin receiving
-4. Set GPS sync mode to "Instant" or "Scheduled"
+3. Click **Start** to begin receiving
+4. Set GPS sync mode to **Instant** or **Scheduled**
 
 ### GNSS Sync Recommendation
 
-For FT8 / FT4 operation, **Instant Sync** is usually sufficient and recommended.  
-GNSS provides an absolute UTC reference, so a single calibration before operation
-is enough to achieve accurate system time.
+ChronoGPS uses **GNSS** (GPS, QZSS, etc.) as its time source.
 
-**Periodic Sync** is intended for:
+For FT8 / FT4 operation, **Instant Sync** is typically sufficient and recommended.  
+GNSS provides an absolute UTC reference, so a single calibration before operation is typically enough to achieve accurate system time.
+
+**Interval Sync (Weak Sync)** is intended for:
 - Monitoring clock drift during long sessions
-- Checking GNSS reception stability
+- Verifying GNSS reception stability
 - Diagnostic and verification purposes
 
-For everyday FT8 / FT4 operation, **Instant Sync is recommended**.
+For everyday FT8 / FT4 operation, **Instant Sync is strongly recommended**.
 
-**Interval Sync is recommended for the following purposes:**
-- Monitoring long-term system clock drift
-- Verifying GNSS reception stability
-- Detection and validation of abnormal behavior
-
-For daily FT8 / FT4 operation, **Instant Sync is strongly recommended**.
+---
 
 ### Weak Sync (Interval) Behavior (v2.4.3 and later)
 
-**Interval Sync is not designed for continuous clock correction.**  
-It is a *weak synchronization* mode intended for drift monitoring and validation.  
+**Interval Sync (Weak Sync) is not designed for continuous clock correction.**  
+It is intentionally designed for drift monitoring and validation.  
 For FT8 / FT4 operation, **Instant Sync is recommended**.
 
 #### How it works
-- ChronoGPS continuously **collects GNSS time offset samples every second** (without modifying the OS clock).
-- When the configured interval is reached, the accumulated samples are evaluated to decide whether a correction is necessary.
-- If the median offset is within the threshold, ChronoGPS **intentionally skips applying `SetSystemTime`** to avoid injecting GNSS reception jitter into Windows.
+- ChronoGPS continuously **collects GNSS time offset samples every second** (without modifying the OS clock)
+- When the configured interval is reached, the accumulated samples are evaluated to decide whether a correction is necessary
+- If the median offset is within the threshold, ChronoGPS **intentionally skips applying `SetSystemTime`** to avoid injecting GNSS reception jitter into Windows
 
 #### Gradual one-direction drift (this is normal)
-You may observe a gradual one-direction drift in the log, such as `-0.03s → -0.05s`.  
-In most cases, this is the **natural drift of the PC’s system clock**, not a synchronization error.  
+You may observe a gradual one-direction drift in the log, such as `-0.03s → -0.05s`.
+
+In most cases, this represents the **natural drift of the PC’s system clock**, not a synchronization error.  
 As long as the offset remains within the threshold, ChronoGPS will deliberately **not** correct it.
 
 #### Default weak-sync parameters
 - Threshold: **±0.2 seconds**
 - Sample window: **median of the last 30 seconds**
 
+---
+
 ### NTP Sync
 
 1. Enter an NTP server (default: `pool.ntp.org`)
    - Recommended for Japan: `ntp.nict.jp`
-2. Click "NTP Sync" for immediate sync, or enable auto-sync
+2. Click **NTP Sync** for immediate sync, or enable auto-sync
 
 ### FT8 Offset
 
-If your FT8 timing is slightly off, enter an offset value (seconds) and click "Apply".  
+If your FT8 timing is slightly off, enter an offset value (seconds) and click **Apply**.  
 Quick ±0.1s adjustment buttons are also available.
 
 ---
 
 ## About Displayed Time Differences
 
-You may occasionally see small differences between the displayed
+You may occasionally see small differences between the displayed  
 System Time, GPS Time, and NTP Time.
 
-These differences are caused by update timing and display refresh intervals.
+These differences are caused by update timing and display refresh intervals.  
 They do **not** indicate an error in actual time synchronization.
 
 The internal synchronization logic maintains millisecond-level accuracy.
@@ -181,20 +182,22 @@ The internal synchronization logic maintains millisecond-level accuracy.
 | In Use (SBAS) | WAAS / MSAS / EGNOS augmentation satellites — used for correction, not as a time source |
 | Tracked | Received but not used in the time/position solution |
 
-SBAS satellites (MSAS in Japan) may be tracked but not appear as "In Use" — this is normal behavior.  
-SBAS provides augmentation corrections, not a primary clock signal.  
-ChronoGPS uses GNSS primary satellites and NTP for time sync, a design comparable to professional GNSS timing receivers.
+SBAS satellites (MSAS in Japan) may be tracked but not appear as *In Use* — this is normal behavior.  
+SBAS provides augmentation corrections, not a primary clock signal.
 
-QZSS (Quasi-Zenith Satellite System / Michibiki) is Japan's regional satellite navigation system. It will appear in the satellite view tab if your receiver supports NMEA output for QZSS.  
+ChronoGPS uses GNSS primary satellites and NTP for time synchronization,  
+a design comparable to professional GNSS timing receivers.
+
+QZSS (Quasi-Zenith Satellite System / Michibiki) will appear in the satellite view tab if supported by the receiver.  
 Some receivers disable QZSS NMEA output by default — an empty QZSS panel is normal behavior.
 
 ---
 
 ## Notes
 
-- On first launch, Windows may ask "Allow this app to make changes?" — click Yes
-- **The × button minimizes to the system tray.** To fully exit, right-click the tray icon → "Quit"
-- Default NTP server is `pool.ntp.org`. Change to any preferred server (e.g. `time.windows.com`)
+- On first launch, Windows may ask *“Allow this app to make changes?”* — click **Yes**
+- **The × button minimizes to the system tray.** To fully exit, right-click the tray icon → *Quit*
+- Default NTP server is `pool.ntp.org` (can be changed to any preferred server)
 
 ---
 
