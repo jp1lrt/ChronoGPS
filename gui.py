@@ -1830,9 +1830,12 @@ class GPSTimeSyncGUI:
                             if self._gps_next_sync_mono is None:
                                 self._gps_next_sync_mono = time.monotonic()
 
-                            if time.monotonic() >= self._gps_next_sync_mono:
-                                if self.sync.is_admin:
-                                    # GPS受信直後に弱同期を実行（タイミングズレなし）
+                            if self.sync.is_admin:
+                                # 毎秒サンプルを蓄積（期限に関係なく常時）
+                                self.sync.add_sample(gps_time)
+
+                                # 期限到達時のみ判断・ログ・期限更新
+                                if time.monotonic() >= self._gps_next_sync_mono:
                                     success, msg = self.sync.sync_time_weak(gps_time)
                                     if success:
                                         self.ui_queue.put(('log', f"⏰ GPS {self.loc.get('sync_success') or 'Sync success'}: {msg}"))
@@ -1845,10 +1848,10 @@ class GPSTimeSyncGUI:
                                     except Exception:
                                         interval_minutes = 30
                                     self._gps_next_sync_mono = time.monotonic() + interval_minutes * 60.0
-                                else:
-                                    self.ui_queue.put(('log', f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
-                                    self._gps_sync_mode = 'none'
-                                    self.ui_queue.put(('gps_mode_reset', None))
+                            else:
+                                self.ui_queue.put(('log', f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
+                                self._gps_sync_mode = 'none'
+                                self.ui_queue.put(('gps_mode_reset', None))
 
             except Exception as e:
                 self._log(f"❌ Error: {e}")

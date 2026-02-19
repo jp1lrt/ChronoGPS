@@ -106,6 +106,25 @@ class TimeSynchronizer:
         st = self._datetime_to_systemtime(dt_utc)
         return ctypes.windll.kernel32.SetSystemTime(ctypes.byref(st))
 
+    def add_sample(self, target_time):
+        """
+        サンプルをバッファに追加するだけ（SetSystemTimeは呼ばない）
+        毎秒GPS受信のたびに呼び出すことで、統計精度を上げる。
+        期限到達時に sync_time_weak() を呼ぶことで判断・適用を行う。
+        """
+        try:
+            if target_time.tzinfo is None:
+                target_utc = target_time.replace(tzinfo=timezone.utc)
+            else:
+                target_utc = target_time.astimezone(timezone.utc)
+
+            adjusted_time = target_utc + timedelta(seconds=self.time_offset)
+            system_time = datetime.now(timezone.utc)
+            diff = (adjusted_time - system_time).total_seconds()
+            self._weak_diffs.append(diff)
+        except Exception:
+            pass
+
     def sync_time_weak(
         self,
         target_time,
