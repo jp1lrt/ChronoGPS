@@ -108,6 +108,19 @@ Output: `dist\ChronoGPS.exe`
 3. Click "Start" to begin receiving
 4. Set GPS sync mode to "Instant" or "Scheduled"
 
+### GNSS Sync Recommendation
+
+For FT8 / FT4 operation, **Instant Sync** is usually sufficient and recommended.  
+GNSS provides an absolute UTC reference, so a single calibration before operation
+is enough to achieve accurate system time.
+
+**Periodic Sync** is intended for:
+- Monitoring clock drift during long sessions
+- Checking GPS reception stability
+- Diagnostic and verification purposes
+
+For everyday FT8 / FT4 operation, **Instant Sync is recommended**.
+
 ### NTP Sync
 
 1. Enter an NTP server (default: `pool.ntp.org`)
