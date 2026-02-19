@@ -35,6 +35,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 ## Why ChronoGPS?
 設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
 - 🔗 Why ChronoGPS (Discussion): https://github.com/jp1lrt/ChronoGPS/discussions/3
+※ 設計思想の背景については Discussion #3 を参照してください。
 
 ---
 
@@ -133,6 +134,8 @@ GNSS は UTC に直結した絶対時刻基準を提供するため、運用開�
 ### 定期同期（Weak Sync / Interval）の仕様（v2.4.3以降）
 
 ![Weak Sync（定期同期）動作図](docs/weak-sync-diagram.ja.png)
+
+*Weak Sync（Interval）は「監視が主目的」であり、閾値内では意図的に補正を行いません。*
 
 > Interval（Weak Sync）は「毎秒サンプル蓄積 → 間隔到達時だけ評価」。
 > 閾値内なら補正せず、ジッタ注入を避けつつドリフト監視します。
