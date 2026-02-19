@@ -116,7 +116,7 @@ is enough to achieve accurate system time.
 
 **Periodic Sync** is intended for:
 - Monitoring clock drift during long sessions
-- Checking GPS reception stability
+- Checking GNSS reception stability
 - Diagnostic and verification purposes
 
 For everyday FT8 / FT4 operation, **Instant Sync is recommended**.
