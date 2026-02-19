@@ -34,7 +34,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 
 ## Why ChronoGPS?
 設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
-- 🔗 Why ChronoGPS (Discussion): <URL>https://github.com/jp1lrt/ChronoGPS/discussions/3
+- 🔗 Why ChronoGPS (Discussion): https://github.com/jp1lrt/ChronoGPS/discussions/3
 
 ---
 
@@ -119,8 +119,9 @@ pyinstaller --onefile --windowed --icon=icon.ico --name=ChronoGPS main.py
 ### GPS同期について（推奨設定）
 
 FT8 / FT4 などのデジタルモード運用では、**GPSの「即時同期」**を行えば通常は十分です。  
-GNSSはUTCに直結した絶対時刻基準を提供するため、  
-運用開始前に一度正しく校正すれば、その後も安定した時刻精度が得られます。
+GNSS は UTC に直結した絶対時刻基準を提供するため、運用開始前に一度正しく校正すれば、その後も安定した時刻精度が得られます。
+
+定期モードは **毎秒サンプルを蓄積し、設定間隔に到達したタイミングでのみ評価**することで、GNSS受信ジッタを抑えつつ、ドリフト監視を行います。
 
 **定期同期モード**は、以下のような目的で利用してください：
 - 長時間稼働時のドリフト監視
@@ -128,6 +129,25 @@ GNSSはUTCに直結した絶対時刻基準を提供するため、
 - 異常検知・検証用途
 
 日常的なFT8/FT4運用では、**即時同期を推奨**します。
+
+### 定期同期（Weak Sync / Interval）の仕様（v2.4.3以降）
+
+**定期同期は「常時補正」ではなく、ドリフト監視・検証用途の弱同期です。**  
+FT8 / FT4 の実運用では **即時同期（Instant Sync）を推奨**します。
+
+#### どう動くか
+- GNSS受信（毎秒）に合わせて、ChronoGPS は **時刻差サンプルを常時蓄積**します（OS時刻は変更しません）
+- 設定した同期間隔に到達したタイミングでのみ、蓄積サンプルを評価し、補正の要否を判断します
+- 中央値オフセットが閾値内の場合は、GNSS受信ジッタをWindows時刻に注入しないため **補正せず skipped** します
+
+#### 片方向の緩やかなドリフトが見える場合（正常）
+ログに `-0.03s → -0.05s` のような緩やかなドリフトが見えることがありますが、  
+多くの場合 **PCシステムクロックの自然ドリフト**です。  
+閾値内であれば ChronoGPS は意図的に補正しません（監視として正しい挙動です）。
+
+#### デフォルト（弱同期）
+- 閾値：**±0.2s**
+- サンプル窓：**直近30秒の中央値**
 
 ### NTP同期
 
@@ -234,7 +254,7 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
 
-- VirusTotal スキャン結果: https://www.virustotal.com/gui/file/392673eab8d9a4bf72e3e34505bdaf11e9b10b2b70df614be8a6e95f7ae64db3/detection
+- VirusTotal スキャン結果: https://www.virustotal.com/gui/file-analysis/NjQwMzVkOTE2ZGFjZTZkZDVjNzFlMmJkYjZkYzBjY2U6MTc3MTQ4MDcyMw==/detection
 - 誤検知であることを Microsoft に報告済みです。
 
 ---
@@ -299,6 +319,3 @@ MIT License — © 2026 津久浦 慶治 (JP1LRT)
 
 ---
 
-## Why ChronoGPS?
-設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
-- 🔗 Why ChronoGPS (Discussion): <UR>https://github.com/jp1lrt/ChronoGPS/discussions/3
