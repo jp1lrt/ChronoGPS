@@ -715,7 +715,7 @@ class GPSTimeSyncGUI:
 
         self.gps_sync_radios['interval'] = ttk.Radiobutton(
             mode_frame,
-            text=self.loc.get('sync_mode_interval') or "Interval / 定期",
+            text=self.loc.get('sync_mode_interval') or "Interval / 定期（監視用）",
             variable=self.gps_sync_mode,
             value='interval',
             command=self._on_gps_mode_change
