@@ -127,6 +127,7 @@ For everyday FT8 / FT4 operation, **Instant Sync is strongly recommended**.
 ---
 
 ### Weak Sync (Interval) Behavior (v2.4.3 and later)
+![Weak Sync (Interval Sync) Behavior Diagram](docs/weak-sync-diagram.en.png)
 
 **Interval Sync (Weak Sync) is not designed for continuous clock correction.**  
 It is intentionally designed for drift monitoring and validation.  
