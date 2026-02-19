@@ -1836,7 +1836,7 @@ class GPSTimeSyncGUI:
 
                                 # 期限到達時のみ判断・ログ・期限更新
                                 if time.monotonic() >= self._gps_next_sync_mono:
-                                    success, msg = self.sync.sync_time_weak(gps_time)
+                                    success, msg = self.sync.sync_time_weak(gps_time, append_sample=False)
                                     if success:
                                         self.ui_queue.put(('log', f"⏰ GPS {self.loc.get('sync_success') or 'Sync success'}: {msg}"))
                                     else:

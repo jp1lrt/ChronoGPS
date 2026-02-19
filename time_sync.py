@@ -36,7 +36,7 @@ class TimeSynchronizer:
 
         # --- weak periodic sync state (for interval mode) ---
         # 直近diffの中央値で外れ値（瞬間ジッタ）に強くする
-        self._weak_diffs = deque(maxlen=5)     # recent diffs (sec)
+        self._weak_diffs = deque(maxlen=30)    # recent diffs (sec) - 30sec window
         self._weak_threshold = 0.2             # deadband threshold (sec)
         self._weak_strong_threshold = 1.0      # force set threshold (sec)
         self._weak_confirm_needed = 2          # consecutive confirmations
@@ -110,7 +110,7 @@ class TimeSynchronizer:
         """
         サンプルをバッファに追加するだけ（SetSystemTimeは呼ばない）
         毎秒GPS受信のたびに呼び出すことで、統計精度を上げる。
-        期限到達時に sync_time_weak() を呼ぶことで判断・適用を行う。
+        期限到達時に sync_time_weak(append_sample=False) を呼ぶことで二重追加を防ぐ。
         """
         try:
             if target_time.tzinfo is None:
@@ -122,8 +122,10 @@ class TimeSynchronizer:
             system_time = datetime.now(timezone.utc)
             diff = (adjusted_time - system_time).total_seconds()
             self._weak_diffs.append(diff)
-        except Exception:
-            pass
+        except Exception as e:
+            # デバッグ用：通常運用では無視、問題発生時はここで捕捉可能
+            import logging
+            logging.debug(f"add_sample error: {e}")
 
     def sync_time_weak(
         self,
@@ -131,7 +133,8 @@ class TimeSynchronizer:
         threshold=None,
         window=None,
         strong_threshold=None,
-        confirm_needed=None
+        confirm_needed=None,
+        append_sample=True
     ):
         """
         弱い同期（定期同期用）
@@ -177,8 +180,9 @@ class TimeSynchronizer:
             system_time = datetime.now(timezone.utc)
             diff = (adjusted_time - system_time).total_seconds()
 
-            # accumulate
-            self._weak_diffs.append(diff)
+            # accumulate（add_sample()で追加済みの場合はスキップして二重追加を防ぐ）
+            if append_sample:
+                self._weak_diffs.append(diff)
 
             # sample collecting phase
             if len(self._weak_diffs) < self._weak_diffs.maxlen:
