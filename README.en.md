@@ -127,11 +127,20 @@ For everyday FT8 / FT4 operation, **Instant Sync is strongly recommended**.
 ---
 
 ### Weak Sync (Interval) Behavior (v2.4.3 and later)
+
 ![Weak Sync (Interval Sync) Behavior Diagram](docs/weak-sync-diagram.en.png)
 
-**Interval Sync (Weak Sync) is not designed for continuous clock correction.**  
-It is intentionally designed for drift monitoring and validation.  
-For FT8 / FT4 operation, **Instant Sync is recommended**.
+*Weak Sync (Interval) is primarily intended for monitoring.  
+When the offset remains within the threshold, no correction is applied by design.*
+
+> Interval (Weak Sync) follows the model:  
+> “collect samples every second → evaluate only when the interval is reached.”  
+> If the offset is within the threshold, the system clock is intentionally not adjusted,  
+> preventing GNSS reception jitter from being injected while still monitoring drift.
+
+**Interval Sync is not designed for continuous clock correction.**  
+For real-world FT8 / FT4 operation, **Instant Sync is strongly recommended**.
+
 
 #### How it works
 - ChronoGPS continuously **collects GNSS time offset samples every second** (without modifying the OS clock)
