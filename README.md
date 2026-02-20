@@ -33,7 +33,8 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 即時同期(Instant Sync) / 定期同期(Weak Sync) の設計思想や挙動の詳細については、
 以下の FAQ にまとめています：
 
-📘 [ChronoGPS FAQ](FAQ.md)
+👉 [FAQ（Frequently Asked Questions）](docs/FAQ.md)
+
 ---
 
 ## Why ChronoGPS?
