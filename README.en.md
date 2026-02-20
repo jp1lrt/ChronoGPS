@@ -118,29 +118,40 @@ Output: `dist\ChronoGPS.exe`
 ### GNSS Sync Recommendation
 
 ChronoGPS uses GNSS (GPS, QZSS, etc.) as an absolute UTC time source.
-For FT8 / FT4 operation, **Instant Sync** is usually sufficient and recommended.  
-GNSS provides an absolute UTC reference, so a single calibration before operation is typically enough to achieve accurate system time.
+
+For everyday FT8 / FT4 operation, **Instant Sync** is recommended.
+
+Instant Sync is designed to:
+
+- Calibrate the Windows system clock using GNSS
+- Then **monitor the offset while respecting the OS time model**
+- Apply **only minimal, necessary, and explainable corrections** when needed
+
+The key point is that Instant Sync **does not** mean
+“rewrite the system time every second.”
 
 > [!NOTE]
-> The phrase “Instant Sync once is usually sufficient” does **not** mean
-> that GPS reception should be turned off afterward.
->  
-> It means that **frequent system clock rewrites are unnecessary** once the
-> system clock has been properly calibrated.
->  
-> GPS reception may continue for monitoring, visualization, and verification
-> purposes without any issue.
+> **What “Instant Sync is usually sufficient” means**
+>
+> It means **you do not need to repeatedly force clock rewrites** once the system clock has been properly calibrated.
+>
+> It does **not** mean you should turn synchronization off afterward.
+> Keeping **Instant Sync enabled during operation is perfectly fine.**
+>
+> Instant Sync continuously references GNSS, but corrections are applied **only when necessary**.
+>
+> It also does **not** mean GPS reception should be stopped.
+> GPS reception may continue for monitoring, visualization, and verification purposes without any issue.
 
 **Interval Sync (Weak Sync)** is intended for:
+
 - Monitoring clock drift during long sessions
 - Verifying GNSS reception stability
-- Diagnostic and verification purposes
+- Diagnostics and verification
 
-For everyday FT8 / FT4 operation, **Instant Sync is strongly recommended**.
+For a deeper explanation of the design philosophy — including why Instant Sync works well for FT8/FT4,
+how Weak Sync behaves, and how ChronoGPS avoids injecting GNSS jitter into the OS clock — please see the FAQ:
 
-For a deeper explanation of the design philosophy — including why Instant Sync
-is usually sufficient, how Weak Sync works, and how ChronoGPS avoids injecting
-GNSS jitter into the OS clock — please see the FAQ:
 👉 [FAQ (English)](docs/FAQ.en.md)
 
 ---
@@ -234,10 +245,13 @@ Some receivers disable QZSS NMEA output by default — an empty QZSS panel is no
 
 ```
 ChronoGPS/
-├── README.md        
-├── FAQ.md           
+├── README.md
+├── README.en.md
 ├── docs/
-│   └── weak-sync-diagram.en.png
+│   ├── FAQ.md
+│   ├── FAQ.en.md
+│   ├── weak-sync-diagram.en.png
+│   └── weak-sync-diagram.ja2.png
 ├── main.py               # Entry point
 ├── gui.py                # Main GUI
 ├── config.py             # Settings (JSON)
