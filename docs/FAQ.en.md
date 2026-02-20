@@ -8,7 +8,7 @@ ChronoGPS uses **GNSS (GPS / QZSS, etc.)** as a high-precision time reference di
 By contrast, the Windows system clock has an internal **time resolution / quantization** of roughly **10–15 ms**.  
 When compared against a precise GNSS reference, small differences will be detected continuously.
 
-ChronoGPS does not hide this — it detects it and applies corrections when needed.
+ChronoGPS does not hide this — it detects it and applies corrections **only when necessary**.
 
 Typical correction amounts you may see in the log, such as:
 
@@ -31,31 +31,39 @@ This does **not** mean the time is unstable — it means
 
 ## Q2. Why do I see repeated corrections even when using Instant Sync?
 
-**A. Because Instant Sync is not a “follow every second” mode.**
+**A. Because Instant Sync is not a “rewrite every second” mode.**
 
 Instant Sync is designed to:
 
 - use GNSS as a reference, and  
-- **calibrate the Windows system clock once using a representative value**
+- **calibrate the Windows system clock using a representative value**, then  
+- **continue monitoring while respecting the OS time model**
 
-It is **not** intended for continuous correction or second-by-second tracking.
+Instant Sync **continuously references GNSS**,  
+but it does **not** force continuous or second-by-second rewrites of system time.
 
-However, if Instant Sync is left **ON continuously**, ChronoGPS will correct whenever it detects Windows-side quantization or natural drift.  
+When Windows-side quantization or natural drift is detected,  
+ChronoGPS applies **minimal and explainable corrections only when required**.
+
 As a result:
 
-- “Time adjusted” may appear continuously  
-- while the effective error remains < 0.01 seconds
+- “Time adjusted” may appear repeatedly  
+- while the effective error remains well below 0.01 seconds
+
+This behavior is normal and indicates healthy GNSS-referenced operation.
 
 ### Recommended usage
 
 - **Everyday FT8 / FT4 operation**
-  - After Instant Sync shows `Time is accurate`, you can turn the sync mode **OFF** and operate normally.
+  - Keep **Instant Sync enabled**
+  - ChronoGPS will monitor GNSS continuously and correct only when necessary
+  - Occasional small adjustment logs are expected and normal
 
 - **Long sessions / drift monitoring / verification**
-  - Use **Weak Sync (Interval Sync)**.
+  - Use **Weak Sync (Interval Sync)**
 
-Instant Sync is not “always pull the clock” —  
-it is a feature to **create a correctly calibrated state**.
+Instant Sync is not “always pull the clock.”  
+It is a mode designed to **maintain a correctly calibrated state without breaking OS stability**.
 
 ---
 
@@ -76,7 +84,7 @@ Weak Sync is intended for:
 
 - long-term drift monitoring  
 - observing GNSS reception stability  
-- diagnostics / logging / verification
+- diagnostics / logging / verification  
 
 The philosophy is:
 
@@ -92,10 +100,10 @@ In many cases, this represents:
 
 - natural drift of the PC system clock
 
-If you correct every tiny change, you may end up injecting small GNSS jitter into Windows time.  
+Correcting every tiny change would risk injecting GNSS jitter into OS time.  
 ChronoGPS therefore uses a conservative, explainable policy:
 
-- within threshold → **do nothing on purpose**  
+- within threshold → **intentionally do nothing**  
 - beyond threshold → **correct only when necessary**
 
 ---
@@ -104,24 +112,22 @@ ChronoGPS therefore uses a conservative, explainable policy:
 
 **A. For normal operation, Instant Sync is recommended.**
 
-- **Everyday FT8 / FT4**
+- **Everyday FT8 / FT4 operation**
   - → **Instant Sync**
-  - One calibration before operation is usually sufficient.
+  - It is safe to keep this mode enabled during operation
+  - GNSS is continuously referenced, while corrections are minimized
 
 - **Long sessions / verification / monitoring**
   - → **Weak Sync (Interval Sync)**
 
-GNSS is an extremely stable UTC reference.  
-Once the system clock is properly calibrated, it typically exceeds FT8 / FT4 requirements by a wide margin.
-
-ChronoGPS is not “always keep forcing time” —  
-it is a tool to **create a correct state and avoid breaking it.**
+ChronoGPS is not a tool that continuously forces time.  
+It is designed to **maintain a correct state without destabilizing the OS clock**.
 
 ---
 
 ## Q6. Should I use NTP Sync or GNSS (GPS) Sync?
 
-**A. If possible, GNSS (GPS/QZSS) Sync is recommended.**
+**A. If possible, GNSS (GPS / QZSS) Sync is recommended.**
 
 ChronoGPS treats GNSS as a first-class time source:
 
@@ -135,13 +141,8 @@ ChronoGPS treats GNSS as a first-class time source:
   - affected by routing / congestion / latency
   - useful when GNSS is unavailable
 
-ChronoGPS implements NTP according to RFC 5905 and calculates offset/delay via t1/t2/t3/t4,  
-but **GNSS is inherently more stable** as a time reference.
-
-Recommended use:
-
-- GNSS receiver available → **GNSS**
-- GNSS unavailable → **NTP**
+ChronoGPS implements NTP according to RFC 5905,  
+but **GNSS is inherently more stable** as a reference.
 
 ---
 
@@ -151,81 +152,58 @@ Recommended use:
 
 Startup Sync is a two-step design:
 
-1. use NTP to remove large offsets (hundreds of ms to seconds)  
-2. use GNSS to re-calibrate with high precision
+1. NTP removes large offsets (hundreds of ms to seconds)  
+2. GNSS performs high-precision recalibration
 
-NTP acts as a “coarse adjustment” and GNSS becomes the final reference.
-
-So logs like:
-
-- NTP correction: ±0.x seconds  
-- then GNSS correction: ±0.03–0.08 seconds  
-
-are not errors — they are evidence that the final precision is improving.
+This improves accuracy and stability.
 
 ---
 
-## Q8. The displayed times sometimes look slightly different (System vs GNSS vs NTP). Is that an issue?
+## Q8. Displayed times sometimes differ slightly. Is that an issue?
 
 **A. No — this is due to display timing differences.**
 
-ChronoGPS displays:
+System Time, GNSS Time, and NTP Time are updated on different schedules.  
+Small differences (ms–tens of ms) may appear temporarily.
 
-- System Time  
-- GNSS Time  
-- NTP Time  
-
-Each is acquired and refreshed on different schedules, so you may briefly see:
-
-- a few ms to a few tens of ms difference
-
-This is a **display artifact**, not a synchronization error.  
-The internal sync logic still maintains millisecond-level accuracy.
+This does **not** indicate a synchronization error.
 
 ---
 
 ## Q9. What can I do without administrator privileges (Monitor-Only mode)?
 
-**A. You can monitor and verify time — without modifying the system clock.**
+**A. You can monitor and verify time without modifying the system clock.**
 
-In non-admin mode, ChronoGPS can:
+Monitor-Only mode allows:
 
-- receive GNSS data  
-- show satellite view  
-- query NTP time  
-- display offsets vs system time
+- GNSS reception  
+- satellite view  
+- NTP queries  
+- offset visualization  
 
-But it will **not** write the Windows system time.
-
-This is not just a limitation — it is a safety and transparency feature.
-
-Monitor-Only mode is ideal for:
-
-- checking reception quality  
-- observing drift trends  
-- collecting logs for verification
+No system time writes occur.  
+This is a deliberate safety and transparency feature.
 
 ---
 
 ## Q10. The “⏰ Time adjusted” messages feel noisy. Should I disable them?
 
-**A. You can reduce them — but the messages are shown intentionally.**
+**A. The messages are intentional, but their frequency can be reduced.**
 
-ChronoGPS intentionally makes the following visible:
+ChronoGPS makes visible:
 
 - when a correction happened  
 - how large it was  
-- and that the result is accurate
+- and that the resulting time is accurate
 
-This is not “noisy logging” — it is proof the system is behaving as designed.
+This is not noise — it is proof of correct behavior.
 
 If you want fewer messages:
 
-- use Instant Sync until `Time is accurate`, then turn sync mode **OFF**, or  
-- use Weak Sync (Interval Sync), which skips corrections within threshold
+- keep **Instant Sync enabled** (corrections occur only when necessary), or  
+- use **Weak Sync (Interval Sync)** for monitoring-focused operation
 
-ChronoGPS is not designed to “look like nothing is happening.”  
-It is designed to **tell you exactly what is happening.**
+ChronoGPS is designed to **show what is happening**, not hide it.
 
 ---
 
