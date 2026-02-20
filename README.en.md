@@ -26,6 +26,10 @@ ChronoGPS is designed with one simple goal:
 
 Rather than visual effects, the focus is on **accuracy, stability, and long-term operation**.
 
+For detailed explanations of ChronoGPS design decisions and synchronization behavior,
+please refer to the FAQ:
+👉 [FAQ (English)](docs/FAQ.en.md)
+
 ---
 
 ## Why ChronoGPS?
@@ -134,6 +138,11 @@ GNSS provides an absolute UTC reference, so a single calibration before operatio
 
 For everyday FT8 / FT4 operation, **Instant Sync is strongly recommended**.
 
+For a deeper explanation of the design philosophy — including why Instant Sync
+is usually sufficient, how Weak Sync works, and how ChronoGPS avoids injecting
+GNSS jitter into the OS clock — please see the FAQ:
+👉 [FAQ (English)](docs/FAQ.en.md)
+
 ---
 
 ### Weak Sync (Interval) Behavior (v2.4.3 and later)
@@ -225,6 +234,10 @@ Some receivers disable QZSS NMEA output by default — an empty QZSS panel is no
 
 ```
 ChronoGPS/
+├── README.md        
+├── FAQ.md           
+├── docs/
+│   └── weak-sync-diagram.en.png
 ├── main.py               # Entry point
 ├── gui.py                # Main GUI
 ├── config.py             # Settings (JSON)
