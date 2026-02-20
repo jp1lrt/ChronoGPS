@@ -7,7 +7,6 @@ import ctypes
 from collections import deque
 from statistics import median
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
 
 class SYSTEMTIME(ctypes.Structure):

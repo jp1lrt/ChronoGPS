@@ -4,7 +4,6 @@ JSON形式で設定を保存/読み込み
 """
 import json
 import os
-from pathlib import Path
 
 
 class Config:
