@@ -2,11 +2,13 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+
 def load_module(path: Path):
     spec = importlib.util.spec_from_file_location(path.stem, str(path))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
 
 def walk_dict(d, prefix=""):
     for k, v in d.items():
@@ -15,13 +17,17 @@ def walk_dict(d, prefix=""):
         if isinstance(v, dict):
             yield from walk_dict(v, key)
 
+
 def deep_count(d):
     n = 0
-    if not isinstance(d, dict): return 0
+    if not isinstance(d, dict):
+        return 0
     for _, v in d.items():
         n += 1
-        if isinstance(v, dict): n += deep_count(v)
+        if isinstance(v, dict):
+            n += deep_count(v)
     return n
+
 
 def main():
     root = Path(__file__).resolve().parents[1]
@@ -39,12 +45,12 @@ def main():
         obj = target_class()
         # インスタンス変数とクラス変数の両方をマージして探す
         all_attrs = {**vars(target_class), **vars(obj)}
-    except:
+    except BaseException:
         all_attrs = vars(target_class)
 
     # 3. 辞書を特定
     dicts = [(n, v) for n, v in all_attrs.items() if isinstance(v, dict) and not n.startswith("__")]
-    
+
     data = None
     if dicts:
         name, data = max(dicts, key=lambda nv: deep_count(nv[1]))
@@ -69,6 +75,7 @@ def main():
 
     print("OK: すべてのチェックを通過しました！ 🎉")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
