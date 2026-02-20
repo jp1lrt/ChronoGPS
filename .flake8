@@ -1,0 +1,29 @@
+[flake8]
+max-line-length = 120
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    build,
+    dist
+
+# まずはノイズを抑えてCIを現実的にする
+ignore =
+    E501,
+    W293,
+    W291,
+    W292,
+    E302,
+    E305,
+    E303,
+    E306,
+    E221,
+    E228,
+    E231,
+    E261,
+    E701,
+    E722
+
+# 壊れやすいエラー（F系など）は残して守る
+select = E,F
