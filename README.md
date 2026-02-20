@@ -33,7 +33,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 即時同期(Instant Sync) / 定期同期(Weak Sync) の設計思想や挙動の詳細については、
 以下の FAQ にまとめています：
 
-👉 [FAQ（Frequently Asked Questions）](docs/FAQ.md)
+👉 [FAQ（よくある質問）](docs/FAQ.md)
 
 ---
 
@@ -159,7 +159,7 @@ GNSS は非常に安定した時刻基準であり、
 即時同期 / 定期同期 の設計思想や挙動の詳細については、
 以下の FAQ にまとめています：
 
-📘 [ChronoGPS FAQ](FAQ.md)
+👉 [FAQ（よくある質問）](docs/FAQ.md)
 
 ---
 
