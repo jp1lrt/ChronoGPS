@@ -352,8 +352,9 @@ See [LICENSE](LICENSE) for details.
 ## Author
 
 **Yoshiharu Tsukuura / 津久浦 慶治**  
-Amateur Radio Station **JP1LRT** / [@jp1lrt](https://github.com/jp1lrt/ChronoGPS)
-
+Amateur Radio Station **JP1LRT**
+- QRZ.com: https://www.qrz.com/db/JP1LRT  
+- GitHub: https://github.com/jp1lrt
 ---
 
 ## Donate
