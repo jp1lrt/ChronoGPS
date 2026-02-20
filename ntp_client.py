@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 
 NTP_DELTA = 2208988800  # 1900年〜1970年の秒数
 
+
 class NTPClient:
     def __init__(self, server='pool.ntp.org', port=123, timeout=5.0):
         self.server = server
@@ -59,7 +60,7 @@ class NTPClient:
 
         # RFC 5905
         offset = ((t2 - t1) + (t3 - t4)) / 2.0
-        delay  = (t4 - t1) - (t3 - t2)
+        delay = (t4 - t1) - (t3 - t2)
 
         server_time = datetime.fromtimestamp(t3, tz=timezone.utc)
         return server_time, (offset * 1000.0)

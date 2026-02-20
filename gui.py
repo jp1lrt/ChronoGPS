@@ -34,6 +34,7 @@ def get_resource_path(relative_path):
         base_path = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_path, relative_path)
 
+
 class GPSTimeSyncGUI:
     def __init__(self, root):
         self.root = root
@@ -113,7 +114,7 @@ class GPSTimeSyncGUI:
         self._offset_timer_id = None
 
         # GPS時刻追従表示用（monotonic で受信時刻を記録）
-        self._gps_rx_dt   = None   # 最後に受信したGPS時刻（datetime）
+        self._gps_rx_dt = None   # 最後に受信したGPS時刻（datetime）
         self._gps_rx_mono = None   # その時の time.monotonic()
 
         # システムトレイ
@@ -286,7 +287,9 @@ class GPSTimeSyncGUI:
         Donate は PayPal.Me (https://www.paypal.me/jp1lrt) に飛び、表示は @jp1lrt。
         """
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
-        about_text = self.loc.get('about_text') or f"{self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {self.loc.get('app_version') or '2.4.1'}"
+        about_text = self.loc.get('about_text') or f"{
+            self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {
+            self.loc.get('app_version') or '2.4.1'}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
         github_label = self.loc.get('github_label') or "Project on GitHub"
@@ -319,7 +322,7 @@ class GPSTimeSyncGUI:
         left = ttk.Frame(container, width=140)
         left.pack(side=tk.LEFT, fill=tk.Y)
         right = ttk.Frame(container)
-        right.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(12,0))
+        right.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(12, 0))
 
         # Left: large icon or placeholder
         icon_path = None
@@ -333,39 +336,61 @@ class GPSTimeSyncGUI:
             try:
                 from PIL import Image, ImageTk
                 img = Image.open(icon_path)
-                img = img.resize((120,120), Image.LANCZOS)
+                img = img.resize((120, 120), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(img)
                 icon_lbl = ttk.Label(left, image=photo)
                 icon_lbl.image = photo
                 icon_lbl.pack(pady=6)
             except Exception:
-                canvas = tk.Canvas(left, width=120, height=120, bg='#FFFFFF', highlightthickness=1, highlightbackground='#CCCCCC')
-                canvas.create_text(60,60, text="GPS\nTool", font=('Arial', 12, 'bold'))
+                canvas = tk.Canvas(
+                    left,
+                    width=120,
+                    height=120,
+                    bg='#FFFFFF',
+                    highlightthickness=1,
+                    highlightbackground='#CCCCCC')
+                canvas.create_text(60, 60, text="GPS\nTool", font=('Arial', 12, 'bold'))
                 canvas.pack(pady=6)
         else:
-            canvas = tk.Canvas(left, width=120, height=120, bg='#FFFFFF', highlightthickness=1, highlightbackground='#CCCCCC')
-            canvas.create_text(60,60, text="GPS\nTool", font=('Arial', 12, 'bold'))
+            canvas = tk.Canvas(
+                left,
+                width=120,
+                height=120,
+                bg='#FFFFFF',
+                highlightthickness=1,
+                highlightbackground='#CCCCCC')
+            canvas.create_text(60, 60, text="GPS\nTool", font=('Arial', 12, 'bold'))
             canvas.pack(pady=6)
 
         # Right: information block
-        info_title = ttk.Label(right, text=self.loc.get('app_title') or "GPS/NTP Time Synchronization Tool", font=('Arial', 12, 'bold'))
+        info_title = ttk.Label(
+            right,
+            text=self.loc.get('app_title') or "GPS/NTP Time Synchronization Tool",
+            font=(
+                'Arial',
+                12,
+                'bold'))
         info_title.pack(anchor='w')
         info_version = ttk.Label(right, text=self.loc.get('app_version_text') or about_text, justify=tk.LEFT)
-        info_version.pack(anchor='w', pady=(6,2))
+        info_version.pack(anchor='w', pady=(6, 2))
 
         # License / credits / small links
         link_frame = ttk.Frame(right)
-        link_frame.pack(anchor='w', pady=(6,2), fill=tk.X)
+        link_frame.pack(anchor='w', pady=(6, 2), fill=tk.X)
 
-        license_lbl = ttk.Label(link_frame, text=f"{self.loc.get('license_label') or 'License'}: {license_text}", foreground='gray')
+        license_lbl = ttk.Label(
+            link_frame,
+            text=f"{
+                self.loc.get('license_label') or 'License'}: {license_text}",
+            foreground='gray')
         license_lbl.pack(side=tk.LEFT, anchor='w')
 
         credits_lbl = ttk.Label(right, text=credits, foreground='gray')
-        credits_lbl.pack(anchor='w', pady=(6,6))
+        credits_lbl.pack(anchor='w', pady=(6, 6))
 
         # Buttons: GitHub, Donate, Close
         btn_frame = ttk.Frame(right)
-        btn_frame.pack(anchor='w', pady=(6,0))
+        btn_frame.pack(anchor='w', pady=(6, 0))
 
         def open_url(url):
             try:
@@ -374,10 +399,10 @@ class GPSTimeSyncGUI:
                 messagebox.showinfo(title, url)
 
         gh_btn = ttk.Button(btn_frame, text=github_label, command=lambda: open_url(github_url))
-        gh_btn.pack(side=tk.LEFT, padx=(0,8))
+        gh_btn.pack(side=tk.LEFT, padx=(0, 8))
 
         donate_btn = ttk.Button(btn_frame, text=donate_label, command=lambda: open_url(donate_url))
-        donate_btn.pack(side=tk.LEFT, padx=(0,8))
+        donate_btn.pack(side=tk.LEFT, padx=(0, 8))
 
         # Optional: show QR if file exists (e.g., donate_qr.png)
         qr_path = None
@@ -390,16 +415,16 @@ class GPSTimeSyncGUI:
             try:
                 from PIL import Image, ImageTk
                 qimg = Image.open(qr_path)
-                qimg = qimg.resize((80,80), Image.LANCZOS)
+                qimg = qimg.resize((80, 80), Image.LANCZOS)
                 qphoto = ImageTk.PhotoImage(qimg)
                 qr_lbl = ttk.Label(right, image=qphoto)
                 qr_lbl.image = qphoto
-                qr_lbl.pack(anchor='w', pady=(8,0))
+                qr_lbl.pack(anchor='w', pady=(8, 0))
             except Exception:
                 pass
 
         close_btn = ttk.Button(about_win, text=self.loc.get('close') or "Close", command=about_win.destroy)
-        close_btn.pack(side=tk.BOTTOM, pady=(6,8))
+        close_btn.pack(side=tk.BOTTOM, pady=(6, 8))
 
         # modal
         about_win.grab_set()
@@ -469,7 +494,8 @@ class GPSTimeSyncGUI:
         if 'sat_inuse_label_text' in self.widgets:
             self.widgets['sat_inuse_label_text'].config(text=self.loc.get('satellites_in_use') or "Satellites in use")
         if 'sat_visible_label_text' in self.widgets:
-            self.widgets['sat_visible_label_text'].config(text=self.loc.get('satellites_visible') or "Satellites visible")
+            self.widgets['sat_visible_label_text'].config(
+                text=self.loc.get('satellites_visible') or "Satellites visible")
         if 'gps_frame_sat' in self.widgets:
             self.widgets['gps_frame_sat'].config(text=self.loc.get('gps_usa') or "GPS (US)")
         if 'sbas_frame_sat' in self.widgets:
@@ -525,7 +551,8 @@ class GPSTimeSyncGUI:
         if 'startup_frame' in self.widgets:
             self.widgets['startup_frame'].config(text=self.loc.get('startup_settings') or "Startup Settings")
         if 'start_with_windows_check' in self.widgets:
-            self.widgets['start_with_windows_check'].config(text=self.loc.get('start_with_windows') or "Start with Windows")
+            self.widgets['start_with_windows_check'].config(
+                text=self.loc.get('start_with_windows') or "Start with Windows")
         if 'start_minimized_check' in self.widgets:
             self.widgets['start_minimized_check'].config(text=self.loc.get('start_minimized') or "Start Minimized")
         if 'sync_on_startup_check' in self.widgets:
@@ -679,12 +706,15 @@ class GPSTimeSyncGUI:
         baud_rate_label.grid(row=0, column=3, sticky=tk.W, padx=(20, 0))
         self.widgets['baud_rate_label'] = baud_rate_label
 
-        self.baud_combo = ttk.Combobox(gps_frame, width=10, state='readonly', values=['4800', '9600', '19200', '38400', '57600', '115200'])
+        self.baud_combo = ttk.Combobox(
+            gps_frame, width=10, state='readonly', values=[
+                '4800', '9600', '19200', '38400', '57600', '115200'])
         self.baud_combo.current(1)
         self.baud_combo.grid(row=0, column=4, padx=5)
 
         # 第2行：GPS同期モード選択
-        self.gps_sync_mode_label = ttk.Label(gps_frame, text=self.loc.get('gps_sync_mode') or "GPS Sync Mode / GPS同期モード")
+        self.gps_sync_mode_label = ttk.Label(
+            gps_frame, text=self.loc.get('gps_sync_mode') or "GPS Sync Mode / GPS同期モード")
         self.gps_sync_mode_label.grid(row=1, column=0, sticky=tk.W, pady=5)
         self.widgets['gps_sync_mode_label'] = self.gps_sync_mode_label
 
@@ -810,12 +840,33 @@ class GPSTimeSyncGUI:
         preset_frame = ttk.Frame(ft8_frame)
         preset_frame.grid(row=1, column=1, columnspan=5, sticky=tk.W, padx=5, pady=5)
 
-        ttk.Button(preset_frame, text="-1.0", width=6, command=lambda: self._quick_offset(-1.0)).pack(side=tk.LEFT, padx=2)
-        ttk.Button(preset_frame, text="-0.5", width=6, command=lambda: self._quick_offset(-0.5)).pack(side=tk.LEFT, padx=2)
-        ttk.Button(preset_frame, text="-0.1", width=6, command=lambda: self._quick_offset(-0.1)).pack(side=tk.LEFT, padx=2)
-        ttk.Button(preset_frame, text="+0.1", width=6, command=lambda: self._quick_offset(0.1)).pack(side=tk.LEFT, padx=2)
-        ttk.Button(preset_frame, text="+0.5", width=6, command=lambda: self._quick_offset(0.5)).pack(side=tk.LEFT, padx=2)
-        ttk.Button(preset_frame, text="+1.0", width=6, command=lambda: self._quick_offset(1.0)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(preset_frame, text="-1.0", width=6,
+                   command=lambda: self._quick_offset(-1.0)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(preset_frame, text="-0.5", width=6,
+                   command=lambda: self._quick_offset(-0.5)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(preset_frame, text="-0.1", width=6,
+                   command=lambda: self._quick_offset(-0.1)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(
+            preset_frame,
+            text="+0.1",
+            width=6,
+            command=lambda: self._quick_offset(0.1)).pack(
+            side=tk.LEFT,
+            padx=2)
+        ttk.Button(
+            preset_frame,
+            text="+0.5",
+            width=6,
+            command=lambda: self._quick_offset(0.5)).pack(
+            side=tk.LEFT,
+            padx=2)
+        ttk.Button(
+            preset_frame,
+            text="+1.0",
+            width=6,
+            command=lambda: self._quick_offset(1.0)).pack(
+            side=tk.LEFT,
+            padx=2)
 
         # 第3行：注意書き
         ft8_note_label = ttk.Label(ft8_frame, text=self.loc.get('ft8_note') or "", font=('Arial', 8), foreground='gray')
@@ -834,7 +885,11 @@ class GPSTimeSyncGUI:
         stop_btn.grid(row=0, column=1, padx=5)
         self.widgets['stop_btn'] = stop_btn
 
-        sync_gps_btn = ttk.Button(button_frame, text=self.loc.get('sync_gps') or "Sync GPS", command=self._sync_gps, state='disabled')
+        sync_gps_btn = ttk.Button(
+            button_frame,
+            text=self.loc.get('sync_gps') or "Sync GPS",
+            command=self._sync_gps,
+            state='disabled')
         sync_gps_btn.grid(row=0, column=2, padx=5)
         self.widgets['sync_gps_btn'] = sync_gps_btn
 
@@ -923,8 +978,7 @@ class GPSTimeSyncGUI:
         # 時刻更新タイマー, 位置更新
         self._update_system_time()
         self._update_position_info()
-        
-        
+
     def _create_satellite_tab(self):
         """衛星情報タブ"""
         main_frame = ttk.Frame(self.tab_satellite, padding="10")
@@ -942,7 +996,8 @@ class GPSTimeSyncGUI:
         self.sat_inuse_value = ttk.Label(summary_frame, text="0", font=('Arial', 14, 'bold'), foreground='green')
         self.sat_inuse_value.grid(row=0, column=1, padx=10)
 
-        sat_visible_label_text = ttk.Label(summary_frame, text=self.loc.get('satellites_visible') or "Satellites visible")
+        sat_visible_label_text = ttk.Label(summary_frame,
+                                           text=self.loc.get('satellites_visible') or "Satellites visible")
         sat_visible_label_text.grid(row=0, column=2, sticky=tk.W, padx=(20, 0))
         self.widgets['sat_visible_label_text'] = sat_visible_label_text
 
@@ -966,7 +1021,8 @@ class GPSTimeSyncGUI:
         self.sbas_tree = self._create_satellite_tree(sbas_frame_sat)
 
         # GLONASS
-        glo_frame_sat = ttk.LabelFrame(sat_frame, text=self.loc.get('glonass_russia') or "GLONASS (Russia)", padding="5")
+        glo_frame_sat = ttk.LabelFrame(sat_frame, text=self.loc.get(
+            'glonass_russia') or "GLONASS (Russia)", padding="5")
         glo_frame_sat.grid(row=0, column=2, sticky=(tk.W, tk.E, tk.N, tk.S), padx=5, pady=5)
         self.widgets['glo_frame_sat'] = glo_frame_sat
         self.glo_tree = self._create_satellite_tree(glo_frame_sat)
@@ -1021,7 +1077,8 @@ class GPSTimeSyncGUI:
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # 起動設定
-        startup_frame = ttk.LabelFrame(main_frame, text=self.loc.get('startup_settings') or "Startup Settings", padding=10)
+        startup_frame = ttk.LabelFrame(main_frame, text=self.loc.get(
+            'startup_settings') or "Startup Settings", padding=10)
         startup_frame.pack(fill=tk.X, pady=5)
         self.widgets['startup_frame'] = startup_frame
 
@@ -1058,15 +1115,18 @@ class GPSTimeSyncGUI:
         settings_frame.pack(fill=tk.X, pady=5)
         self.widgets['settings_frame'] = settings_frame
 
-        save_btn = ttk.Button(settings_frame, text=self.loc.get('save_settings') or "Save Settings", command=self._save_settings)
+        save_btn = ttk.Button(settings_frame, text=self.loc.get('save_settings')
+                              or "Save Settings", command=self._save_settings)
         save_btn.grid(row=0, column=0, padx=5, pady=5)
         self.widgets['save_settings_btn'] = save_btn
 
-        load_btn = ttk.Button(settings_frame, text=self.loc.get('load_settings') or "Load Settings", command=self._load_settings)
+        load_btn = ttk.Button(settings_frame, text=self.loc.get('load_settings')
+                              or "Load Settings", command=self._load_settings)
         load_btn.grid(row=0, column=1, padx=5, pady=5)
         self.widgets['load_settings_btn'] = load_btn
 
-        reset_btn = ttk.Button(settings_frame, text=self.loc.get('reset_default') or "Reset to Default", command=self._reset_settings)
+        reset_btn = ttk.Button(settings_frame, text=self.loc.get('reset_default')
+                               or "Reset to Default", command=self._reset_settings)
         reset_btn.grid(row=0, column=2, padx=5, pady=5)
         self.widgets['reset_default_btn'] = reset_btn
 
@@ -1079,8 +1139,18 @@ class GPSTimeSyncGUI:
 
         # 恒久的に見えるクレジットラベル（Info タブの下）
         credits_text = self.loc.get('credits') or "Developed by @jp1lrt"
-        self.credits_label = ttk.Label(self.info_frame, text=credits_text, foreground='blue', cursor='hand2', anchor='e', font=('Arial', 9, 'italic'))
-        self.credits_label.pack(fill=tk.X, pady=(6,0))
+        self.credits_label = ttk.Label(
+            self.info_frame,
+            text=credits_text,
+            foreground='blue',
+            cursor='hand2',
+            anchor='e',
+            font=(
+                'Arial',
+                9,
+                'italic'))
+        self.credits_label.pack(fill=tk.X, pady=(6, 0))
+
         def _open_credits_link(event=None):
             url = self.loc.get('github_url') or "https://github.com/jp1lrt"
             try:
@@ -1118,7 +1188,8 @@ class GPSTimeSyncGUI:
             offset = float(self.offset_entry.get())
 
             if not self.sync.is_admin:
-                messagebox.showerror(self.loc.get('app_title') or "Error", self.loc.get('admin_required') or "Administrator privileges required")
+                messagebox.showerror(self.loc.get('app_title') or "Error",
+                                     self.loc.get('admin_required') or "Administrator privileges required")
                 return
 
             success, msg = self.sync.apply_offset(offset)
@@ -1131,12 +1202,14 @@ class GPSTimeSyncGUI:
                 messagebox.showerror(self.loc.get('app_title') or "Error", msg)
 
         except ValueError:
-            messagebox.showerror(self.loc.get('app_title') or "Error", f"{self.loc.get('no_gps_time') or 'Invalid number'}\nInvalid number")
+            messagebox.showerror(self.loc.get('app_title') or "Error",
+                                 f"{self.loc.get('no_gps_time') or 'Invalid number'}\nInvalid number")
 
     def _quick_offset(self, offset):
         """クイック調整ボタン"""
         if not self.sync.is_admin:
-            messagebox.showerror(self.loc.get('app_title') or "Error", self.loc.get('admin_required') or "Administrator privileges required")
+            messagebox.showerror(self.loc.get('app_title') or "Error",
+                                 self.loc.get('admin_required') or "Administrator privileges required")
             return
 
         success, msg = self.sync.apply_offset(offset)
@@ -1150,11 +1223,13 @@ class GPSTimeSyncGUI:
     def _reset_offset(self):
         """オフセットをリセット"""
         if abs(self.sync.get_offset()) < 0.01:
-            messagebox.showinfo(self.loc.get('app_title') or "Info", self.loc.get('offset_reset_success') or "Offset reset to 0")
+            messagebox.showinfo(self.loc.get('app_title') or "Info",
+                                self.loc.get('offset_reset_success') or "Offset reset to 0")
             return
 
         if not self.sync.is_admin:
-            messagebox.showerror(self.loc.get('app_title') or "Error", self.loc.get('admin_required') or "Administrator privileges required")
+            messagebox.showerror(self.loc.get('app_title') or "Error",
+                                 self.loc.get('admin_required') or "Administrator privileges required")
             return
 
         # 現在のオフセットの逆を適用
@@ -1167,7 +1242,8 @@ class GPSTimeSyncGUI:
             self.offset_entry.insert(0, "0.0")
             self._update_offset_display()
             self._log(f"🔄 {self.loc.get('ft8_reset_log') or 'FT8 offset reset'}")
-            messagebox.showinfo(self.loc.get('app_title') or "Success", self.loc.get('offset_reset_success') or "Offset reset to 0")
+            messagebox.showinfo(self.loc.get('app_title') or "Success",
+                                self.loc.get('offset_reset_success') or "Offset reset to 0")
         else:
             messagebox.showerror(self.loc.get('app_title') or "Error", msg)
 
@@ -1205,14 +1281,16 @@ class GPSTimeSyncGUI:
         if self.auto_start_var.get():
             success, msg = self.autostart.enable()
             if success:
-                messagebox.showinfo(self.loc.get('app_title') or "Success", f"{self.loc.get('info_feat_autostart') or 'Auto-start'}\n{msg}")
+                messagebox.showinfo(self.loc.get('app_title') or "Success",
+                                    f"{self.loc.get('info_feat_autostart') or 'Auto-start'}\n{msg}")
             else:
                 messagebox.showerror(self.loc.get('app_title') or "Error", msg)
                 self.auto_start_var.set(False)
         else:
             success, msg = self.autostart.disable()
             if success:
-                messagebox.showinfo(self.loc.get('app_title') or "Success", f"{self.loc.get('info_feat_autostart') or 'Auto-start'}\n{msg}")
+                messagebox.showinfo(self.loc.get('app_title') or "Success",
+                                    f"{self.loc.get('info_feat_autostart') or 'Auto-start'}\n{msg}")
             else:
                 messagebox.showerror(self.loc.get('app_title') or "Error", msg)
                 self.auto_start_var.set(True)
@@ -1255,7 +1333,6 @@ class GPSTimeSyncGUI:
 
         if self.debug_var.get():
             self._log(f"[DEBUG] _on_gps_mode_change called: mode={mode}")
-
 
         # スレッドセーフなコピーを更新
         self._gps_sync_mode = mode
@@ -1390,7 +1467,7 @@ class GPSTimeSyncGUI:
 
                 elif tag == 'gps_time':
                     _, gps_time, rx_mono = item
-                    self._gps_rx_dt   = gps_time
+                    self._gps_rx_dt = gps_time
                     self._gps_rx_mono = rx_mono
 
                 elif tag == 'gps_mode_reset':
@@ -1404,7 +1481,7 @@ class GPSTimeSyncGUI:
                 elif tag == 'ntp_result':
                     _, ntp_time, offset_ms = item
                     self.ntp_time_value.config(text=ntp_time.strftime("%Y-%m-%d %H:%M:%S UTC"))
-                    self._log(f"NTP: {ntp_time}, offset: {offset_ms/1000.0:.3f}s ({offset_ms:.2f}ms)")
+                    self._log(f"NTP: {ntp_time}, offset: {offset_ms / 1000.0:.3f}s ({offset_ms:.2f}ms)")
 
                     corrected_utc = datetime.now(timezone.utc) + timedelta(milliseconds=offset_ms)
 
@@ -1488,9 +1565,11 @@ class GPSTimeSyncGUI:
         result = self.config.save()
         if not silent:
             if result:
-                messagebox.showinfo(self.loc.get('app_title') or "Success", self.loc.get('settings_saved') or "Settings saved successfully!")
+                messagebox.showinfo(self.loc.get('app_title') or "Success",
+                                    self.loc.get('settings_saved') or "Settings saved successfully!")
             else:
-                messagebox.showerror(self.loc.get('app_title') or "Error", self.loc.get('settings_save_failed') or "Failed to save settings")
+                messagebox.showerror(self.loc.get('app_title') or "Error",
+                                     self.loc.get('settings_save_failed') or "Failed to save settings")
 
     def _load_settings_to_ui(self):
         """設定をUIに反映"""
@@ -1577,16 +1656,20 @@ class GPSTimeSyncGUI:
         """設定を読み込み"""
         if self.config.load():
             self._load_settings_to_ui()
-            messagebox.showinfo(self.loc.get('app_title') or "Success", self.loc.get('settings_loaded') or "Settings loaded successfully!")
+            messagebox.showinfo(self.loc.get('app_title') or "Success",
+                                self.loc.get('settings_loaded') or "Settings loaded successfully!")
         else:
-            messagebox.showerror(self.loc.get('app_title') or "Error", self.loc.get('settings_load_failed') or "Failed to load settings")
+            messagebox.showerror(self.loc.get('app_title') or "Error",
+                                 self.loc.get('settings_load_failed') or "Failed to load settings")
 
     def _reset_settings(self):
         """設定をデフォルトに戻す"""
-        if messagebox.askyesno(self.loc.get('app_title') or "Confirm", self.loc.get('settings_reset_confirm') or "Reset all settings to default?\nすべての設定をデフォルトに戻しますか？"):
+        if messagebox.askyesno(self.loc.get('app_title') or "Confirm", self.loc.get(
+                'settings_reset_confirm') or "Reset all settings to default?\nすべての設定をデフォルトに戻しますか？"):
             self.config.reset()
             self._load_settings_to_ui()
-            messagebox.showinfo(self.loc.get('app_title') or "Success", self.loc.get('settings_reset') or "Settings reset to default!")
+            messagebox.showinfo(self.loc.get('app_title') or "Success",
+                                self.loc.get('settings_reset') or "Settings reset to default!")
 
     def _update_ports(self):
         ports = [p.device for p in serial.tools.list_ports.comports()]
@@ -1740,7 +1823,9 @@ class GPSTimeSyncGUI:
             baud = 9600
 
         if not port:
-            messagebox.showerror(self.loc.get('app_title') or "Error", self.loc.get('select_port') or "Please select COM port")
+            messagebox.showerror(
+                self.loc.get('app_title') or "Error",
+                self.loc.get('select_port') or "Please select COM port")
             return
 
         try:
@@ -1759,7 +1844,9 @@ class GPSTimeSyncGUI:
             self.gps_thread.start()
 
         except Exception as e:
-            messagebox.showerror(self.loc.get('app_title') or "Error", f"{self.loc.get('port_error') or 'Port error'}: {e}")
+            messagebox.showerror(
+                self.loc.get('app_title') or "Error", f"{
+                    self.loc.get('port_error') or 'Port error'}: {e}")
 
     def _stop(self):
         self.is_running = False
@@ -1819,9 +1906,11 @@ class GPSTimeSyncGUI:
                                             self.ui_queue.put(('log', f"✓ {msg}"))
                                         last_log_msg = msg
                                 else:
-                                    self.ui_queue.put(('log', f"✗ {self.loc.get('sync_failed') or 'Sync failed'}: {msg}"))
+                                    self.ui_queue.put(('log',
+                                                       f"✗ {self.loc.get('sync_failed') or 'Sync failed'}: {msg}"))
                             else:
-                                self.ui_queue.put(('log', f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
+                                self.ui_queue.put(('log',
+                                                   f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
                                 self._gps_sync_mode = 'none'
                                 self.ui_queue.put(('gps_mode_reset', None))
 
@@ -1838,9 +1927,12 @@ class GPSTimeSyncGUI:
                                 if time.monotonic() >= self._gps_next_sync_mono:
                                     success, msg = self.sync.sync_time_weak(gps_time, append_sample=False)
                                     if success:
-                                        self.ui_queue.put(('log', f"⏰ GPS {self.loc.get('sync_success') or 'Sync success'}: {msg}"))
+                                        self.ui_queue.put(
+                                            ('log', f"⏰ GPS {
+                                                self.loc.get('sync_success') or 'Sync success'}: {msg}"))
                                     else:
-                                        self.ui_queue.put(('log', f"✗ GPS {self.loc.get('sync_failed') or 'Sync failed'}: {msg}"))
+                                        self.ui_queue.put(('log',
+                                                           f"✗ GPS {self.loc.get('sync_failed') or 'Sync failed'}: {msg}"))
 
                                     # 次回期限を更新
                                     try:
@@ -1849,7 +1941,8 @@ class GPSTimeSyncGUI:
                                         interval_minutes = 30
                                     self._gps_next_sync_mono = time.monotonic() + interval_minutes * 60.0
                             else:
-                                self.ui_queue.put(('log', f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
+                                self.ui_queue.put(('log',
+                                                   f"⚠ {self.loc.get('admin_required') or 'Administrator required'}"))
                                 self._gps_sync_mode = 'none'
                                 self.ui_queue.put(('gps_mode_reset', None))
 
@@ -1862,7 +1955,8 @@ class GPSTimeSyncGUI:
             return
 
         if not self.sync.is_admin:
-            messagebox.showerror(self.loc.get('app_title') or "Error", self.loc.get('admin_required') or "Administrator privileges required")
+            messagebox.showerror(self.loc.get('app_title') or "Error",
+                                 self.loc.get('admin_required') or "Administrator privileges required")
             return
 
         success, msg = self.sync.sync_time(self.parser.last_time)
@@ -1875,7 +1969,7 @@ class GPSTimeSyncGUI:
 
     def _check_admin_on_startup(self):
         """起動時に管理者権限を確認し、なければ選択肢を提示する"""
-        title   = self.loc.get('not_admin_title')   or 'Administrator Required'
+        title = self.loc.get('not_admin_title') or 'Administrator Required'
         message = self.loc.get('not_admin_message') or (
             'Administrator privileges are required to sync the system clock.\n'
             'Would you like to restart as administrator?\n\n'
@@ -1893,7 +1987,7 @@ class GPSTimeSyncGUI:
 
         dialog.update_idletasks()
         w, h = 480, 200
-        x = max(0, self.root.winfo_x() + (self.root.winfo_width()  - w) // 2)
+        x = max(0, self.root.winfo_x() + (self.root.winfo_width() - w) // 2)
         y = max(0, self.root.winfo_y() + (self.root.winfo_height() - h) // 2)
         dialog.geometry(f"{w}x{h}+{x}+{y}")
 
@@ -1967,10 +2061,12 @@ class GPSTimeSyncGUI:
 
         self.root.destroy()
 
+
 def main():
     root = tk.Tk()
     app = GPSTimeSyncGUI(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
