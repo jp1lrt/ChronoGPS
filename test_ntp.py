@@ -1,5 +1,6 @@
 from ntp_client import NTPClient
 
+
 def main():
     c = NTPClient()
     try:
@@ -8,6 +9,7 @@ def main():
     except Exception as e:
         print("EXCEPTION:", repr(e))
     input("Enterで終了...")
+
 
 if __name__ == "__main__":
     main()

@@ -12,13 +12,17 @@ orig_set = kernel32.SetSystemTime
 
 # create a fake SetSystemTime that accepts SYSTEMTIME* and returns non-zero
 CF = ctypes.WINFUNCTYPE(ctypes.c_int, ctypes.POINTER(SYSTEMTIME))
+
+
 def _fake_set(st_ptr):
     # optional: inspect st_ptr contents for confirmation
     st = st_ptr.contents
-    print("fake SetSystemTime called with:", 
+    print("fake SetSystemTime called with:",
           f"Y={st.wYear} M={st.wMonth} DOW={st.wDayOfWeek} D={st.wDay}",
           f"H={st.wHour} m={st.wMinute} s={st.wSecond} ms={st.wMilliseconds}")
     return 1
+
+
 fake_c = CF(_fake_set)
 
 try:

@@ -10,6 +10,7 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 
+
 def get_base_dir():
     """実行ファイルの場所を返す（exe化・スクリプト両対応）"""
     if getattr(sys, 'frozen', False):
@@ -19,6 +20,7 @@ def get_base_dir():
         # スクリプト実行の場合
         return os.path.dirname(os.path.abspath(__file__))
 
+
 def is_already_running():
     """多重起動チェック（Windows Mutex使用）"""
     try:
@@ -27,6 +29,7 @@ def is_already_running():
         return ctypes.windll.kernel32.GetLastError() == 183  # ERROR_ALREADY_EXISTS
     except Exception:
         return False  # Windows以外では無視
+
 
 def main():
     # 多重起動チェック
@@ -48,6 +51,7 @@ def main():
     root = tk.Tk()
     app = GPSTimeSyncGUI(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
