@@ -406,8 +406,9 @@ MIT License — © 2026 津久浦 慶治 (JP1LRT)
 ## 作者
 
 **津久浦 慶治 / Yoshiharu Tsukuura**  
-アマチュア無線局 **JP1LRT** / [@jp1lrt](https://github.com/jp1lrt/ChronoGPS)
-
+アマチュア無線局 **JP1LRT**  
+- QRZ.com: https://www.qrz.com/db/JP1LRT  
+- GitHub: https://github.com/jp1lrt
 ---
 
 ## 寄付（Donate）
