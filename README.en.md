@@ -1,4 +1,4 @@
-> **Note**  
+> [!NOTE]
 > This project was formerly known as `gps-time-sync`.
 
 # ChronoGPS
@@ -42,13 +42,14 @@ please see the detailed discussion below:
 
 - 🌐 **NTP Sync (RFC 5905)** — 64-bit timestamps, offset/delay calculation via t1/t2/t3/t4, millisecond-level precision
 - 🛰️ **GPS Sync** — Off / Instant / Scheduled modes, RMC-based UTC acquisition, duplicate sync prevention  
-  Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering to reduce jitter injection and support drift monitoring.
+  Scheduled mode uses a GPS-reception-triggered approach with median jitter filtering.  
+  This reduces jitter injection while allowing long-term drift monitoring.
 - ⏱️ **FT8 Time Offset** — Fine-tune clock in ±0.1s steps, designed for digital mode operation
 - 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
 - 🔒 **Non-Admin Support** — Choose *Restart as Admin* or *Monitor-Only* at launch
 - 🧵 **Thread-Safe GUI** — Worker thread + Queue + main thread updates prevent Tkinter freezes
 - 🌍 **16 Languages** — Japanese, English, French, Spanish, German, Chinese (Simplified/Traditional), Korean, Portuguese, Italian, Dutch, Russian, Polish, Turkish, Swedish, Indonesian
-- 🖥️ **Windows-Native UX** — System tray support, × button minimizes to tray, taskbar icon
+- 🖥️ **Windows-Native UX** — System tray support, the close (X) button minimizes to the system tray, taskbar icon
 
 ---
 
@@ -60,7 +61,7 @@ please see the detailed discussion below:
 ### Without Administrator Privileges
 Choose at startup:
 - **Restart as Administrator** → Elevate via UAC, unlock all features
-- **Continue in Monitor-Only** → GPS reception, satellite view, NTP display only (no clock write)
+- **Continue in Monitor-Only** → GPS reception, satellite view, NTP display only (no system time changes)
 
 ---
 
@@ -112,9 +113,8 @@ Output: `dist\ChronoGPS.exe`
 
 ### GNSS Sync Recommendation
 
-ChronoGPS uses **GNSS** (GPS, QZSS, etc.) as its time source.
-
-For FT8 / FT4 operation, **Instant Sync** is typically sufficient and recommended.  
+ChronoGPS uses GNSS (GPS, QZSS, etc.) as an absolute UTC time source.
+For FT8 / FT4 operation, **Instant Sync** is usually sufficient and recommended.  
 GNSS provides an absolute UTC reference, so a single calibration before operation is typically enough to achieve accurate system time.
 
 > [!NOTE]
@@ -122,7 +122,7 @@ GNSS provides an absolute UTC reference, so a single calibration before operatio
 > that GPS reception should be turned off afterward.
 >  
 > It means that **frequent system clock rewrites are unnecessary** once the
-> clock has been properly calibrated.
+> system clock has been properly calibrated.
 >  
 > GPS reception may continue for monitoring, visualization, and verification
 > purposes without any issue.
@@ -339,4 +339,3 @@ and help support future development ☕
 
 ---
 
-Note: This project was formerly known as gps-time-sync.
