@@ -7,6 +7,7 @@ import ctypes
 from collections import deque
 from statistics import median
 from datetime import datetime, timedelta, timezone
+from weak_sync_logic import decide_weak_sync
 
 
 class SYSTEMTIME(ctypes.Structure):
@@ -193,50 +194,45 @@ class TimeSynchronizer:
 
             med = float(median(self._weak_diffs))
 
+            decision = decide_weak_sync(
+                diffs=list(self._weak_diffs),
+                threshold=th,
+                strong_threshold=st_th,
+                confirm_needed=cn,
+                last_sign=self._weak_last_sign,
+                confirm_count=self._weak_confirm_count,
+            )
+
+            # update state from decision
+            self._weak_confirm_count = decision.confirm_count
+            self._weak_last_sign = decision.last_sign
+
+            # collecting (shouldn't happen here because we already checked len, but keep it safe)
+            if decision.action == "collecting":
+                if self.loc:
+                    msg = self.loc.get('sync_collecting_samples') or "Weak sync: collecting samples"
+                else:
+                    msg = "弱同期: サンプル収集中"
+                return True, f"{msg} ({diff:+.3f}s)"
+
             # deadband: do nothing
-            if abs(med) < th:
-                self._weak_confirm_count = 0
-                self._weak_last_sign = 0
+            if decision.action == "skip":
                 if self.loc:
                     msg = self.loc.get('sync_skipped_jitter') or "Weak sync: skipped (within threshold)"
                 else:
                     msg = "誤差が閾値以内のため補正しませんでした"
-                return True, f"{msg} ({med:+.3f}s)"
+                return True, f"{msg} ({decision.med:+.3f}s)"
 
-            # strong: force set immediately
-            if abs(med) >= st_th:
-                st = self._datetime_to_systemtime(adjusted_time)
-                result = ctypes.windll.kernel32.SetSystemTime(ctypes.byref(st))
-                if result == 0:
-                    if self.loc:
-                        return False, self.loc.get('sync_failed_settime')
-                    return False, "SetSystemTime failed"
-
-                if self.loc:
-                    msg = self.loc.get('sync_time_major') or "Time corrected (major)"
-                else:
-                    msg = "時刻を大幅修正しました"
-
-                self._weak_confirm_count = 0
-                self._weak_last_sign = 0
-                return True, f"{msg} ({med:+.3f}s)"
-
-            # confirm-stability: require consecutive same-direction median
-            sign = 1 if med > 0 else -1
-            if sign == self._weak_last_sign:
-                self._weak_confirm_count += 1
-            else:
-                self._weak_last_sign = sign
-                self._weak_confirm_count = 1
-
-            if self._weak_confirm_count < cn:
+            # pending: waiting for stability confirmation
+            if decision.action == "pending":
                 if self.loc:
                     msg = self.loc.get('sync_pending_confirm') or "Weak sync: confirming stability"
                 else:
                     msg = "弱同期: 安定確認中"
-                return True, f"{msg} ({med:+.3f}s)"
+                return True, f"{msg} ({decision.med:+.3f}s)"
 
-            # confirmed: apply absolute set
+            # strong or confirmed: apply absolute set
+            # (we set adjusted_time, not med)
             st = self._datetime_to_systemtime(adjusted_time)
             result = ctypes.windll.kernel32.SetSystemTime(ctypes.byref(st))
             if result == 0:
@@ -244,18 +240,19 @@ class TimeSynchronizer:
                     return False, self.loc.get('sync_failed_settime')
                 return False, "SetSystemTime failed"
 
-            # reset confirm after action
-            self._weak_confirm_count = 0
-            self._weak_last_sign = 0
+            if decision.action == "strong_set":
+                if self.loc:
+                    msg = self.loc.get('sync_time_major') or "Time corrected (major)"
+                else:
+                    msg = "時刻を大幅修正しました"
+                return True, f"{msg} ({decision.med:+.3f}s)"
 
+            # decision.action == "set"
             if self.loc:
                 msg = self.loc.get('sync_time_adjusted') or "Time adjusted"
             else:
                 msg = "時刻を微調整しました"
-            return True, f"{msg} ({med:+.3f}s)"
-
-        except Exception as e:
-            return False, str(e)
+            return True, f"{msg} ({decision.med:+.3f}s)"
 
     def apply_offset(self, offset_seconds):
         """FT8時刻オフセットを適用（0.1秒刻み）"""
