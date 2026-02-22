@@ -334,24 +334,26 @@ QZSS（みちびき）は日本の準天頂衛星システムです。対応受�
 ```
 
 ChronoGPS/
-├── README.md        ← 入口・概要・推奨設定
-├── docs/
-│   ├── FAQ.md       ← 設計思想・1〜20
-│   └── weak-sync-diagram.ja2.png
-├── main.py               # エントリーポイント
-├── gui.py                # メインGUI
-├── config.py             # 設定管理（JSON）
-├── locales.py            # 多言語対応
-├── locales_override.py   # ローカライズ上書き
-├── nmea_parser.py        # NMEAパーサー
-├── ntp_client.py         # NTPクライアント
-├── time_sync.py          # 時刻同期
-├── autostart.py          # 自動スタート管理
-├── tray_icon.py          # システムトレイ
-├── requirements.txt      # 依存パッケージ
-├── icon.png              # アプリアイコン（PNG）
-├── icon.ico              # アプリアイコン（ICO）
-└── gps_time_sync_config.json  # 設定ファイル（自動生成）
+├── README.md               # プロジェクトの概要・使い方
+├── docs/                   # ドキュメント類
+│   ├── FAQ.md              # 設計思想・詳細な仕様解説
+│   └── weak-sync-diagram.ja2.png # 動作原理の図解
+├── main.py                 # エントリーポイント（アプリの起動）
+├── gui.py                  # メインGUI画面の制御
+├── config.py               # 設定ファイル（JSON）の読み書き管理
+├── locales.py              # 多言語対応（翻訳データ）
+├── locales_override.py     # 特定環境向けの文言上書き
+├── nmea_parser.py          # GPSからのNMEAデータの解析
+├── ntp_client.py           # NTPサーバーとの通信
+├── time_sync.py            # OS時刻の変更・同期処理の司令塔
+├── weak_sync_logic.py      # 弱同期（定期同期）の判定アルゴリズム（Pure Logic）
+├── autostart.py            # Windows起動時の自動実行管理
+├── tray_icon.py            # システムトレイ（タスクトレイ）の制御
+├── requirements.txt        # 実行に必要なパッケージ一覧
+├── requirements-dev.txt    # 開発・テストに必要なパッケージ一覧
+├── icon.png                # アプリアイコン（PNG形式）
+├── icon.ico                # アプリアイコン（Windows用、exe内蔵用）
+└── gps_time_sync_config.json # 実行時に生成される設定ファイル
 ```
 
 ---
@@ -391,7 +393,7 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
 
-- VirusTotal スキャン結果: https://www.virustotal.com/gui/file-analysis/NjQwMzVkOTE2ZGFjZTZkZDVjNzFlMmJkYjZkYzBjY2U6MTc3MTQ4MDcyMw==/detection
+- VirusTotal スキャン結果: https://www.virustotal.com/gui/file/49857ef354ef97ca9900e0d933dbc85c98e3bbbe200def7b9283ec4668cab414/detection
 - 誤検知であることを Microsoft に報告済みです。
 
 ---
