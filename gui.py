@@ -1313,9 +1313,16 @@ class GPSTimeSyncGUI:
         self.root.focus_force()
 
     def _quit_app(self):
-        """アプリケーションを終了"""
-        self._on_closing()
+        """トレイメニュー等、別スレッドから呼ばれても安全に終了できるようにする"""
+        import threading
 
+    # Tk操作はメインスレッドで実行する
+        if threading.current_thread() is threading.main_thread():
+            self._on_closing()
+        else:
+        # 0msでメインスレッドに投げる
+            self.root.after(0, self._on_closing)
+            
     def _sync_on_startup(self):
         """起動時に同期"""
         self._log(f"🚀 {self.loc.get('sync_on_startup_log') or 'Running startup sync...'}")
@@ -2047,6 +2054,13 @@ class GPSTimeSyncGUI:
         # GPS受信停止
         if self.is_running:
             self._stop()
+
+            # --- 追加：GPSスレッド終了を待つ（最大2秒） ---
+            try:
+                if getattr(self, "gps_thread", None) and self.gps_thread.is_alive():
+                    self.gps_thread.join(timeout=2.0)
+            except Exception:
+                pass
 
         # タイマー停止
         if self.gps_sync_timer:
