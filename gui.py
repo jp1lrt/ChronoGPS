@@ -2078,6 +2078,14 @@ class GPSTimeSyncGUI:
 
 def main():
     root = tk.Tk()
+
+    # Window icon (Windows)
+    try:
+        import os
+        root.iconbitmap(os.path.join(os.path.dirname(__file__), "icon.ico"))
+    except Exception:
+        pass
+
     app = GPSTimeSyncGUI(root)
     root.mainloop()
 
