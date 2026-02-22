@@ -96,14 +96,64 @@ python main.py
 
 ---
 
-### Building the exe
+## How to Build the exe (for developers)
 
+ChronoGPS is designed to be built inside a venv (virtual environment).  
+Running PyInstaller in a global Python environment is not recommended,  
+as it may cause dependency contamination and reduce build reproducibility.
+
+### 1. Create and activate a virtual environment (Windows / PowerShell)
 ```powershell
-pyinstaller --onefile --windowed --icon=icon.ico --name=ChronoGPS main.py
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-Output: `dist\ChronoGPS.exe`
+### 2. Install dependencies
+```powershell
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install -U pyinstaller
+```
 
+### 3. Run tests (required)
+```powershell
+python -m pytest -q
+```
+
+Make sure all tests pass before building the executable.
+
+### 4. Build the exe (clean build)
+```powershell
+$opts = @(
+  "--noconfirm"
+  "--clean"
+  "--onefile"
+  "--windowed"
+  "--name", "ChronoGPS"
+  "--icon", "icon.ico"
+  "--add-data", "icon.ico;."
+  "--add-data", "icon.png;."
+  "main.py"
+)
+python -m PyInstaller @opts
+```
+
+**Build policy**
+- Always use `--clean` to prevent contamination from previous build/dist artifacts
+- Do not use `--add-data ".;."` (never bundle the entire project directory)
+- Only explicitly include minimum required files (icon.ico / icon.png)
+
+After the build completes, `ChronoGPS.exe` will be created in the `dist` directory.
+
+### 5. About icons
+- The exe file uses the ChronoGPS application icon
+- The tray icon intentionally uses a clock icon for better visibility  
+  (to avoid loss of contrast at small tray icon sizes)
+
+### Notes
+- This build procedure reflects the actual release process used for v2.4.4
+- Following this method ensures clean, reproducible, and trustworthy binaries
+  
 ---
 
 ## Usage
