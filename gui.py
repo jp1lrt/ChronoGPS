@@ -289,7 +289,7 @@ class GPSTimeSyncGUI:
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
         about_text = self.loc.get('about_text') or f"{
             self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {
-            self.loc.get('app_version') or '2.4.1'}"
+            self.loc.get('app_version') or '2.4.4'}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
         github_label = self.loc.get('github_label') or "Project on GitHub"
