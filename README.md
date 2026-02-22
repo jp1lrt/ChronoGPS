@@ -103,14 +103,50 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### exeのビルド方法
+## exe のビルド方法（開発者向け）
 
+ChronoGPS は **venv 環境でのビルドを前提**としています。  
+グローバル環境での PyInstaller 実行は、依存関係の混入や再現性低下の原因となるため推奨しません。
+
+### 1. 仮想環境の作成と有効化（Windows / PowerShell）
 ```powershell
-pyinstaller --onefile --windowed --icon=icon.ico --name=ChronoGPS main.py
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-完了後 `dist\ChronoGPS.exe` が生成されます。
+### 2. 依存関係のインストール
+```powershell
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install -U pyinstaller
+```
 
+### 3. テストの実行（必須）
+```powershell
+python -m pytest -q
+```
+
+すべてのテストが成功していることを確認してください。
+
+### 4. exe のビルド（クリーンビルド）
+```powershell
+python -m PyInstaller --noconfirm --clean --onefile --windowed --name ChronoGPS --icon icon.ico `
+  --add-data "icon.ico;." `
+  --add-data "icon.png;." `
+  main.py
+```
+
+**ビルド方針について**
+- `--clean` を必ず使用し、過去の build / dist による汚染を防止します
+- `--add-data ".;."` のようなプロジェクト全体同梱は行いません
+- 同梱するファイルは**必要最小限（icon.ico / icon.png）**のみを明示指定します
+
+ビルド後、`dist` ディレクトリに `ChronoGPS.exe` が生成されます。
+
+### 5. アイコンについて
+- exe ファイルのアイコンは ChronoGPS のロゴを使用しています
+- トレイアイコンは視認性を優先して時計アイコンを採用しています  
+  （小サイズでの黒つぶれを防ぐため、意図的に分けています）
 ---
 
 ## 使い方
