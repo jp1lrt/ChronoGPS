@@ -1049,12 +1049,13 @@ class GPSTimeSyncGUI:
         # 時刻更新タイマー, 位置更新
         self._update_system_time()
         self._update_position_info()
+        # ★ここに追加！ main_frameの中で「ログ」が入っている行を縦に伸ばす設定
+        main_frame.rowconfigure(4, weight=1)  # ログフレームは5番目(index 4)の要素なので
 
     def _create_satellite_tab(self):
         """衛星情報タブ"""
-        sf = ScrollableFrame(self.tab_satellite, padding=10)
-        sf.pack(fill=tk.BOTH, expand=True)
-        main_frame = sf.content
+        main_frame = ttk.Frame(self.tab_satellite, padding=10)
+        main_frame.pack(fill=tk.BOTH, expand=True)
 
         # サマリー
         summary_frame = ttk.LabelFrame(main_frame, text=self.loc.get('summary') or "Summary", padding="10")
@@ -1128,21 +1129,62 @@ class GPSTimeSyncGUI:
         self._update_satellite_info()
 
     def _create_satellite_tree(self, parent):
-        """衛星情報ツリービュー作成"""
-        tree = ttk.Treeview(parent, columns=('ID', 'SNR', 'Elev', 'Azim'), show='headings', height=6)
+        """衛星情報ツリービュー作成（縦スクロールバー付き・幅追従）"""
+
+        # Treeview + Scrollbar を入れるコンテナ
+        container = ttk.Frame(parent)
+        container.pack(fill=tk.BOTH, expand=True)
+
+        tree = ttk.Treeview(
+            container,
+            columns=('ID', 'SNR', 'Elev', 'Azim'),
+            show='headings',
+            height=6
+        )
+
+        # 見出し
         tree.heading('ID', text=self.loc.get('sat_id') or "ID")
         tree.heading('SNR', text=self.loc.get('snr') or "SNR")
         tree.heading('Elev', text=self.loc.get('elevation') or "Elevation")
         tree.heading('Azim', text=self.loc.get('azimuth') or "Azimuth")
 
-        tree.column('ID', width=60, anchor='center')
-        tree.column('SNR', width=60, anchor='center')
-        tree.column('Elev', width=60, anchor='center')
-        tree.column('Azim', width=60, anchor='center')
+        # 縦スクロールバー
+        vsb = ttk.Scrollbar(container, orient='vertical', command=tree.yview)
+        tree.configure(yscrollcommand=vsb.set)
 
-        tree.pack(fill=tk.BOTH, expand=True)
+        # レイアウト（Treeviewが伸びる）
+        tree.grid(row=0, column=0, sticky='nsew')
+        vsb.grid(row=0, column=1, sticky='ns')
+        container.columnconfigure(0, weight=1)
+        container.rowconfigure(0, weight=1)
+
+        # 列：固定60pxをやめて伸縮可能に（最小幅だけ確保）
+        tree.column('ID', anchor='center', stretch=True, minwidth=50, width=70)
+        tree.column('SNR', anchor='center', stretch=True, minwidth=50, width=70)
+        tree.column('Elev', anchor='center', stretch=True, minwidth=50, width=70)
+        tree.column('Azim', anchor='center', stretch=True, minwidth=50, width=70)
+
+        # 幅追従：ウィンドウを広げたら列幅も按分して追従
+        def _autosize_columns(event=None):
+            w = tree.winfo_width()
+            if w <= 1:
+                return
+            # スクロールバー分＋余白を引く（だいたいでOK）
+            avail = max(w - 22, 200)
+
+            # IDは少し狭く、他を広めに
+            id_w = max(int(avail * 0.22), 50)
+            rest = max(int((avail - id_w) / 3), 50)
+
+            tree.column('ID', width=id_w)
+            tree.column('SNR', width=rest)
+            tree.column('Elev', width=rest)
+            tree.column('Azim', width=rest)
+
+        tree.bind('<Configure>', _autosize_columns)
+
         return tree
-
+ 
     def _create_options_tab(self):
         """オプションタブ"""
         sf = ScrollableFrame(self.tab_options, padding=10)
