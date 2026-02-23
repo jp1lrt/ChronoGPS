@@ -35,6 +35,74 @@ def get_resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+class ScrollableFrame(ttk.Frame):
+    """
+    ttk.Frame の中身を縦スクロール可能にする軽量実装。
+    - Canvas + interior frame + Scrollbar
+    - Canvas 幅に content 幅を追従（レスポンシブ）
+    - Windows / macOS / Linux マウスホイール対応
+    使い方:
+        sf = ScrollableFrame(parent, padding=10)
+        sf.pack(fill=tk.BOTH, expand=True)
+        main_frame = sf.content
+    """
+
+    def __init__(self, parent, *, padding=0):
+        super().__init__(parent)
+
+        self._canvas = tk.Canvas(self, highlightthickness=0)
+        self._vsb = ttk.Scrollbar(self, orient="vertical", command=self._canvas.yview)
+        self._canvas.configure(yscrollcommand=self._vsb.set)
+
+        self._vsb.pack(side="right", fill="y")
+        self._canvas.pack(side="left", fill="both", expand=True)
+
+        self.content = ttk.Frame(self._canvas, padding=padding)
+        self._window_id = self._canvas.create_window((0, 0), window=self.content, anchor="nw")
+
+        # ラムダ式で簡潔に
+        self.content.bind("<Configure>",
+            lambda e: self._canvas.configure(scrollregion=self._canvas.bbox("all")))
+        self._canvas.bind("<Configure>",
+            lambda e: self._canvas.itemconfigure(self._window_id, width=e.width))
+
+        # マウスホイール：Enter/Leave で制御
+        self._canvas.bind("<Enter>", self._bind_mousewheel)
+        self._canvas.bind("<Leave>", self._unbind_mousewheel)
+
+    def _on_mousewheel(self, event):
+        # Linux: Button-4/5
+        num = getattr(event, "num", None)
+        if num == 4:
+            self._canvas.yview_scroll(-1, "units")
+            return
+        if num == 5:
+            self._canvas.yview_scroll(1, "units")
+            return
+        # Windows / macOS
+        delta = getattr(event, "delta", 0)
+        if not delta:
+            return
+        if sys.platform == "darwin":
+            self._canvas.yview_scroll(int(-delta), "units")
+        else:
+            self._canvas.yview_scroll(int(-delta / 120), "units")
+
+    def _bind_mousewheel(self, event=None):
+        self._canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        # Linux 用
+        self._canvas.bind_all("<Button-4>", self._on_mousewheel)
+        self._canvas.bind_all("<Button-5>", self._on_mousewheel)
+
+    def _unbind_mousewheel(self, event=None):
+        try:
+            self._canvas.unbind_all("<MouseWheel>")
+            self._canvas.unbind_all("<Button-4>")
+            self._canvas.unbind_all("<Button-5>")
+        except Exception:
+            pass
+
+
 class GPSTimeSyncGUI:
     def __init__(self, root):
         self.root = root
@@ -90,6 +158,8 @@ class GPSTimeSyncGUI:
             self.root.geometry(f"{width}x{height}+{x}+{y}")
         else:
             self.root.geometry(f"{width}x{height}")
+
+        self.root.minsize(820, 650)
 
         self.parser = NMEAParser()
         self.ntp_client = NTPClient()
@@ -289,7 +359,7 @@ class GPSTimeSyncGUI:
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
         about_text = self.loc.get('about_text') or f"{
             self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {
-            self.loc.get('app_version') or '2.4.4'}"
+            self.loc.get('app_version') or '2.4.5'}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
         github_label = self.loc.get('github_label') or "Project on GitHub"
@@ -682,8 +752,9 @@ class GPSTimeSyncGUI:
 
     def _create_sync_tab(self):
         """時刻同期タブ"""
-        main_frame = ttk.Frame(self.tab_sync, padding="10")
-        main_frame.pack(fill=tk.BOTH, expand=True)
+        sf = ScrollableFrame(self.tab_sync, padding=10)
+        sf.pack(fill=tk.BOTH, expand=True)
+        main_frame = sf.content
 
         # GPS設定
         gps_frame = ttk.LabelFrame(main_frame, text=self.loc.get('gps_settings') or "GPS Settings", padding="10")
@@ -981,8 +1052,9 @@ class GPSTimeSyncGUI:
 
     def _create_satellite_tab(self):
         """衛星情報タブ"""
-        main_frame = ttk.Frame(self.tab_satellite, padding="10")
-        main_frame.pack(fill=tk.BOTH, expand=True)
+        sf = ScrollableFrame(self.tab_satellite, padding=10)
+        sf.pack(fill=tk.BOTH, expand=True)
+        main_frame = sf.content
 
         # サマリー
         summary_frame = ttk.LabelFrame(main_frame, text=self.loc.get('summary') or "Summary", padding="10")
@@ -1073,8 +1145,9 @@ class GPSTimeSyncGUI:
 
     def _create_options_tab(self):
         """オプションタブ"""
-        main_frame = ttk.Frame(self.tab_options, padding="10")
-        main_frame.pack(fill=tk.BOTH, expand=True)
+        sf = ScrollableFrame(self.tab_options, padding=10)
+        sf.pack(fill=tk.BOTH, expand=True)
+        main_frame = sf.content
 
         # 起動設定
         startup_frame = ttk.LabelFrame(main_frame, text=self.loc.get(
