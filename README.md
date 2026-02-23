@@ -393,7 +393,7 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
 
-- VirusTotal スキャン結果: https://www.virustotal.com/gui/file/f841bdcbb7aaccb2cdd87a68f80f8a5646cb92a38845ba9f45ae184e407f404f/detection
+- VirusTotal スキャン結果: https://www.virustotal.com/gui/file/b0744084f4c9cc1f74d8dfd3a226439d52978f86098434b0c9dbd7aa3dc6d0bf/detection
 - 誤検知であることを Microsoft に報告済みです。
 
 ---
