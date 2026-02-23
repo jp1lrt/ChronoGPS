@@ -352,7 +352,7 @@ The application contains no malicious code.
 
 All source code is publicly available and you can build the exe yourself.
 
-- VirusTotal scan results:　https://www.virustotal.com/gui/file/f841bdcbb7aaccb2cdd87a68f80f8a5646cb92a38845ba9f45ae184e407f404f/detection
+- VirusTotal scan results:　https://www.virustotal.com/gui/file/b0744084f4c9cc1f74d8dfd3a226439d52978f86098434b0c9dbd7aa3dc6d0bf/detection
 - This has been reported to Microsoft as an incorrect detection
 
 ---
