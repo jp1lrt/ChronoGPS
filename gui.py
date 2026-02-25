@@ -118,6 +118,10 @@ class GPSTimeSyncGUI:
         lang = self.config.get('language')
         if lang and lang != 'auto':
             self.loc.set_language(lang)
+        else:
+            # 未設定または'auto'の場合：OSロケールから自動判定
+            detected = self._detect_system_language(list(self.loc.get_available_languages()))
+            self.loc.set_language(detected)
 
         # override 適用（locales_override があれば上書きを有効にする）
         self._apply_locales_override()
@@ -142,9 +146,9 @@ class GPSTimeSyncGUI:
                 if os.path.exists(icon_png):
                     from PIL import Image, ImageTk
                     img = Image.open(icon_png).resize((32, 32), Image.LANCZOS)
-                photo = ImageTk.PhotoImage(img)
-                self.root.iconphoto(True, photo)
-                self._icon_photo = photo  # GC防止
+                    photo = ImageTk.PhotoImage(img)
+                    self.root.iconphoto(True, photo)
+                    self._icon_photo = photo  # GC防止
         except Exception:
             pass  # アイコンが無くてもアプリは動く
 
@@ -170,6 +174,8 @@ class GPSTimeSyncGUI:
         self.ntp_sync_timer = None
         self.gps_sync_timer = None
         self._gps_next_sync_mono = None  # interval sync: 次回同期期限（monotonic）
+        self.debug_enabled = False         # スレッドセーフなデバッグフラグ
+        self._gps_interval_index = 2       # スレッドセーフなインターバルインデックス
 
         # GPS同期モードのスレッドセーフなコピー（_read_gpsスレッドから参照）
         self._gps_sync_mode = 'none'
@@ -227,6 +233,52 @@ class GPSTimeSyncGUI:
         # 管理者権限チェック（起動後に一度だけ）
         if not self.sync.is_admin:
             self.root.after(300, self._check_admin_on_startup)
+
+    def _detect_system_language(self, available_langs):
+        """
+        OSのシステムロケールからChronoGPS対応言語を自動判定。
+        対応言語にない場合は 'en' にフォールバック。
+        """
+        import locale
+        try:
+            # Windows: GetUserDefaultUILanguage経由でより確実に取得
+            import ctypes
+            lang_id = ctypes.windll.kernel32.GetUserDefaultUILanguage()
+            # LCID → BCP47風の文字列マッピング（主要言語）
+            lcid_map = {
+                0x0411: 'ja',   # 日本語
+                0x0804: 'zh',   # 中国語（簡体）
+                0x0404: 'zh-tw',# 中国語（繁体）
+                0x0412: 'ko',   # 韓国語
+                0x040C: 'fr',   # フランス語
+                0x0C0A: 'es',   # スペイン語
+                0x0407: 'de',   # ドイツ語
+                0x0416: 'pt',   # ポルトガル語
+                0x0410: 'it',   # イタリア語
+                0x0413: 'nl',   # オランダ語
+                0x0419: 'ru',   # ロシア語
+                0x0415: 'pl',   # ポーランド語
+                0x041F: 'tr',   # トルコ語
+                0x041D: 'sv',   # スウェーデン語
+                0x0421: 'id',   # インドネシア語
+            }
+            detected = lcid_map.get(lang_id)
+            if detected and detected in available_langs:
+                return detected
+        except Exception:
+            pass
+
+        # fallback: locale.getdefaultlocale()
+        try:
+            loc_code, _ = locale.getdefaultlocale()
+            if loc_code:
+                lang_code = loc_code.split('_')[0].lower()
+                if lang_code in available_langs:
+                    return lang_code
+        except Exception:
+            pass
+
+        return 'en'  # 最終フォールバック
 
     def _apply_locales_override(self):
         """
@@ -357,9 +409,9 @@ class GPSTimeSyncGUI:
         Donate は PayPal.Me (https://www.paypal.me/jp1lrt) に飛び、表示は @jp1lrt。
         """
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
-        about_text = self.loc.get('about_text') or f"{
-            self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'}\nVersion: {
-            self.loc.get('app_version') or '2.4.5'}"
+        _app_title = self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'
+        _app_ver = self.loc.get('app_version') or '2.4.5'
+        about_text = self.loc.get('about_text') or f"{_app_title}\nVersion: {_app_ver}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
         github_label = self.loc.get('github_label') or "Project on GitHub"
@@ -450,8 +502,7 @@ class GPSTimeSyncGUI:
 
         license_lbl = ttk.Label(
             link_frame,
-            text=f"{
-                self.loc.get('license_label') or 'License'}: {license_text}",
+            text=f"{self.loc.get('license_label') or 'License'}: {license_text}",
             foreground='gray')
         license_lbl.pack(side=tk.LEFT, anchor='w')
 
@@ -836,6 +887,8 @@ class GPSTimeSyncGUI:
             self.loc.get('interval_6hour') or "6 hours"
         ])
         self.gps_interval_combo.current(2)
+        self.gps_interval_combo.bind('<<ComboboxSelected>>',
+            lambda _: setattr(self, '_gps_interval_index', self.gps_interval_combo.current()))
         self.gps_interval_combo.grid(row=2, column=2, padx=5)
 
         # NTP設定
@@ -970,6 +1023,7 @@ class GPSTimeSyncGUI:
 
         # デバッグモード
         self.debug_var = tk.BooleanVar(value=False)
+        self.debug_var.trace_add('write', lambda *_: setattr(self, 'debug_enabled', bool(self.debug_var.get())))
         debug_check = ttk.Checkbutton(button_frame, text=self.loc.get('debug') or "Debug", variable=self.debug_var)
         debug_check.grid(row=0, column=4, padx=5)
         self.widgets['debug_check'] = debug_check
@@ -1310,7 +1364,7 @@ class GPSTimeSyncGUI:
             success, msg = self.sync.apply_offset(offset)
 
             if success:
-                self._log(f"⏰ {self.loc.get('ft8_offset_applied') or 'FT8 offset applied: {msg}'}".format(msg=msg))
+                self._log("⏰ " + (self.loc.get('ft8_offset_applied') or 'FT8 offset applied: {msg}').format(msg=msg))
                 self._update_offset_display()
                 messagebox.showinfo(self.loc.get('app_title') or "Success", msg)
             else:
@@ -1330,7 +1384,7 @@ class GPSTimeSyncGUI:
         success, msg = self.sync.apply_offset(offset)
 
         if success:
-            self._log(f"⏰ {self.loc.get('ft8_quick_adjust_fmt') or 'FT8 quick adjust: {offset:+.1f}s'}".format(offset=offset))
+            self._log("⏰ " + (self.loc.get('ft8_quick_adjust_fmt') or 'FT8 quick adjust: {offset:+.1f}s').format(offset=offset))
             self._update_offset_display()
         else:
             messagebox.showerror(self.loc.get('app_title') or "Error", msg)
@@ -1597,6 +1651,7 @@ class GPSTimeSyncGUI:
                     try:
                         self.gps_sync_mode.set('none')
                         self._gps_sync_mode = 'none'
+                        self._gps_next_sync_mono = None  # 残留期限をリセット
                     finally:
                         self._gps_mode_changing = False
 
@@ -1730,12 +1785,17 @@ class GPSTimeSyncGUI:
         if gps_values and gps_interval_index is not None and 0 <= gps_interval_index < len(gps_values):
             try:
                 self.gps_interval_combo.current(gps_interval_index)
+                self._gps_interval_index = gps_interval_index
             except Exception:
                 self.gps_interval_combo.current(2 if len(gps_values) > 2 else 0)
         else:
             default_gps_idx = 2 if len(gps_values) > 2 else (0 if gps_values else None)
             if default_gps_idx is not None:
                 self.gps_interval_combo.current(default_gps_idx)
+
+        # GPS interval モードなら起動時にタイマー再開
+        if mode == 'interval':
+            self.root.after(600, self._start_gps_interval_sync)
 
         # NTP server
         ntp_server = self.config.get('ntp', 'server')
@@ -1744,7 +1804,10 @@ class GPSTimeSyncGUI:
             self.ntp_entry.insert(0, ntp_server)
 
         # NTP auto sync
-        self.ntp_auto_sync_var.set(self.config.get('ntp', 'auto_sync') or False)
+        ntp_auto_val = self.config.get('ntp', 'auto_sync') or False
+        self.ntp_auto_sync_var.set(ntp_auto_val)
+        if ntp_auto_val:
+            self.root.after(500, self._start_ntp_auto_sync)
 
         # NTP interval index (validate)
         ntp_interval_index = self.config.get('ntp', 'sync_interval_index')
@@ -1957,7 +2020,8 @@ class GPSTimeSyncGUI:
             self.widgets['stop_btn'].config(state='normal')
             self.widgets['sync_gps_btn'].config(state='normal')
 
-            self._log(f"{self.loc.get('gps_started_log') or 'GPS started'}: {port} @ {baud}bps")
+            if self.gps_sync_mode.get() != 'none':
+                self._log(f"{self.loc.get('gps_started_log') or 'GPS started'}: {port} @ {baud}bps")
 
             if self.gps_sync_mode.get() == 'interval':
                 self._start_gps_interval_sync()
@@ -1966,9 +2030,9 @@ class GPSTimeSyncGUI:
             self.gps_thread.start()
 
         except Exception as e:
+            port_err = self.loc.get('port_error') or 'Port error'
             messagebox.showerror(
-                self.loc.get('app_title') or "Error", f"{
-                    self.loc.get('port_error') or 'Port error'}: {e}")
+                self.loc.get('app_title') or "Error", f"{port_err}: {e}")
 
     def _stop(self):
         self.is_running = False
@@ -1991,7 +2055,7 @@ class GPSTimeSyncGUI:
                 line = self.serial_port.readline().decode('ascii', errors='ignore').strip()
                 if line:
                     # デバッグ出力（GSA, GSV, RMC, GGAメッセージ）
-                    if self.debug_var.get():
+                    if self.debug_enabled:
                         if 'GSA' in line:
                             self._log(f"🔍 GSA: {line}")
                         elif 'GSV' in line:
@@ -2049,16 +2113,14 @@ class GPSTimeSyncGUI:
                                 if time.monotonic() >= self._gps_next_sync_mono:
                                     success, msg = self.sync.sync_time_weak(gps_time, append_sample=False)
                                     if success:
-                                        self.ui_queue.put(
-                                            ('log', f"⏰ GPS {
-                                                self.loc.get('sync_success') or 'Sync success'}: {msg}"))
+                                        self.ui_queue.put(('log', f"⏰ GPS {self.loc.get('sync_success') or 'Sync success'}: {msg}"))
                                     else:
                                         self.ui_queue.put(('log',
                                                            f"✗ GPS {self.loc.get('sync_failed') or 'Sync failed'}: {msg}"))
 
                                     # 次回期限を更新
                                     try:
-                                        interval_minutes = [5, 10, 30, 60, 360][self.gps_interval_combo.current()]
+                                        interval_minutes = [5, 10, 30, 60, 360][self._gps_interval_index]
                                     except Exception:
                                         interval_minutes = 30
                                     self._gps_next_sync_mono = time.monotonic() + interval_minutes * 60.0
