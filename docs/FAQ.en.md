@@ -5,8 +5,8 @@
 **A. No — this is normal behavior.**
 
 ChronoGPS uses **GNSS (GPS / QZSS, etc.)** as a high-precision time reference directly tied to UTC.  
-By contrast, the Windows system clock has an internal **time resolution / quantization** of roughly **10–15 ms**.  
-When compared against a precise GNSS reference, small differences will be detected continuously.
+By contrast, the Windows system clock has an internal **time granularity / quantization** on the order of **a few to tens of milliseconds (environment-dependent)**.  
+When compared against a precise GNSS reference, small differences can be detected continuously.
 
 ChronoGPS does not hide this — it detects it and applies corrections **only when necessary**.
 
@@ -16,9 +16,9 @@ Typical correction amounts you may see in the log, such as:
 - ±0.013s  
 - ±0.07–0.08s  
 
-are within the normal range of Windows quantization and natural drift.
+are within the normal range of Windows granularity and natural drift.
 
-After each correction, ChronoGPS reports:
+After corrections, ChronoGPS will often report:
 
 - `✓ Time is accurate (error: 0.000–0.009s)`
 
@@ -33,6 +33,9 @@ This does **not** mean the time is unstable — it means
 
 **A. Because Instant Sync is not a “rewrite every second” mode.**
 
+Instant Sync is **not** “calibrate once and forget.”  
+It is designed to **keep referencing GNSS during operation** and maintain a correct state while avoiding unnecessary writes.
+
 Instant Sync is designed to:
 
 - use GNSS as a reference, and  
@@ -42,13 +45,13 @@ Instant Sync is designed to:
 Instant Sync **continuously references GNSS**,  
 but it does **not** force continuous or second-by-second rewrites of system time.
 
-When Windows-side quantization or natural drift is detected,  
+When Windows-side quantization or natural drift is detected and a correction is justified,  
 ChronoGPS applies **minimal and explainable corrections only when required**.
 
 As a result:
 
 - “Time adjusted” may appear repeatedly  
-- while the effective error remains well below 0.01 seconds
+- while the effective error remains very small
 
 This behavior is normal and indicates healthy GNSS-referenced operation.
 
@@ -62,8 +65,8 @@ This behavior is normal and indicates healthy GNSS-referenced operation.
 - **Long sessions / drift monitoring / verification**
   - Use **Weak Sync (Interval Sync)**
 
-Instant Sync is not “always pull the clock.”  
-It is a mode designed to **maintain a correctly calibrated state without breaking OS stability**.
+Instant Sync does not “pull the clock every second.”  
+It is a mode designed to **maintain a correctly calibrated state without destabilizing the OS clock**.
 
 ---
 
@@ -88,7 +91,7 @@ Weak Sync is intended for:
 
 The philosophy is:
 
-**monitoring first, correction only as an exception.**
+**monitoring first, correction only as an exception (stability-first).**
 
 ---
 
@@ -96,9 +99,7 @@ The philosophy is:
 
 **A. No — this is typically normal.**
 
-In many cases, this represents:
-
-- natural drift of the PC system clock
+In many cases, this represents natural drift of the PC system clock.
 
 Correcting every tiny change would risk injecting GNSS jitter into OS time.  
 ChronoGPS therefore uses a conservative, explainable policy:
@@ -141,8 +142,9 @@ ChronoGPS treats GNSS as a first-class time source:
   - affected by routing / congestion / latency
   - useful when GNSS is unavailable
 
-ChronoGPS implements NTP according to RFC 5905,  
-but **GNSS is inherently more stable** as a reference.
+ChronoGPS implements NTP according to **RFC 5905** (t1/t2/t3/t4 for offset/delay).  
+In general, because GNSS avoids network-delay variability, **GNSS tends to provide a more stable reference in many environments**  
+(though behavior can vary with receiver quality and reception conditions).
 
 ---
 
@@ -155,7 +157,8 @@ Startup Sync is a two-step design:
 1. NTP removes large offsets (hundreds of ms to seconds)  
 2. GNSS performs high-precision recalibration
 
-This improves accuracy and stability.
+NTP acts as a “coarse alignment,” and GNSS acts as the “final reference.”  
+Seeing an NTP correction followed by a smaller GNSS correction is expected and generally indicates improving accuracy.
 
 ---
 
@@ -164,7 +167,7 @@ This improves accuracy and stability.
 **A. No — this is due to display timing differences.**
 
 System Time, GNSS Time, and NTP Time are updated on different schedules.  
-Small differences (ms–tens of ms) may appear temporarily.
+Small differences (ms to tens of ms) may appear temporarily.
 
 This does **not** indicate a synchronization error.
 
@@ -221,19 +224,19 @@ ChronoGPS contains **no**:
 - intrusion attempts
 - resident malware-like activity
 
-All source code is public, and you can build the exe yourself for verification.
+All source code is public, and you can build the executable yourself for verification.
 
 ---
 
 ## Q12. Why do I see “Time is accurate” and still get adjustment logs? Isn’t that contradictory?
 
-**A. Not contradictory — it’s normal Windows time quantization.**
+**A. Not contradictory — it’s normal Windows time granularity.**
 
-Windows system time is internally quantized (roughly **~10 ms** steps).  
+Windows system time is internally quantized (typically **a few to tens of milliseconds**, depending on environment).  
 So you can have:
 
-- sub-millisecond effective accuracy, while  
-- display/rounding results make small corrections appear
+- a very small effective error, while  
+- display/rounding and sampling timing make small adjustments appear
 
 ChronoGPS honestly reports both:
 
@@ -290,7 +293,7 @@ then time is unlikely to be the root cause.
 
 ChronoGPS is designed around:
 
-- **Instant Sync** → calibrate once accurately  
+- **Instant Sync** → calibrate and then maintain by monitoring GNSS; correct only when justified  
 - **Weak Sync (Interval)** → monitor state and correct only as an exception
 
 This respects:
@@ -319,7 +322,7 @@ ChronoGPS prioritizes:
 
 Therefore:
 
-- Instant Sync calibrates once using a representative value  
+- Instant Sync maintains a calibrated state via monitoring and minimal corrections  
 - Weak Sync monitors primarily, and corrects only when necessary
 
 ---
