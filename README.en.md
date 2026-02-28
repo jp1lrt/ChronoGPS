@@ -50,22 +50,37 @@ please see the detailed discussion below:
   This reduces jitter injection while allowing long-term drift monitoring.
 - ⏱️ **FT8 Time Offset** — Fine-tune clock in ±0.1s steps, designed for digital mode operation
 - 📡 **Satellite View** — Real-time display of GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS
-- 🔒 **Non-Admin Support** — Choose *Restart as Admin* or *Monitor-Only* at launch
+- 🔒 **Non-Admin Support (v2.5 enhanced)** — Starts in Monitor-Only mode by default. Elevate only when sync is needed via the on-screen banner
 - 🧵 **Thread-Safe GUI** — Worker thread + Queue + main thread updates prevent Tkinter freezes
 - 🌍 **16 Languages** — Japanese, English, French, Spanish, German, Chinese (Simplified/Traditional), Korean, Portuguese, Italian, Dutch, Russian, Polish, Turkish, Swedish, Indonesian
 - 🖥️ **Windows-Native UX** — System tray support, the close (X) button minimizes to the system tray, taskbar icon
 
 ---
 
-## Operation Modes
+## Operation Modes (v2.5+)
 
-### With Administrator Privileges
-- Full GPS / NTP time synchronization available
+Starting with v2.5, the UAC dialog at launch has been removed.  
+ChronoGPS **always starts in Monitor-Only mode** by default.  
+Elevation is only requested when the user explicitly wants sync.
 
-### Without Administrator Privileges
-Choose at startup:
-- **Restart as Administrator** → Elevate via UAC, unlock all features
-- **Continue in Monitor-Only** → GPS reception, satellite view, NTP display only (no system time changes)
+### At Launch (Default: Monitor-Only)
+- No UAC dialog is shown
+- GPS reception, satellite view, and NTP display are available immediately
+- A banner at the top of the window shows: **"Unlock Sync Features (Restart as Administrator)"**
+
+### When You Need Time Sync
+- Click the banner button → UAC dialog appears → Restart as administrator
+- If you cancel the UAC dialog, Monitor-Only mode continues — **the process is not terminated**
+- After elevation, the banner disappears and GPS/NTP sync becomes available
+
+### Command-Line Launch
+```powershell
+# Monitor-Only mode (default)
+.\ChronoGPS.exe
+
+# Sync mode (banner still appears if not admin)
+.\ChronoGPS.exe --mode=sync
+```
 
 ---
 
@@ -83,7 +98,8 @@ Choose at startup:
 ### Using the exe (Recommended)
 
 1. Place `ChronoGPS.exe` and `icon.ico` in the same folder
-2. Right-click `ChronoGPS.exe` → *Run as administrator*
+2. Double-click `ChronoGPS.exe` to launch (starts in Monitor-Only mode)
+3. If time sync is needed, click the banner at the top to elevate
 
 ### Running from source
 
@@ -123,25 +139,33 @@ python -m pytest -q
 Make sure all tests pass before building the executable.
 
 ### 4. Build the exe (clean build)
+
 ```powershell
-$opts = @(
-  "--noconfirm"
-  "--clean"
-  "--onefile"
-  "--windowed"
-  "--name", "ChronoGPS"
-  "--icon", "icon.ico"
-  "--add-data", "icon.ico;."
-  "--add-data", "icon.png;."
-  "main.py"
-)
-python -m PyInstaller @opts
+pyinstaller --noconfirm --clean --onefile --windowed `
+  --name "ChronoGPS" `
+  --icon ".\icon.ico" `
+  --add-data ".\icon.ico;." `
+  --add-data ".\icon.png;." `
+  --add-data ".\donate_qr.png;." `
+  --add-data ".\locales.py;." `
+  --add-data ".\locales_override.py;." `
+  --add-data ".\gps_time_sync_config.json;." `
+  --hidden-import "tkinter" `
+  --hidden-import "tkinter.ttk" `
+  --hidden-import "tkinter.messagebox" `
+  --hidden-import "tkinter.filedialog" `
+  --hidden-import "tkinter.scrolledtext" `
+  --hidden-import "admin" `
+  --hidden-import "startup" `
+  --hidden-import "shutdown_manager" `
+  --collect-submodules "tkinter" `
+  .\main.py
 ```
 
 **Build policy**
 - Always use `--clean` to prevent contamination from previous build/dist artifacts
-- Do not use `--add-data ".;."` (never bundle the entire project directory)
-- Only explicitly include minimum required files (icon.ico / icon.png)
+- Since v2.5, `admin` / `startup` / `shutdown_manager` are explicitly listed under `--hidden-import`
+- Only explicitly include required files — never bundle the entire project directory
 
 After the build completes, `ChronoGPS.exe` will be created in the `dist` directory.
 
@@ -150,10 +174,6 @@ After the build completes, `ChronoGPS.exe` will be created in the `dist` directo
 - The tray icon intentionally uses a clock icon for better visibility  
   (to avoid loss of contrast at small tray icon sizes)
 
-### Notes
-- This build procedure reflects the actual release process used for v2.4.4
-- Following this method ensures clean, reproducible, and trustworthy binaries
-  
 ---
 
 ## Usage
@@ -178,10 +198,10 @@ Instant Sync is designed to:
 - Apply **only minimal, necessary, and explainable corrections** when needed
 
 The key point is that Instant Sync **does not** mean
-“rewrite the system time every second.”
+"rewrite the system time every second."
 
 > [!NOTE]
-> **What “Instant Sync is usually sufficient” means**
+> **What "Instant Sync is usually sufficient" means**
 >
 > It means **you do not need to repeatedly force clock rewrites** once the system clock has been properly calibrated.
 >
@@ -206,7 +226,7 @@ how Weak Sync behaves, and how ChronoGPS avoids injecting GNSS jitter into the O
 
 ---
 
-### Weak Sync (Interval) Behavior (v2.4.3 and later)
+### Weak Sync (Interval) Behavior
 
 ![Weak Sync (Interval Sync) Behavior Diagram](docs/weak-sync-diagram.en.png)
 
@@ -214,13 +234,12 @@ how Weak Sync behaves, and how ChronoGPS avoids injecting GNSS jitter into the O
 When the offset remains within the threshold, no correction is applied by design.*
 
 > Interval (Weak Sync) follows the model:  
-> “collect samples every second → evaluate only when the interval is reached.”  
+> "collect samples every second → evaluate only when the interval is reached."  
 > If the offset is within the threshold, the system clock is intentionally not adjusted,  
 > preventing GNSS reception jitter from being injected while still monitoring drift.
 
 **Interval Sync is not designed for continuous clock correction.**  
 For real-world FT8 / FT4 operation, **Instant Sync is strongly recommended**.
-
 
 #### How it works
 - ChronoGPS continuously **collects GNSS time offset samples every second** (without modifying the OS clock)
@@ -230,7 +249,7 @@ For real-world FT8 / FT4 operation, **Instant Sync is strongly recommended**.
 #### Gradual one-direction drift (this is normal)
 You may observe a gradual one-direction drift in the log, such as `-0.03s → -0.05s`.
 
-In most cases, this represents the **natural drift of the PC’s system clock**, not a synchronization error.  
+In most cases, this represents the **natural drift of the PC's system clock**, not a synchronization error.  
 As long as the offset remains within the threshold, ChronoGPS will deliberately **not** correct it.
 
 #### Default weak-sync parameters
@@ -285,7 +304,8 @@ Some receivers disable QZSS NMEA output by default — an empty QZSS panel is no
 
 ## Notes
 
-- On first launch, Windows may ask *“Allow this app to make changes?”* — click **Yes**
+- Starting with v2.5, the UAC dialog at launch has been removed. ChronoGPS starts in Monitor-Only mode by default
+- To enable time sync, click the banner at the top of the window to elevate
 - **The × button minimizes to the system tray.** To fully exit, right-click the tray icon → *Quit*
 - Default NTP server is `pool.ntp.org` (can be changed to any preferred server)
 
@@ -304,6 +324,9 @@ ChronoGPS/
 │   └── weak-sync-diagram.ja2.png
 ├── main.py               # Entry point
 ├── gui.py                # Main GUI
+├── startup.py            # Argument parsing, mode selection, Mutex management (v2.5)
+├── admin.py              # Admin check, UAC elevation (v2.5)
+├── shutdown_manager.py   # Shutdown sequence management (v2.5)
 ├── config.py             # Settings (JSON)
 ├── locales.py            # Localization
 ├── locales_override.py   # Localization overrides
@@ -339,8 +362,10 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 ```
 Compare the printed hash with the corresponding line in `checksums.txt` attached to the release.
 
-All releases are signed with GPG (`checksums.txt.asc`).
-Note: Windows Authenticode signing (which suppresses SmartScreen warnings) is not currently implemented.
+### Security Notes
+- Always download from the official GitHub Releases page (link above). Avoid unofficial sites or third-party distributions.
+- All releases include a GPG signature (`checksums.txt.asc`). Note that Windows Authenticode signing (which suppresses SmartScreen warnings) is not currently implemented.
+- VirusTotal scan results are published with each release for transparency.
 
 ---
 
@@ -352,7 +377,8 @@ The application contains no malicious code.
 
 All source code is publicly available and you can build the exe yourself.
 
-- VirusTotal scan results:　https://www.virustotal.com/gui/file/abf2605d60df758ad2f9fe61e0cbca8869ea55f1b5a47465ca493a38ea5d84f2/detection
+- VirusTotal scan results (v2.5): https://www.virustotal.com/gui/file/60e33c61a5e7a9ca1eb362745e08b53e3c4a5963a97091be09fd5bf7be2e5740/detection  
+  (3/72 engines flagged — Arctic Wolf / Bkav Pro / SecureAge — all heuristic false positives)
 - This has been reported to Microsoft as an incorrect detection
 
 ---
@@ -373,7 +399,7 @@ All source code is publicly available and you can build the exe yourself.
    ```bash
    gpg --verify checksums.txt.asc checksums.txt
    ```
-   You should see a "Good signature" (or 日本語環境で「正しい署名"). Confirm the key id and UID:
+   You should see a "Good signature". Confirm the key ID and UID:
    - Key ID: `864FA6445EE4D4E3`
    - UID: `Yoshiharu Tsukuura <jp1lrt@jarl.com>`
 
@@ -416,4 +442,3 @@ and help support future development ☕
 [![Coffee](https://img.shields.io/badge/Coffee-☕-yellow)](https://www.paypal.me/jp1lrt)
 
 ---
-
