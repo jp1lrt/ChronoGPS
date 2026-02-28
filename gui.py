@@ -25,6 +25,17 @@ from tray_icon import TrayIcon
 from autostart import AutoStart
 import os
 
+# v2.5 (案2) 追加：昇格再起動・確実終了
+try:
+    from shutdown_manager import ShutdownManager
+except Exception:
+    ShutdownManager = None  # テスト/段階導入用
+
+try:
+    import admin  # admin.py: check_admin / launch_elevated_and_confirm
+except Exception:
+    admin = None  # テスト/段階導入用
+
 
 def get_resource_path(relative_path):
     """PyInstallerのバンドルリソースへのパスを取得（デバッグ出力なし）"""
@@ -104,8 +115,10 @@ class ScrollableFrame(ttk.Frame):
 
 
 class GPSTimeSyncGUI:
-    def __init__(self, root):
+    def __init__(self, root, *, startup_ctx=None):
         self.root = root
+        # v2.5 (案2): main.py から起動コンテキストを受け取り、初期モードを反映する
+        self.startup_ctx = startup_ctx
 
         # 設定管理
         self.config = Config()
@@ -189,6 +202,18 @@ class GPSTimeSyncGUI:
         # FT8 offset 表示タイマーID（多重防止）
         self._offset_timer_id = None
 
+        # v2.5 (案2) 追加：UIキューafter IDを保持（ShutdownManagerで確実に止めるため）
+        self._ui_queue_timer_id = None
+
+        # v2.5 (案2) 追加：ShutdownManager（存在すれば使う）
+        self._closing = False
+        self.shutdown_mgr = None
+        if ShutdownManager is not None:
+            try:
+                self.shutdown_mgr = ShutdownManager()
+            except Exception:
+                self.shutdown_mgr = None
+
         # GPS時刻追従表示用（monotonic で受信時刻を記録）
         self._gps_rx_dt = None   # 最後に受信したGPS時刻（datetime）
         self._gps_rx_mono = None   # その時の time.monotonic()
@@ -227,12 +252,24 @@ class GPSTimeSyncGUI:
         # オフセット表示を更新（多重タイマー防止版）
         self._start_offset_timer()
 
-        # UIキューのポーリング開始
-        self.root.after(200, self._process_ui_queue)
+        # UIキューのポーリング開始（v2.5: after id を保持）
+        self._ui_queue_timer_id = self.root.after(200, self._process_ui_queue)
 
-        # 管理者権限チェック（起動後に一度だけ）
-        if not self.sync.is_admin:
-            self.root.after(300, self._check_admin_on_startup)
+        # 管理者権限チェック：v2.5では監視起動が既定のため、
+        # 起動時ダイアログは出さず、バナーで誘導する（_check_admin_on_startupは呼ばない）
+        # if not self.sync.is_admin:
+        #     self.root.after(300, self._check_admin_on_startup)
+
+        # v2.5: 起動時バナー表示更新
+        self.root.after(300, self._update_unlock_banner_visibility)
+
+        # v2.5 (案2): 起動モードを反映（monitor なら同期機能を無効化し、バナー表示を合わせる）
+        try:
+            if self.startup_ctx and getattr(self.startup_ctx, "mode", "") == "monitor":
+                self.root.after(400, self._apply_monitor_mode)
+                self.root.after(450, self._update_unlock_banner_visibility)
+        except Exception:
+            pass
 
     def _detect_system_language(self, available_langs):
         """
@@ -410,7 +447,7 @@ class GPSTimeSyncGUI:
         """
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
         _app_title = self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'
-        _app_ver = self.loc.get('app_version') or '2.4.5'
+        _app_ver = self.loc.get('app_version') or '2.5'
         about_text = self.loc.get('about_text') or f"{_app_title}\nVersion: {_app_ver}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
@@ -806,6 +843,28 @@ class GPSTimeSyncGUI:
         sf = ScrollableFrame(self.tab_sync, padding=10)
         sf.pack(fill=tk.BOTH, expand=True)
         main_frame = sf.content
+
+        # v2.5 (案2) 追加：監視起動 + 昇格誘導バナー（非管理者時に目立たせる）
+        self._unlock_banner = ttk.Frame(main_frame, padding=(10, 8))
+        self._unlock_banner.pack(fill=tk.X, pady=(0, 8))
+
+        self._unlock_banner_icon = ttk.Label(self._unlock_banner, text="🔓", font=('Arial', 16))
+        self._unlock_banner_icon.pack(side=tk.LEFT)
+
+        self._unlock_banner_text = ttk.Label(
+            self._unlock_banner,
+            text=self.loc.get('monitor_mode_warn') or self.loc.get('unlock_sync_hint') or "Monitor mode: system time will not be changed.",
+            wraplength=700,
+            justify=tk.LEFT
+        )
+        self._unlock_banner_text.pack(side=tk.LEFT, padx=(10, 10), expand=True, fill=tk.X)
+
+        self._unlock_banner_btn = ttk.Button(
+            self._unlock_banner,
+            text=self.loc.get('unlock_sync_btn') or self.loc.get('unlock_sync_button') or "Unlock Sync Features",
+            command=self.on_unlock_sync
+        )
+        self._unlock_banner_btn.pack(side=tk.RIGHT)
 
         # GPS設定
         gps_frame = ttk.LabelFrame(main_frame, text=self.loc.get('gps_settings') or "GPS Settings", padding="10")
@@ -1702,7 +1761,8 @@ class GPSTimeSyncGUI:
         # ウィンドウが存在する場合のみ、次のタイマーを予約する
         try:
             if self.root.winfo_exists():
-                self.root.after(200, self._process_ui_queue)
+                # v2.5: after id を保持（ShutdownManagerで確実に止めるため）
+                self._ui_queue_timer_id = self.root.after(200, self._process_ui_queue)
         except (tk.TclError, RuntimeError):
             pass
 
@@ -2202,6 +2262,69 @@ class GPSTimeSyncGUI:
 
         self.root.wait_window(dialog)
 
+    # =========================================================================
+    # v2.5 (案2) 追加：Unlock Sync バナー制御 + 昇格再起動
+    # =========================================================================
+
+    def _update_unlock_banner_visibility(self):
+        """非管理者時に Unlock バナーを表示、管理者時は非表示"""
+        try:
+            if not hasattr(self, "_unlock_banner"):
+                return
+            is_admin = bool(getattr(self.sync, "is_admin", False))
+            if is_admin:
+                self._unlock_banner.pack_forget()
+            else:
+                if not self._unlock_banner.winfo_ismapped():
+                    self._unlock_banner.pack(fill=tk.X, pady=(0, 8),
+                                             before=self._unlock_banner.master.winfo_children()[1]
+                                             if len(self._unlock_banner.master.winfo_children()) > 1
+                                             else None)
+        except Exception:
+            pass
+
+    def on_unlock_sync(self):
+        """監視起動 → ユーザー操作で昇格再起動（handoff）"""
+        title = self.loc.get('app_title') or "ChronoGPS"
+
+        # 既に管理者なら何もしない
+        if getattr(self.sync, "is_admin", False):
+            self._log("v2.5: already elevated; unlock banner ignored.")
+            self._update_unlock_banner_visibility()
+            return
+
+        if admin is None:
+            messagebox.showerror(title, "admin.py not available.")
+            return
+
+        self._log("v2.5: unlock requested; launching elevated (handoff, mode=sync)")
+
+        try:
+            # ElevationResult を返す（タプルではない）← Step2のAPI仕様に合わせる
+            res = admin.launch_elevated_and_confirm(
+                mode="sync",
+                handoff=True,
+                timeout_sec=10.0,
+            )
+            ok = res.waited_confirmed
+            msg = res.reason
+        except Exception as e:
+            ok = False
+            msg = f"launch_elevated_and_confirm failed: {e}"
+
+        # 必ずログに残す（Must）
+        self._log(f"v2.5: launch result ok={ok} msg={msg}")
+
+        if not ok:
+            # v2.5 Fix: UACキャンセル時はエラーダイアログを出さず、監視モード継続（ログのみ）
+            self._log("v2.5: UAC cancelled or failed. Monitor mode continues.")
+            return
+
+        # 成功したら現プロセスを確実に閉じる（ゾンビ防止）
+        self._on_closing()
+
+    # =========================================================================
+
     def _apply_monitor_mode(self):
         """モニタ専用モード：同期系ボタンを無効化してログに表示"""
         for key in ('sync_gps_btn', 'sync_ntp_btn'):
@@ -2223,8 +2346,23 @@ class GPSTimeSyncGUI:
         msg = self.loc.get('monitor_mode_log') or '⚠ Monitor-Only mode (time sync disabled)'
         self.root.after(100, lambda: self._log(msg))
 
+        # v2.5: バナー表示更新
+        self.root.after(150, self._update_unlock_banner_visibility)
+
     def _on_closing(self):
         """終了時の処理"""
+        # v2.5: 二重実行ガード
+        if getattr(self, "_closing", False):
+            return
+        self._closing = True
+
+        # v2.5: ShutdownManager に終了開始を通知
+        try:
+            if self.shutdown_mgr is not None:
+                self.shutdown_mgr._started = False  # 再利用のためリセット
+        except Exception:
+            pass
+
         # 設定を自動保存（ダイアログなし）
         self._save_settings(silent=True)
 
@@ -2246,6 +2384,14 @@ class GPSTimeSyncGUI:
             self.root.after_cancel(self.ntp_sync_timer)
         # FT8 offset 表示タイマー停止
         self._stop_offset_timer()
+
+        # v2.5: UIキュー after を停止
+        if getattr(self, "_ui_queue_timer_id", None):
+            try:
+                self.root.after_cancel(self._ui_queue_timer_id)
+            except Exception:
+                pass
+            self._ui_queue_timer_id = None
 
         # システムトレイ停止
         self.tray.stop()
