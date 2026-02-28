@@ -38,7 +38,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 ---
 
 ## Why ChronoGPS?
-設計思想（透明性 / 権限の扱い / “モニタ専用モード” の意図）はこちら：
+設計思想（透明性 / 権限の扱い / "モニタ専用モード" の意図）はこちら：
 - 🔗 Why ChronoGPS (Discussion): https://github.com/jp1lrt/ChronoGPS/discussions/3
 ※ 設計思想の背景については Discussion #3 を参照してください。
 
@@ -51,7 +51,7 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
   定期モードはGPS受信直後トリガ方式＋中央値フィルタ（ジッタ抑制）で±0.1秒以内を維持
 - ⏱️ **FT8オフセット** — ±0.1秒刻みで時刻を微調整するFT8デジタルモード専用機能
 - 📡 **衛星情報表示** — GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS をリアルタイム表示
-- 🔒 **非管理者対応** — 起動時に「管理者として再起動」または「モニタ専用で続行」を選択可能
+- 🔒 **非管理者対応（v2.5強化）** — デフォルトでモニタ専用起動。同期が必要なときだけバナーから昇格可能
 - 🧵 **スレッド安全なGUI** — ワーカースレッド + Queue + メインスレッド更新でTkinterのフリーズを防止
 - 🌍 **16言語対応** — 日本語・英語・フランス語・スペイン語・ドイツ語・中国語（簡体・繁体）・韓国語・ポルトガル語・イタリア語・オランダ語・ロシア語・ポーランド語・トルコ語・スウェーデン語・インドネシア語
 - 🖥️ **Windowsネイティブ体験** — システムトレイ常駐、×ボタン→トレイ収納、タスクバーアイコン対応
@@ -66,15 +66,29 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 
 ---
 
-## 動作モード
+## 動作モード（v2.5〜）
 
-### 管理者権限あり
-- GPS / NTP によるシステム時刻の自動・手動同期が可能
+v2.5 から、起動時のUACダイアログは廃止されました。  
+**常にモニタ専用モードで起動**し、同期が必要なときだけ画面上のバナーから昇格できます。
 
-### 管理者権限なし
-起動時に選択できます：
-- **管理者として再起動** → UACダイアログで昇格し全機能が使用可能
-- **モニタ専用で続行** → GPS受信・衛星表示・NTP時刻確認のみ（時刻書き換えは無効）
+### 起動時（デフォルト：モニタ専用）
+- UACダイアログは表示されません
+- GPS受信・衛星表示・NTP時刻確認はそのまま利用可能
+- 画面上部に「時刻同期を有効にする（管理者として再起動）」バナーが表示されます
+
+### 同期機能を使いたいとき
+- バナーのボタンをクリック → UACダイアログで許可 → 管理者として再起動
+- UACをキャンセルしても、モニタモードのまま継続されます（プロセスは終了しません）
+- 再起動後はバナーが消え、GPS/NTP同期が利用可能になります
+
+### コマンドライン起動
+```powershell
+# モニタ専用で起動（デフォルト）
+.\ChronoGPS.exe
+
+# 同期モードで起動（非管理者でもバナーは表示される）
+.\ChronoGPS.exe --mode=sync
+```
 
 ---
 
@@ -92,7 +106,8 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 ### exeで使う場合（推奨）
 
 1. `ChronoGPS.exe`、`icon.ico` を同じフォルダに置く
-2. `ChronoGPS.exe` を右クリック →「管理者として実行」
+2. `ChronoGPS.exe` をダブルクリックで起動（モニタ専用モードで起動します）
+3. 時刻同期が必要な場合は画面上部のバナーから昇格してください
 
 ### Pythonスクリプトで使う場合
 
@@ -129,17 +144,33 @@ python -m pytest -q
 すべてのテストが成功していることを確認してください。
 
 ### 4. exe のビルド（クリーンビルド）
+
 ```powershell
-python -m PyInstaller --noconfirm --clean --onefile --windowed --name ChronoGPS --icon icon.ico `
-  --add-data "icon.ico;." `
-  --add-data "icon.png;." `
-  main.py
+pyinstaller --noconfirm --clean --onefile --windowed `
+  --name "ChronoGPS" `
+  --icon ".\icon.ico" `
+  --add-data ".\icon.ico;." `
+  --add-data ".\icon.png;." `
+  --add-data ".\donate_qr.png;." `
+  --add-data ".\locales.py;." `
+  --add-data ".\locales_override.py;." `
+  --add-data ".\gps_time_sync_config.json;." `
+  --hidden-import "tkinter" `
+  --hidden-import "tkinter.ttk" `
+  --hidden-import "tkinter.messagebox" `
+  --hidden-import "tkinter.filedialog" `
+  --hidden-import "tkinter.scrolledtext" `
+  --hidden-import "admin" `
+  --hidden-import "startup" `
+  --hidden-import "shutdown_manager" `
+  --collect-submodules "tkinter" `
+  .\main.py
 ```
 
 **ビルド方針について**
 - `--clean` を必ず使用し、過去の build / dist による汚染を防止します
-- `--add-data ".;."` のようなプロジェクト全体同梱は行いません
-- 同梱するファイルは**必要最小限（icon.ico / icon.png）**のみを明示指定します
+- v2.5 から `admin` / `startup` / `shutdown_manager` が追加されたため、`--hidden-import` に3モジュールを明示指定しています
+- 同梱するファイルは**必要なものを明示指定**します（プロジェクト全体の一括同梱は行いません）
 
 ビルド後、`dist` ディレクトリに `ChronoGPS.exe` が生成されます。
 
@@ -279,7 +310,7 @@ GNSS 受信時の微小な揺らぎ（ジッタ）を
 定期同期は  
 「勝手に時刻を合わせてくれる魔法の機能」ではありません。
 
-**時刻の状態を“見える化”し、必要なときだけ補正するためのツール**です。
+**時刻の状態を"見える化"し、必要なときだけ補正するためのツール**です。
 
 ### NTP同期
 
@@ -322,7 +353,8 @@ QZSS（みちびき）は日本の準天頂衛星システムです。対応受�
 
 ## 起動時の注意
 
-- 初回起動時に「このアプリがデバイスに変更を加えることを許可しますか？」と表示されますが、「はい」で進んでください
+- v2.5以降、起動時のUACダイアログは廃止されました。デフォルトでモニタ専用モードで起動します
+- 時刻同期が必要な場合は画面上部のバナーから昇格してください
 - **×ボタンはトレイに収納**されます。完全終了はタスクトレイアイコンを右クリック →「終了」
 - NTPサーバーはデフォルト `pool.ntp.org` です。`ntp.nict.jp` など好みのサーバーに変更できます
 
@@ -332,7 +364,6 @@ QZSS（みちびき）は日本の準天頂衛星システムです。対応受�
 ## ファイル構成
 
 ```
-
 ChronoGPS/
 ├── README.md               # プロジェクトの概要・使い方
 ├── docs/                   # ドキュメント類
@@ -340,6 +371,9 @@ ChronoGPS/
 │   └── weak-sync-diagram.ja2.png # 動作原理の図解
 ├── main.py                 # エントリーポイント（アプリの起動）
 ├── gui.py                  # メインGUI画面の制御
+├── startup.py              # 起動引数解析・モード決定・Mutex管理 (v2.5)
+├── admin.py                # 管理者権限チェック・UAC昇格処理 (v2.5)
+├── shutdown_manager.py     # 終了シーケンス管理 (v2.5)
 ├── config.py               # 設定ファイル（JSON）の読み書き管理
 ├── locales.py              # 多言語対応（翻訳データ）
 ├── locales_override.py     # 特定環境向けの文言上書き
@@ -393,7 +427,8 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
 
-- VirusTotal スキャン結果: https://www.virustotal.com/gui/file/abf2605d60df758ad2f9fe61e0cbca8869ea55f1b5a47465ca493a38ea5d84f2/detection
+- VirusTotal スキャン結果 (v2.5): https://www.virustotal.com/gui/file/60e33c61a5e7a9ca1eb362745e08b53e3c4a5963a97091be09fd5bf7be2e5740/detection  
+  （72エンジン中3件検出 — Arctic Wolf / Bkav Pro / SecureAge によるヒューリスティック誤検知）
 - 誤検知であることを Microsoft に報告済みです。
 
 ---
