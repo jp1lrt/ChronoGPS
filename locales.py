@@ -133,6 +133,7 @@ class Localization:
                 'monitor_mode_log': '⚠ モニタ専用モードで起動中（時刻同期は無効）',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': '監視モード: システム時刻は変更されません',
+                'unlock_already_elevated': 'すでに管理者権限で起動中のため、Unlockは不要です。',
                 'unlock_sync_button': '時刻同期を有効にする（管理者として再起動）',
                 'already_running': 'ChronoGPS はすでに起動しています。',
                 'other_mode_running': 'ChronoGPS の別モードがすでに起動しています。',
@@ -264,6 +265,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Running in Monitor-Only mode (time sync disabled)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Monitor mode: system time will not be changed.',
+                'unlock_already_elevated': 'Already elevated; unlock ignored.',
                 'unlock_sync_button': 'Unlock Sync Features (Restart as Administrator)',
                 'already_running': 'ChronoGPS is already running.',
                 'other_mode_running': 'Another mode of ChronoGPS is already running.',
@@ -391,6 +393,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Mode moniteur uniquement (synchronisation désactivée)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Mode moniteur : l\'heure système ne sera pas modifiée.',
+                'unlock_already_elevated': 'Déjà élevé ; déverrouillage ignoré.',
                 'unlock_sync_button': 'Activer la sync (Redémarrer en administrateur)',
                 'already_running': 'ChronoGPS est déjà en cours d\'exécution.',
                 'other_mode_running': 'Un autre mode de ChronoGPS est déjà en cours d\'exécution.',
@@ -518,6 +521,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Modo solo monitoreo (sincronización desactivada)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Modo monitor: la hora del sistema no se modificará.',
+                'unlock_already_elevated': 'Ya elevado; desbloqueo ignorado.',
                 'unlock_sync_button': 'Activar sincronización (Reiniciar como administrador)',
                 'already_running': 'ChronoGPS ya está en ejecución.',
                 'other_mode_running': 'Otro modo de ChronoGPS ya está en ejecución.',
@@ -645,6 +649,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Nur-Monitor-Modus (Zeitsynchronisierung deaktiviert)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Überwachungsmodus: Systemzeit wird nicht geändert.',
+                'unlock_already_elevated': 'Bereits erhöht; Entsperren ignoriert.',
                 'unlock_sync_button': 'Sync aktivieren (Als Administrator neu starten)',
                 'already_running': 'ChronoGPS läuft bereits.',
                 'other_mode_running': 'Ein anderer Modus von ChronoGPS läuft bereits.',
@@ -772,6 +777,7 @@ class Localization:
                 'monitor_mode_log': '⚠ 仅监控模式运行中（时间同步已禁用）',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': '监控模式：系统时间不会被修改。',
+                'unlock_already_elevated': '已以管理员权限启动，无需解锁。',
                 'unlock_sync_button': '启用时间同步（以管理员身份重启）',
                 'already_running': 'ChronoGPS 已在运行。',
                 'other_mode_running': 'ChronoGPS 的另一个模式已在运行。',
@@ -899,6 +905,7 @@ class Localization:
                 'monitor_mode_log': '⚠ 僅監控模式運行中（時間同步已停用）',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': '監控模式：系統時間不會被修改。',
+                'unlock_already_elevated': '已以系統管理員身分啟動，無需解鎖。',
                 'unlock_sync_button': '啟用時間同步（以管理員身份重新啟動）',
                 'already_running': 'ChronoGPS 已在執行中。',
                 'other_mode_running': 'ChronoGPS 的另一個模式已在執行中。',
@@ -1026,6 +1033,7 @@ class Localization:
                 'monitor_mode_log': '⚠ 모니터 전용 모드 실행 중（시간 동기화 비활성화）',
                 # v2.5.1 (案2) 추가
                 'unlock_sync_hint': '모니터 모드: 시스템 시간이 변경되지 않습니다.',
+                'unlock_already_elevated': '이미 관리자 권한으로 실행 중입니다. 잠금 해제가 필요 없습니다.',
                 'unlock_sync_button': '시간 동기화 활성화 (관리자로 재시작)',
                 'already_running': 'ChronoGPS가 이미 실행 중입니다.',
                 'other_mode_running': 'ChronoGPS의 다른 모드가 이미 실행 중입니다.',
@@ -1142,6 +1150,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Modo somente monitor (sincronização desativada)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Modo monitor: a hora do sistema não será alterada.',
+                'unlock_already_elevated': 'Já elevado; desbloqueio ignorado.',
                 'unlock_sync_button': 'Ativar sincronização (Reiniciar como administrador)',
                 'already_running': 'ChronoGPS já está em execução.',
                 'other_mode_running': 'Outro modo do ChronoGPS já está em execução.',
@@ -1269,6 +1278,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Modalità solo monitor (sincronizzazione disabilitata)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Modalità monitor: l\'orario di sistema non verrà modificato.',
+                'unlock_already_elevated': 'Già elevato; sblocco ignorato.',
                 'unlock_sync_button': 'Attiva sincronizzazione (Riavvia come amministratore)',
                 'already_running': 'ChronoGPS è già in esecuzione.',
                 'other_mode_running': 'Un\'altra modalità di ChronoGPS è già in esecuzione.',
@@ -1396,6 +1406,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Alleen-monitor-modus (tijdsynchronisatie uitgeschakeld)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Monitormodus: de systeemtijd wordt niet gewijzigd.',
+                'unlock_already_elevated': 'Al verhoogd; ontgrendelen genegeerd.',
                 'unlock_sync_button': 'Synchronisatie inschakelen (Opnieuw starten als beheerder)',
                 'already_running': 'ChronoGPS wordt al uitgevoerd.',
                 'other_mode_running': 'Een andere modus van ChronoGPS wordt al uitgevoerd.',
@@ -1523,6 +1534,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Режим только монитора (синхронизация отключена)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Режим монитора: системное время не будет изменено.',
+                'unlock_already_elevated': 'Права уже повышены; разблокировка не требуется.',
                 'unlock_sync_button': 'Включить синхронизацию (Перезапустить от имени администратора)',
                 'already_running': 'ChronoGPS уже запущен.',
                 'other_mode_running': 'Другой режим ChronoGPS уже запущен.',
@@ -1649,6 +1661,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Tryb tylko monitora (synchronizacja wyłączona)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Tryb monitora: czas systemowy nie zostanie zmieniony.',
+                'unlock_already_elevated': 'Już podwyższone; odblokowanie zignorowane.',
                 'unlock_sync_button': 'Włącz synchronizację (Uruchom ponownie jako administrator)',
                 'already_running': 'ChronoGPS jest już uruchomiony.',
                 'other_mode_running': 'Inny tryb ChronoGPS jest już uruchomiony.',
@@ -1776,6 +1789,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Yalnızca monitör modu (zaman senkronizasyonu devre dışı)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Monitör modu: sistem saati değiştirilmeyecek.',
+                'unlock_already_elevated': 'Zaten yükseltildi; kilit açma yok sayıldı.',
                 'unlock_sync_button': 'Senkronizasyonu etkinleştir (Yönetici olarak yeniden başlat)',
                 'already_running': 'ChronoGPS zaten çalışıyor.',
                 'other_mode_running': 'ChronoGPS\'in başka bir modu zaten çalışıyor.',
@@ -1902,6 +1916,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Endast övervakningsläge (tidssynkronisering inaktiverad)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Övervakningsläge: systemtiden kommer inte att ändras.',
+                'unlock_already_elevated': 'Redan förhöjd; upplåsning ignoreras.',
                 'unlock_sync_button': 'Aktivera synkronisering (Starta om som administratör)',
                 'already_running': 'ChronoGPS körs redan.',
                 'other_mode_running': 'Ett annat läge av ChronoGPS körs redan.',
@@ -2029,6 +2044,7 @@ class Localization:
                 'monitor_mode_log': '⚠ Mode monitor saja (sinkronisasi waktu dinonaktifkan)',
                 # v2.5.1 (案2) 追加
                 'unlock_sync_hint': 'Mode monitor: waktu sistem tidak akan diubah.',
+                'unlock_already_elevated': 'Sudah ditingkatkan; buka kunci diabaikan.',
                 'unlock_sync_button': 'Aktifkan sinkronisasi (Mulai ulang sebagai administrator)',
                 'already_running': 'ChronoGPS sudah berjalan.',
                 'other_mode_running': 'Mode lain dari ChronoGPS sudah berjalan.',

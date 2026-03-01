@@ -2295,7 +2295,7 @@ class GPSTimeSyncGUI:
 
         # 既に管理者なら何もしない
         if getattr(self.sync, "is_admin", False):
-            self._log("v2.5: already elevated; unlock banner ignored.")
+            self._log(self.loc.get('unlock_already_elevated') or "Already running as Administrator; unlock ignored.")
             self._update_unlock_banner_visibility()
             return
 
