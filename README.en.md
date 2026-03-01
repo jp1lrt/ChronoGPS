@@ -101,6 +101,8 @@ Elevation is only requested when the user explicitly wants sync.
 2. Double-click `ChronoGPS.exe` to launch (starts in Monitor-Only mode)
 3. If time sync is needed, click the banner at the top to elevate
 
+For automatic elevated startup at logon, see [FAQ Q21](docs/FAQ.en.md#q21).
+
 ### Running from source
 
 ```powershell
