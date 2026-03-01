@@ -392,7 +392,6 @@ All source code is publicly available and you can build the exe yourself.
 
 - VirusTotal scan results (v2.5.1): https://www.virustotal.com/gui/file/0ef140a39386c6360458011a36af6729e4a28d92a0548feaaeb6e3dd7d7022ab/detection  
   (5/72 detections — Arctic Wolf / Bkav Pro / DeepInstinct / Microsoft / SecureAge — all heuristic false positives)
-  (3/72 engines flagged — Arctic Wolf / Bkav Pro / SecureAge — all heuristic false positives)
 - This has been reported to Microsoft as an incorrect detection
 
 ---
