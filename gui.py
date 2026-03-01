@@ -186,6 +186,7 @@ class GPSTimeSyncGUI:
         self.is_running = False
         self.ntp_sync_timer = None
         self.gps_sync_timer = None
+        self._ntp_worker_running = False  # v2.5.1: NTPスレッド重複防止フラグ
         self._gps_next_sync_mono = None  # interval sync: 次回同期期限（monotonic）
         self.debug_enabled = False         # スレッドセーフなデバッグフラグ
         self._gps_interval_index = 2       # スレッドセーフなインターバルインデックス
@@ -270,6 +271,23 @@ class GPSTimeSyncGUI:
                 self.root.after(450, self._update_unlock_banner_visibility)
         except Exception:
             pass
+
+        # アプリ起動時のみ、設定に基づき自動同期を開始する (v2.5.1 修正)
+        # 言語切替（_rebuild_tabs）では呼ばれないため、勝手な復活を防げる
+        self._ntp_autostart_after_id = None
+        if self._to_bool(self.config.get('ntp', 'auto_sync')):
+            self._ntp_autostart_after_id = self.root.after(1000, self._start_ntp_auto_sync)
+
+    def _to_bool(self, val):
+        """あらゆる型を確実に真偽値に変換する（手動編集等による文字列混入対策）"""
+        if isinstance(val, bool):
+            return val
+        if val is None:
+            return False
+        if isinstance(val, (int, float)):
+            return bool(val)
+        s = str(val).strip().lower()
+        return s in ("1", "true", "yes", "on")
 
     def _detect_system_language(self, available_langs):
         """
@@ -424,6 +442,13 @@ class GPSTimeSyncGUI:
         # 4) メニューを作り直す
         try:
             self._create_menu()
+        except Exception:
+            pass
+
+        # 言語切替後に Unlock バナー表示状態を再評価（admin/monitor状態を反映）
+        # ※ messagebox より前に置くことでチラ見えを防ぐ
+        try:
+            self._update_unlock_banner_visibility()
         except Exception:
             pass
 
@@ -1556,7 +1581,7 @@ class GPSTimeSyncGUI:
         self._log(f"🚀 {self.loc.get('sync_on_startup_log') or 'Running startup sync...'}")
 
         if self.ntp_entry.get():
-            self._sync_ntp()
+            self._sync_ntp(is_auto=True)
 
     def _on_gps_mode_change(self):
         """GPS同期モードが変更された時"""
@@ -1624,6 +1649,14 @@ class GPSTimeSyncGUI:
 
     def _toggle_ntp_auto_sync(self):
         """NTP自動同期ON/OFF"""
+        # 1) まず設定へ反映（言語切替/タブ再構築で復活しないように）
+        try:
+            self.config.set('ntp', 'auto_sync', value=bool(self.ntp_auto_sync_var.get()))
+            self.config.save()
+        except Exception:
+            pass
+
+        # 2) 動作へ反映
         if self.ntp_auto_sync_var.get():
             self._start_ntp_auto_sync()
         else:
@@ -1631,14 +1664,28 @@ class GPSTimeSyncGUI:
 
     def _start_ntp_auto_sync(self):
         """NTP自動同期開始"""
+        # 多重起動防止（すでにタイマーが走っているなら何もしない）
+        if self.ntp_sync_timer is not None:
+            return
         self._sync_ntp_background()
         self._schedule_ntp_sync()
         self._log(f"🔄 {self.loc.get('ntp_auto_on') or 'NTP auto sync ON'}")
 
     def _stop_ntp_auto_sync(self):
         """NTP自動同期停止"""
+        # 起動直後の予約afterがあればキャンセル（レースコンディション対策）
+        if getattr(self, "_ntp_autostart_after_id", None):
+            try:
+                self.root.after_cancel(self._ntp_autostart_after_id)
+            except Exception:
+                pass
+            self._ntp_autostart_after_id = None
+
         if self.ntp_sync_timer:
-            self.root.after_cancel(self.ntp_sync_timer)
+            try:
+                self.root.after_cancel(self.ntp_sync_timer)
+            except Exception:
+                pass
             self.ntp_sync_timer = None
         self._log(f"⏸ {self.loc.get('ntp_auto_off') or 'NTP auto sync OFF'}")
 
@@ -1657,27 +1704,43 @@ class GPSTimeSyncGUI:
 
     def _ntp_sync_callback(self):
         """NTP同期コールバック"""
+        self.ntp_sync_timer = None  # タイマーIDを消費済みに
+
+        # OFF / 終了中なら何もしない（残弾無害化）
+        if getattr(self, "_closing", False) or (not self.ntp_auto_sync_var.get()):
+            return
+
         self._sync_ntp_background()
         self._schedule_ntp_sync()
 
     def _sync_ntp_background(self):
-        """バックグラウンドでNTP同期"""
-        self._sync_ntp()
+        """バックグラウンドでNTP同期（自動）"""
+        if self._ntp_worker_running:
+            return  # v2.5.1: スレッド重複防止
+        self._sync_ntp(is_auto=True)
 
-    def _sync_ntp(self):
+    def _sync_ntp(self, is_auto=False):
         """UIスレッドからのエントリーポイント: serverを取得してworkerを起動"""
+        if self._ntp_worker_running:
+            return  # 手動呼び出しでも重複防止
         server = (self.ntp_entry.get() or "").strip() or "pool.ntp.org"
-        threading.Thread(target=self._sync_ntp_worker, args=(server,), daemon=True).start()
+        self._ntp_worker_running = True  # v2.5.1: スレッド起動前にフラグを立てる（レース耐性）
+        try:
+            threading.Thread(target=self._sync_ntp_worker, args=(server, is_auto), daemon=True).start()
+        except Exception:
+            self._ntp_worker_running = False  # スレッド起動失敗時はフラグを戻す
 
-    def _sync_ntp_worker(self, server: str):
+    def _sync_ntp_worker(self, server: str, is_auto: bool = False):
         """Worker: NTP問い合わせのみ行い結果をqueueへ（UIに直接触らない）"""
         try:
             self.ntp_client.set_server(server)
             self.ui_queue.put(('log', f"NTP: {server}"))
             ntp_time, offset_ms = self.ntp_client.get_time()
-            self.ui_queue.put(('ntp_result', ntp_time, offset_ms))
+            self.ui_queue.put(('ntp_result', ntp_time, offset_ms, is_auto))
         except Exception as e:
             self.ui_queue.put(('ntp_error', str(e)))
+        finally:
+            self._ntp_worker_running = False
 
     def _process_ui_queue(self):
         """メインスレッド: workerの結果を受け取りUI更新・時刻設定を行う（TclError対策済み）"""
@@ -1715,7 +1778,12 @@ class GPSTimeSyncGUI:
                         self._gps_mode_changing = False
 
                 elif tag == 'ntp_result':
-                    _, ntp_time, offset_ms = item
+                    _, ntp_time, offset_ms, is_auto = item
+
+                    # 自動sync由来かつOFF / 終了中なら捨てる（手動Syncは常に処理）
+                    if is_auto and (getattr(self, "_closing", False) or (not self.ntp_auto_sync_var.get())):
+                        continue
+
                     self.ntp_time_value.config(text=ntp_time.strftime("%Y-%m-%d %H:%M:%S UTC"))
                     self._log(f"NTP: {ntp_time}, offset: {offset_ms / 1000.0:.3f}s ({offset_ms:.2f}ms)")
 
@@ -1869,11 +1937,11 @@ class GPSTimeSyncGUI:
             self.ntp_entry.delete(0, tk.END)
             self.ntp_entry.insert(0, ntp_server)
 
-        # NTP auto sync
-        ntp_auto_val = self.config.get('ntp', 'auto_sync') or False
+        # NTP auto sync - UIに反映するだけ（ここでは起動しない）
+        ntp_auto_val = self._to_bool(self.config.get('ntp', 'auto_sync'))
         self.ntp_auto_sync_var.set(ntp_auto_val)
-        if ntp_auto_val:
-            self.root.after(500, self._start_ntp_auto_sync)
+        # if ntp_auto_val:
+        #     self.root.after(500, self._start_ntp_auto_sync)
 
         # NTP interval index (validate)
         ntp_interval_index = self.config.get('ntp', 'sync_interval_index')
