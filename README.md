@@ -320,6 +320,16 @@ GNSS 受信時の微小な揺らぎ（ジッタ）を
    - 日本国内では `ntp.nict.jp` がおすすめ
 2. 「NTP同期」ボタンで即時同期、または自動同期を有効化
 
+> [!NOTE]
+> **GPS同期とNTP自動同期の併用について**
+>
+> GPS同期が有効な状態でNTP自動同期もONにすると、  
+> GPSとNTPがそれぞれ互いの補正を打ち消し合う「ピンポン現象」が発生することがあります。
+>
+> - GPS受信が安定している場合は、**NTP自動同期はOFFを推奨**します
+> - NTPは「GPS未受信時のバックアップ」または「単独での時刻確認」として使用してください
+> - 「NTP同期」ボタンによる手動同期は、NTP自動同期のON/OFFに関わらず常に使用できます
+
 ### FT8オフセット
 
 FT8運用でタイミングがずれる場合、オフセット欄に補正値（秒）を入力して「適用」。  
@@ -429,8 +439,8 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
 
-- VirusTotal スキャン結果 (v2.5): https://www.virustotal.com/gui/file/60e33c61a5e7a9ca1eb362745e08b53e3c4a5963a97091be09fd5bf7be2e5740/detection  
-  （72エンジン中3件検出 — Arctic Wolf / Bkav Pro / SecureAge によるヒューリスティック誤検知）
+- VirusTotal スキャン結果 (v2.5.1): https://www.virustotal.com/gui/file/0ef140a39386c6360458011a36af6729e4a28d92a0548feaaeb6e3dd7d7022ab/detection  
+  （72エンジン中5件検出 — Arctic Wolf / Bkav Pro / DeepInstinct / Microsoft / SecureAge によるヒューリスティック誤検知）
 - 誤検知であることを Microsoft に報告済みです。
 
 ---
