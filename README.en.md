@@ -266,6 +266,17 @@ As long as the offset remains within the threshold, ChronoGPS will deliberately 
    - Recommended for Japan: `ntp.nict.jp`
 2. Click **NTP Sync** for immediate sync, or enable auto-sync
 
+> [!NOTE]
+> **Using GPS Sync and NTP Auto-Sync simultaneously**
+>
+> If GPS sync is active and NTP auto-sync is also enabled,  
+> the two sources may repeatedly correct each other in a "ping-pong" effect,  
+> resulting in unstable time accuracy.
+>
+> - When GPS reception is stable, it is recommended to **turn off NTP auto-sync**
+> - Use NTP as a backup when GPS is unavailable, or for manual one-time sync
+> - The **NTP Sync** button (manual) is always available regardless of the auto-sync setting
+
 ### FT8 Offset
 
 If your FT8 timing is slightly off, enter an offset value (seconds) and click **Apply**.  
@@ -379,7 +390,8 @@ The application contains no malicious code.
 
 All source code is publicly available and you can build the exe yourself.
 
-- VirusTotal scan results (v2.5): https://www.virustotal.com/gui/file/60e33c61a5e7a9ca1eb362745e08b53e3c4a5963a97091be09fd5bf7be2e5740/detection  
+- VirusTotal scan results (v2.5.1): https://www.virustotal.com/gui/file/0ef140a39386c6360458011a36af6729e4a28d92a0548feaaeb6e3dd7d7022ab/detection  
+  (5/72 detections — Arctic Wolf / Bkav Pro / DeepInstinct / Microsoft / SecureAge — all heuristic false positives)
   (3/72 engines flagged — Arctic Wolf / Bkav Pro / SecureAge — all heuristic false positives)
 - This has been reported to Microsoft as an incorrect detection
 
