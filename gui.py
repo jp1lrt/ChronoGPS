@@ -1723,10 +1723,13 @@ class GPSTimeSyncGUI:
 
                     if not self.sync.is_admin:
                         self._log(f"⚠ {self.loc.get('admin_required') or 'Administrator required'}")
-                        messagebox.showerror(
-                            self.loc.get('app_title') or "Error",
-                            self.loc.get('admin_required') or "Administrator privileges required"
-                        )
+                        # v2.5.1: monitorモードではポップアップ抑止（NTP監視・表示は継続）
+                        is_monitor = bool(self.startup_ctx and getattr(self.startup_ctx, "mode", "") == "monitor")
+                        if not is_monitor:
+                            messagebox.showerror(
+                                self.loc.get('app_title') or "Error",
+                                self.loc.get('admin_required') or "Administrator privileges required"
+                            )
                     else:
                         success, msg = self.sync.sync_time(corrected_utc)
                         if success:
@@ -1744,10 +1747,13 @@ class GPSTimeSyncGUI:
                 elif tag == 'ntp_error':
                     _, err = item
                     self._log(f"✗ NTP error: {err}")
-                    messagebox.showerror(
-                        self.loc.get('app_title') or "Error",
-                        self.loc.get('ntp_error') or f"NTP error: {err}"
-                    )
+                    # v2.5.1: monitorモードではポップアップ抑止
+                    is_monitor = bool(self.startup_ctx and getattr(self.startup_ctx, "mode", "") == "monitor")
+                    if not is_monitor:
+                        messagebox.showerror(
+                            self.loc.get('app_title') or "Error",
+                            self.loc.get('ntp_error') or f"NTP error: {err}"
+                        )
 
                 try:
                     self.ui_queue.task_done()
@@ -2316,8 +2322,7 @@ class GPSTimeSyncGUI:
         self._log(f"v2.5: launch result ok={ok} msg={msg}")
 
         if not ok:
-            # v2.5 Fix: UACキャンセル時はエラーダイアログを出さず、監視モード継続（ログのみ）
-            self._log("v2.5: UAC cancelled or failed. Monitor mode continues.")
+            messagebox.showerror(title, msg or "Failed to restart as Administrator.")
             return
 
         # 成功したら現プロセスを確実に閉じる（ゾンビ防止）
