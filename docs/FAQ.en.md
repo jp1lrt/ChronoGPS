@@ -408,3 +408,54 @@ Instead, it is designed to be explainable:
 
 ChronoGPS prioritizes not just “accuracy,”  
 but **understandable accuracy**.
+
+---
+
+## Q21. I want ChronoGPS to start elevated (Sync mode) automatically, without clicking Unlock every time
+
+**A. You can use Windows Task Scheduler. (Advanced / Optional)**
+
+ChronoGPS itself maintains its design principle: it never elevates silently without explicit user action.  
+However, by registering ChronoGPS in Windows Task Scheduler with "Run with highest privileges," you can have it launch automatically with administrator rights at logon.
+
+> ⚠️ This is optional. It may not be available on managed/work PCs where administrator policies restrict it.  
+> Also, make sure to **disable** ChronoGPS's built-in "Start with Windows" option to avoid double-launch conflicts.
+
+### Setup Steps
+
+**1. Open Task Scheduler**
+- Start → search "Task Scheduler", or press `Win+R` → type `taskschd.msc`
+
+**2. Select "Create Task" (not "Create Basic Task")**
+- In the right-hand Actions panel → click ［Create Task］
+
+**3. ［General］ tab**
+- Name: e.g. `ChronoGPS (Admin AutoStart)`
+- Select "Run only when user is logged on"
+- ✅ Check **"Run with highest privileges"** ← most important
+
+**4. ［Triggers］ tab**
+- Click ［New…］→ Begin the task: "At log on"
+- Specific user: your account
+- (Optional) Delay: 30 seconds (can help on slow-to-boot PCs)
+
+**5. ［Actions］ tab**
+- Click ［New…］→ Action: "Start a program"
+- Program/script: full path to `ChronoGPS.exe` (e.g. `C:\Tools\ChronoGPS\ChronoGPS.exe`)
+- Arguments (optional): `--mode=sync`
+
+**6. ［Conditions］ tab**
+- On laptops: uncheck "Start the task only if the computer is on AC power" if needed
+
+**7. ［Settings］ tab (recommended)**
+- ✅ "Allow task to be run on demand"
+- "If the task is already running" → select "Do not start a new instance"
+
+**8. Save and verify**
+- Click OK to save, then right-click the task → ［Run］ to test
+- Confirm it launches automatically on next logon
+
+### Troubleshooting
+- Make sure the path points to the `.exe` file itself, not a shortcut
+- Confirm "Run with highest privileges" is checked
+- If ChronoGPS's built-in "Start with Windows" is still ON, a double-launch may be blocked by the Mutex — disable it
