@@ -380,6 +380,16 @@ Compare the printed hash with the corresponding line in `checksums.txt` attached
 - All releases include a GPG signature (`checksums.txt.asc`). Note that Windows Authenticode signing (which suppresses SmartScreen warnings) is not currently implemented.
 - VirusTotal scan results are published with each release for transparency.
 
+
+### Third-party bundling / redistribution policy
+- If you bundle ChronoGPS with another application or installer, please use the **official binaries from GitHub Releases** (the exact files covered by `checksums.txt`).
+- If a rebuild is unavoidable, please **publish a clear build identifier and SHA256 hashes** for the distributed artifacts. (Same version number + different binary makes verification and support difficult.)
+- Please do not modify and redistribute binaries in a way that could be mistaken for an official release.
+
+### Support boundary
+- Issues reproducible with the **official release** are welcome in this repository.
+- Issues specific to a third-party bundle/launcher/installer (packaging, permissions, config location, update behavior, etc.) should be handled by the bundling project first.
+
 ---
 
 ## False Positive Warnings from Antivirus Software
