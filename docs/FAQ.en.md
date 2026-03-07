@@ -459,3 +459,19 @@ However, by registering ChronoGPS in Windows Task Scheduler with "Run with highe
 - Make sure the path points to the `.exe` file itself, not a shortcut
 - Confirm "Run with highest privileges" is checked
 - If ChronoGPS's built-in "Start with Windows" is still ON, a double-launch may be blocked by the Mutex — disable it
+
+---
+
+## Q22. How accurate is ChronoGPS during long continuous operation?
+
+**A. In the author's test environment, ChronoGPS remained highly stable on a general-purpose Windows PC while the computer was used normally (including FT8 operation and video streaming).**
+
+| Item | Result |
+|------|--------|
+| Duration | 118+ hours (continuous operation) |
+| Mode | Instant Sync (GNSS) |
+| Post-correction error | Always within ±0.010 s |
+| Typical post-correction error | 0.000–0.003 s |
+| Maximum correction applied | ±0.024 s |
+
+No crashes were observed and no drift accumulation occurred during the test.
