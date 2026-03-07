@@ -37,6 +37,15 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 
 ---
 
+## 典型的な利用シーン
+
+- FT8 / FT4 運用における高精度な時刻同期
+- インターネット不要のポータブル運用（SOTA / POTA など）
+- 一般的なWindowsパソコンでの長期クロック監視
+- 安価なUSBレシーバーによるGNSS基準のUTC時刻参照
+
+---
+
 ## Why ChronoGPS?
 設計思想（透明性 / 権限の扱い / "モニタ専用モード" の意図）はこちら：
 - 🔗 Why ChronoGPS (Discussion): https://github.com/jp1lrt/ChronoGPS/discussions/3
@@ -61,8 +70,10 @@ ChronoGPS は「正確な時刻を、余計な操作なしで得る」ことを�
 ## スクリーンショット
 
 ![時刻同期画面](https://github.com/user-attachments/assets/4fa71a03-b5e2-4b1e-a9dc-778ae10dcbc8)
+*GNSS同期中のメイン画面。時刻誤差: −0.001 秒。*
 
 ![衛星情報画面](https://github.com/user-attachments/assets/2c49f20a-96fb-44ee-9d9e-5a2ac495b4c5)
+*衛星情報画面（GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS）。*
 
 ---
 

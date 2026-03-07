@@ -32,6 +32,15 @@ please refer to the FAQ:
 
 ---
 
+## Typical Use Cases
+
+- FT8 / FT4 operation requiring accurate PC time
+- Portable / field operation (SOTA / POTA) without Internet access
+- Long-term clock monitoring on a general-purpose Windows PC
+- GNSS-based UTC reference with an inexpensive USB receiver
+
+---
+
 ## Why ChronoGPS?
 
 If you are interested in the design philosophy behind ChronoGPS —  
@@ -60,8 +69,10 @@ please see the detailed discussion below:
 ## Screenshots
 
 ![Time Sync — GPS Active](https://github.com/user-attachments/assets/5e8279dc-f258-4d82-894b-d46e4ad9600b)
+*Main window during GNSS synchronization. Time Error: −0.001 s.*
 
 ![Satellite Info](https://github.com/user-attachments/assets/6110cf13-cc23-4df2-836a-7e7953ae5335)
+*Satellite information view (GPS / GLONASS / BeiDou / Galileo / SBAS / QZSS).*
 
 ---
 

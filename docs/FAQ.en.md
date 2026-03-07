@@ -475,3 +475,15 @@ However, by registering ChronoGPS in Windows Task Scheduler with "Run with highe
 | Maximum correction applied | ±0.024 s |
 
 No crashes were observed and no drift accumulation occurred during the test.
+
+---
+
+## Q23. My COM port does not appear in the list. What should I do?
+
+**A. Starting with v2.5.2, you can type the port name manually.**
+
+Some virtual serial port drivers (e.g. "Virtual Serial Port TCP COM") do not register under the standard Windows "Ports (COM & LPT)" device class and therefore do not appear in ChronoGPS's auto-detected list.
+
+In v2.5.2 and later, the COM port field is directly editable. Simply type the port name manually (for example, `COM16` or `COM80`) and click **Start**.
+
+Port names are automatically normalized to uppercase (e.g. `com3` → `COM3`).
