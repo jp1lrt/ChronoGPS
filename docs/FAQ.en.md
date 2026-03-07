@@ -487,3 +487,15 @@ Some virtual serial port drivers (e.g. "Virtual Serial Port TCP COM") do not reg
 In v2.5.2 and later, the COM port field is directly editable. Simply type the port name manually (for example, `COM16` or `COM80`) and click **Start**.
 
 Port names are automatically normalized to uppercase (e.g. `com3` → `COM3`).
+
+---
+
+## Q24. Does ChronoGPS require constant GPS reception?
+
+**A. No — the Windows system clock continues running after calibration, even if GNSS reception is temporarily lost.**
+
+Once ChronoGPS has calibrated the system clock using GNSS, the clock maintains its accuracy on its own for a reasonable period. Temporary loss of GPS signal (e.g. moving indoors, antenna disconnection) does not immediately cause time errors.
+
+However, for long-term accuracy, continuous GNSS reference is recommended. Without ongoing correction, natural clock drift will gradually accumulate over time.
+
+For short interruptions during normal FT8 / FT4 operation, this is generally not a concern.
