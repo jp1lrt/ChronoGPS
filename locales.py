@@ -112,7 +112,7 @@ class Localization:
                 'language_changed': '言語が変更されました',
                 'offset_reset_success': 'オフセットを0にリセットしました',
                 'info_section': '情報',
-                'info_version': 'バージョン: 2.5.1 (FT8エディション - 0.1秒精度)',
+                'info_version': 'バージョン: 2.5.2 (FT8エディション - 0.1秒精度)',
                 'info_multilang': '多言語対応: 16言語',
                 'info_gnss': 'GNSS対応: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': '機能:',
@@ -131,7 +131,7 @@ class Localization:
                 'not_admin_restart': '管理者として再起動',
                 'not_admin_monitor': 'モニタ専用で続行',
                 'monitor_mode_log': '⚠ モニタ専用モードで起動中（時刻同期は無効）',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': '監視モード: システム時刻は変更されません',
                 'unlock_already_elevated': 'すでに管理者権限で起動中のため、Unlockは不要です。',
                 'unlock_sync_button': '時刻同期を有効にする（管理者として再起動）',
@@ -244,7 +244,7 @@ class Localization:
                 'sync_on_startup_log': 'Syncing on startup...',
                 'language_changed': 'Language changed',
                 'offset_reset_success': 'Offset reset to 0',
-                'info_version': 'Version: 2.5.1 (FT8 Edition - 0.1s precision)',
+                'info_version': 'Version: 2.5.2 (FT8 Edition - 0.1s precision)',
                 'info_multilang': 'Multi-Language Support: 16 languages',
                 'info_gnss': 'GNSS Support: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Features:',
@@ -263,7 +263,7 @@ class Localization:
                 'not_admin_restart': 'Restart as Administrator',
                 'not_admin_monitor': 'Continue in Monitor Mode',
                 'monitor_mode_log': '⚠ Running in Monitor-Only mode (time sync disabled)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Monitor mode: system time will not be changed.',
                 'unlock_already_elevated': 'Already elevated; unlock ignored.',
                 'unlock_sync_button': 'Unlock Sync Features (Restart as Administrator)',
@@ -372,7 +372,7 @@ class Localization:
                 'sync_on_startup_log': 'Synchronisation au démarrage...',
                 'language_changed': 'Langue modifiée',
                 'offset_reset_success': 'Décalage réinitialisé à 0',
-                'info_version': 'Version: 2.5.1 (Edition FT8 - precision 0,1s)',
+                'info_version': 'Version: 2.5.2 (Edition FT8 - precision 0,1s)',
                 'info_multilang': 'Support multilingue: 16 langues',
                 'info_gnss': 'Support GNSS: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Fonctionnalites:',
@@ -391,7 +391,7 @@ class Localization:
                 'not_admin_restart': 'Redémarrer en administrateur',
                 'not_admin_monitor': 'Continuer en mode moniteur',
                 'monitor_mode_log': '⚠ Mode moniteur uniquement (synchronisation désactivée)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Mode moniteur : l\'heure système ne sera pas modifiée.',
                 'unlock_already_elevated': 'Déjà élevé ; déverrouillage ignoré.',
                 'unlock_sync_button': 'Activer la sync (Redémarrer en administrateur)',
@@ -500,7 +500,7 @@ class Localization:
                 'sync_on_startup_log': 'Sincronizando al inicio...',
                 'language_changed': 'Idioma cambiado',
                 'offset_reset_success': 'Desplazamiento reiniciado a 0',
-                'info_version': 'Version: 2.5.1 (Edicion FT8 - precision 0,1s)',
+                'info_version': 'Version: 2.5.2 (Edicion FT8 - precision 0,1s)',
                 'info_multilang': 'Soporte multilingue: 16 idiomas',
                 'info_gnss': 'Soporte GNSS: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Caracteristicas:',
@@ -519,7 +519,7 @@ class Localization:
                 'not_admin_restart': 'Reiniciar como administrador',
                 'not_admin_monitor': 'Continuar en modo monitor',
                 'monitor_mode_log': '⚠ Modo solo monitoreo (sincronización desactivada)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Modo monitor: la hora del sistema no se modificará.',
                 'unlock_already_elevated': 'Ya elevado; desbloqueo ignorado.',
                 'unlock_sync_button': 'Activar sincronización (Reiniciar como administrador)',
@@ -628,7 +628,7 @@ class Localization:
                 'sync_on_startup_log': 'Synchronisierung beim Start...',
                 'language_changed': 'Sprache geändert',
                 'offset_reset_success': 'Versatz auf 0 zurückgesetzt',
-                'info_version': 'Version: 2.5.1 (FT8-Edition - 0,1s Prazision)',
+                'info_version': 'Version: 2.5.2 (FT8-Edition - 0,1s Prazision)',
                 'info_multilang': 'Mehrsprachige Unterstutzung: 16 Sprachen',
                 'info_gnss': 'GNSS-Unterstutzung: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Funktionen:',
@@ -647,7 +647,7 @@ class Localization:
                 'not_admin_restart': 'Als Administrator neu starten',
                 'not_admin_monitor': 'Im Monitor-Modus fortfahren',
                 'monitor_mode_log': '⚠ Nur-Monitor-Modus (Zeitsynchronisierung deaktiviert)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Überwachungsmodus: Systemzeit wird nicht geändert.',
                 'unlock_already_elevated': 'Bereits erhöht; Entsperren ignoriert.',
                 'unlock_sync_button': 'Sync aktivieren (Als Administrator neu starten)',
@@ -756,7 +756,7 @@ class Localization:
                 'sync_on_startup_log': '启动时同步中...',
                 'language_changed': '语言已更改',
                 'offset_reset_success': '偏移已重置为0',
-                'info_version': '版本: 2.5.1 (FT8版 - 0.1秒精度)',
+                'info_version': '版本: 2.5.2 (FT8版 - 0.1秒精度)',
                 'info_multilang': '多语言支持: 16种语言',
                 'info_gnss': 'GNSS支持: GPS, GLONASS, 北斗, Galileo, QZSS',
                 'info_features': '功能:',
@@ -775,7 +775,7 @@ class Localization:
                 'not_admin_restart': '以管理员身份重新启动',
                 'not_admin_monitor': '以监控模式继续',
                 'monitor_mode_log': '⚠ 仅监控模式运行中（时间同步已禁用）',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': '监控模式：系统时间不会被修改。',
                 'unlock_already_elevated': '已以管理员权限启动，无需解锁。',
                 'unlock_sync_button': '启用时间同步（以管理员身份重启）',
@@ -884,7 +884,7 @@ class Localization:
                 'sync_on_startup_log': '啟動時同步中...',
                 'language_changed': '語言已更改',
                 'offset_reset_success': '偏移已重設為0',
-                'info_version': '版本: 2.5.1 (FT8版 - 0.1秒精度)',
+                'info_version': '版本: 2.5.2 (FT8版 - 0.1秒精度)',
                 'info_multilang': '多語言支援: 16種語言',
                 'info_gnss': 'GNSS支援: GPS, GLONASS, 北斗, Galileo, QZSS',
                 'info_features': '功能:',
@@ -903,7 +903,7 @@ class Localization:
                 'not_admin_restart': '以管理員身分重新啟動',
                 'not_admin_monitor': '以監控模式繼續',
                 'monitor_mode_log': '⚠ 僅監控模式運行中（時間同步已停用）',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': '監控模式：系統時間不會被修改。',
                 'unlock_already_elevated': '已以系統管理員身分啟動，無需解鎖。',
                 'unlock_sync_button': '啟用時間同步（以管理員身份重新啟動）',
@@ -968,7 +968,7 @@ class Localization:
                 'debug': '디버그 모드',
                 'startup_settings': '시작 설정',
                 'start_with_windows': 'Windows와 함께 시작',
-                'start_minimized': '최소화하여 시작',
+                'start_minimized': '시작 시 시스템 트레이에서 실행',
                 'sync_on_startup': '시작 시 동기화',
                 'settings_section': '설정',
                 'save_settings': '설정 저장',
@@ -1012,7 +1012,7 @@ class Localization:
                 'sync_on_startup_log': '시작 시 동기화 중...',
                 'language_changed': '언어가 변경되었습니다',
                 'offset_reset_success': '오프셋이 0으로 재설정되었습니다',
-                'info_version': '버전: 2.5.1 (FT8 에디션 - 0.1초 정밀도)',
+                'info_version': '버전: 2.5.2 (FT8 에디션 - 0.1초 정밀도)',
                 'info_multilang': '다국어 지원: 16개 언어',
                 'info_gnss': 'GNSS 지원: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': '기능:',
@@ -1031,7 +1031,7 @@ class Localization:
                 'not_admin_restart': '관리자로 다시 시작',
                 'not_admin_monitor': '모니터 모드로 계속',
                 'monitor_mode_log': '⚠ 모니터 전용 모드 실행 중（시간 동기화 비활성화）',
-                # v2.5.1 (案2) 추가
+                # v2.5.2 (案2) 추가
                 'unlock_sync_hint': '모니터 모드: 시스템 시간이 변경되지 않습니다.',
                 'unlock_already_elevated': '이미 관리자 권한으로 실행 중입니다. 잠금 해제가 필요 없습니다.',
                 'unlock_sync_button': '시간 동기화 활성화 (관리자로 재시작)',
@@ -1129,7 +1129,7 @@ class Localization:
                 'sync_on_startup_log': 'Sincronizando na inicializacao...',
                 'language_changed': 'Idioma alterado',
                 'offset_reset_success': 'Deslocamento redefinido para 0',
-                'info_version': 'Versao: 2.5.1 (Edicao FT8 - precisao 0,1s)',
+                'info_version': 'Versao: 2.5.2 (Edicao FT8 - precisao 0,1s)',
                 'info_multilang': 'Suporte multilingue: 16 idiomas',
                 'info_gnss': 'Suporte GNSS: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Recursos:',
@@ -1148,7 +1148,7 @@ class Localization:
                 'not_admin_restart': 'Reiniciar como administrador',
                 'not_admin_monitor': 'Continuar no modo monitor',
                 'monitor_mode_log': '⚠ Modo somente monitor (sincronização desativada)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Modo monitor: a hora do sistema não será alterada.',
                 'unlock_already_elevated': 'Já elevado; desbloqueio ignorado.',
                 'unlock_sync_button': 'Ativar sincronização (Reiniciar como administrador)',
@@ -1257,7 +1257,7 @@ class Localization:
                 'sync_on_startup_log': 'Sincronizzazione all\'avvio...',
                 'language_changed': 'Lingua cambiata',
                 'offset_reset_success': 'Offset ripristinato a 0',
-                'info_version': 'Versione: 2.5.1 (Edizione FT8 - precisione 0,1s)',
+                'info_version': 'Versione: 2.5.2 (Edizione FT8 - precisione 0,1s)',
                 'info_multilang': 'Supporto multilingue: 16 lingue',
                 'info_gnss': 'Supporto GNSS: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Caratteristiche:',
@@ -1276,7 +1276,7 @@ class Localization:
                 'not_admin_restart': 'Riavvia come amministratore',
                 'not_admin_monitor': 'Continua in modalità monitor',
                 'monitor_mode_log': '⚠ Modalità solo monitor (sincronizzazione disabilitata)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Modalità monitor: l\'orario di sistema non verrà modificato.',
                 'unlock_already_elevated': 'Già elevato; sblocco ignorato.',
                 'unlock_sync_button': 'Attiva sincronizzazione (Riavvia come amministratore)',
@@ -1385,7 +1385,7 @@ class Localization:
                 'sync_on_startup_log': 'Synchroniseren bij opstarten...',
                 'language_changed': 'Taal gewijzigd',
                 'offset_reset_success': 'Offset gereset naar 0',
-                'info_version': 'Versie: 2.5.1 (FT8 Editie - 0,1s precisie)',
+                'info_version': 'Versie: 2.5.2 (FT8 Editie - 0,1s precisie)',
                 'info_multilang': 'Meertalige ondersteuning: 16 talen',
                 'info_gnss': 'GNSS-ondersteuning: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Functies:',
@@ -1404,7 +1404,7 @@ class Localization:
                 'not_admin_restart': 'Opnieuw opstarten als beheerder',
                 'not_admin_monitor': 'Doorgaan in monitormodus',
                 'monitor_mode_log': '⚠ Alleen-monitor-modus (tijdsynchronisatie uitgeschakeld)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Monitormodus: de systeemtijd wordt niet gewijzigd.',
                 'unlock_already_elevated': 'Al verhoogd; ontgrendelen genegeerd.',
                 'unlock_sync_button': 'Synchronisatie inschakelen (Opnieuw starten als beheerder)',
@@ -1513,7 +1513,7 @@ class Localization:
                 'sync_on_startup_log': 'Синхронизация при запуске...',
                 'language_changed': 'Язык изменен',
                 'offset_reset_success': 'Смещение сброшено на 0',
-                'info_version': 'Версия: 2.5.1 (издание FT8 - точность 0,1с)',
+                'info_version': 'Версия: 2.5.2 (издание FT8 - точность 0,1с)',
                 'info_multilang': 'Многоязычная поддержка: 16 языков',
                 'info_gnss': 'Поддержка GNSS: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Функции:',
@@ -1532,7 +1532,7 @@ class Localization:
                 'not_admin_restart': 'Перезапустить от имени администратора',
                 'not_admin_monitor': 'Продолжить в режиме монитора',
                 'monitor_mode_log': '⚠ Режим только монитора (синхронизация отключена)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Режим монитора: системное время не будет изменено.',
                 'unlock_already_elevated': 'Права уже повышены; разблокировка не требуется.',
                 'unlock_sync_button': 'Включить синхронизацию (Перезапустить от имени администратора)',
@@ -1640,7 +1640,7 @@ class Localization:
                 'sync_on_startup_log': 'Synchronizacja przy uruchomieniu...',
                 'language_changed': 'Jezyk zmieniony',
                 'offset_reset_success': 'Przesuniecie zresetowane do 0',
-                'info_version': 'Wersja: 2.5.1 (Edycja FT8 - dokladnosc 0,1s)',
+                'info_version': 'Wersja: 2.5.2 (Edycja FT8 - dokladnosc 0,1s)',
                 'info_multilang': 'Obsluga wielu jezykow: 16 jezykow',
                 'info_gnss': 'Obsluga GNSS: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Funkcje:',
@@ -1659,7 +1659,7 @@ class Localization:
                 'not_admin_restart': 'Uruchom ponownie jako administrator',
                 'not_admin_monitor': 'Kontynuuj w trybie monitora',
                 'monitor_mode_log': '⚠ Tryb tylko monitora (synchronizacja wyłączona)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Tryb monitora: czas systemowy nie zostanie zmieniony.',
                 'unlock_already_elevated': 'Już podwyższone; odblokowanie zignorowane.',
                 'unlock_sync_button': 'Włącz synchronizację (Uruchom ponownie jako administrator)',
@@ -1768,7 +1768,7 @@ class Localization:
                 'sync_on_startup_log': 'Başlangıçta senkronize ediliyor...',
                 'language_changed': 'Dil değiştirildi',
                 'offset_reset_success': 'Kayma 0\'a sıfırlandı',
-                'info_version': 'Surum: 2.5.1 (FT8 Surum - 0,1s hassasiyet)',
+                'info_version': 'Surum: 2.5.2 (FT8 Surum - 0,1s hassasiyet)',
                 'info_multilang': 'Cok dilli destek: 16 dil',
                 'info_gnss': 'GNSS destegi: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Ozellikler:',
@@ -1787,7 +1787,7 @@ class Localization:
                 'not_admin_restart': 'Yönetici olarak yeniden başlat',
                 'not_admin_monitor': 'Monitör modunda devam et',
                 'monitor_mode_log': '⚠ Yalnızca monitör modu (zaman senkronizasyonu devre dışı)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Monitör modu: sistem saati değiştirilmeyecek.',
                 'unlock_already_elevated': 'Zaten yükseltildi; kilit açma yok sayıldı.',
                 'unlock_sync_button': 'Senkronizasyonu etkinleştir (Yönetici olarak yeniden başlat)',
@@ -1895,7 +1895,7 @@ class Localization:
                 'sync_on_startup_log': 'Synkroniserar vid start...',
                 'language_changed': 'Språk ändrat',
                 'offset_reset_success': 'Offset återställd till 0',
-                'info_version': 'Version: 2.5.1 (FT8-utgava - 0,1s precision)',
+                'info_version': 'Version: 2.5.2 (FT8-utgava - 0,1s precision)',
                 'info_multilang': 'Flersprakigt stod: 16 sprak',
                 'info_gnss': 'GNSS-stod: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Funktioner:',
@@ -1914,7 +1914,7 @@ class Localization:
                 'not_admin_restart': 'Starta om som administratör',
                 'not_admin_monitor': 'Fortsätt i övervakningsläge',
                 'monitor_mode_log': '⚠ Endast övervakningsläge (tidssynkronisering inaktiverad)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Övervakningsläge: systemtiden kommer inte att ändras.',
                 'unlock_already_elevated': 'Redan förhöjd; upplåsning ignoreras.',
                 'unlock_sync_button': 'Aktivera synkronisering (Starta om som administratör)',
@@ -2023,7 +2023,7 @@ class Localization:
                 'sync_on_startup_log': 'Sinkronisasi saat startup...',
                 'language_changed': 'Bahasa diubah',
                 'offset_reset_success': 'Ofset direset ke 0',
-                'info_version': 'Versi: 2.5.1 (Edisi FT8 - presisi 0,1 detik)',
+                'info_version': 'Versi: 2.5.2 (Edisi FT8 - presisi 0,1 detik)',
                 'info_multilang': 'Dukungan multi-bahasa: 16 bahasa',
                 'info_gnss': 'Dukungan GNSS: GPS, GLONASS, BeiDou, Galileo, QZSS',
                 'info_features': 'Fitur:',
@@ -2042,7 +2042,7 @@ class Localization:
                 'not_admin_restart': 'Mulai ulang sebagai Administrator',
                 'not_admin_monitor': 'Lanjutkan dalam Mode Monitor',
                 'monitor_mode_log': '⚠ Mode monitor saja (sinkronisasi waktu dinonaktifkan)',
-                # v2.5.1 (案2) 追加
+                # v2.5.2 (案2) 追加
                 'unlock_sync_hint': 'Mode monitor: waktu sistem tidak akan diubah.',
                 'unlock_already_elevated': 'Sudah ditingkatkan; buka kunci diabaikan.',
                 'unlock_sync_button': 'Aktifkan sinkronisasi (Mulai ulang sebagai administrator)',

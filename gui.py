@@ -186,7 +186,7 @@ class GPSTimeSyncGUI:
         self.is_running = False
         self.ntp_sync_timer = None
         self.gps_sync_timer = None
-        self._ntp_worker_running = False  # v2.5.1: NTPスレッド重複防止フラグ
+        self._ntp_worker_running = False  # v2.5.2: NTPスレッド重複防止フラグ
         self._gps_next_sync_mono = None  # interval sync: 次回同期期限（monotonic）
         self.debug_enabled = False         # スレッドセーフなデバッグフラグ
         self._gps_interval_index = 2       # スレッドセーフなインターバルインデックス
@@ -272,7 +272,7 @@ class GPSTimeSyncGUI:
         except Exception:
             pass
 
-        # アプリ起動時のみ、設定に基づき自動同期を開始する (v2.5.1 修正)
+        # アプリ起動時のみ、設定に基づき自動同期を開始する (v2.5.2 修正)
         # 言語切替（_rebuild_tabs）では呼ばれないため、勝手な復活を防げる
         self._ntp_autostart_after_id = None
         if self._to_bool(self.config.get('ntp', 'auto_sync')):
@@ -472,7 +472,7 @@ class GPSTimeSyncGUI:
         """
         title = self.loc.get('about_title') or (self.loc.get('app_title') or "About")
         _app_title = self.loc.get('app_title') or 'GPS/NTP Time Synchronization Tool'
-        _app_ver = self.loc.get('app_version') or '2.5.1'
+        _app_ver = self.loc.get('app_version') or '2.5.2'
         about_text = self.loc.get('about_text') or f"{_app_title}\nVersion: {_app_ver}"
         credits = self.loc.get('credits') or "Developed by @jp1lrt"
         github_url = self.loc.get('github_url') or "https://github.com/jp1lrt"
@@ -590,8 +590,12 @@ class GPSTimeSyncGUI:
         # Optional: show QR if file exists (e.g., donate_qr.png)
         qr_path = None
         for cand in ('donate_qr.png', 'qr_donate.png'):
-            if os.path.exists(cand):
-                qr_path = cand
+            if hasattr(sys, '_MEIPASS'):
+                candidate = os.path.join(sys._MEIPASS, cand)
+            else:
+                candidate = cand
+            if os.path.exists(candidate):
+                qr_path = candidate
                 break
 
         if qr_path:
@@ -1716,7 +1720,7 @@ class GPSTimeSyncGUI:
     def _sync_ntp_background(self):
         """バックグラウンドでNTP同期（自動）"""
         if self._ntp_worker_running:
-            return  # v2.5.1: スレッド重複防止
+            return  # v2.5.2: スレッド重複防止
         self._sync_ntp(is_auto=True)
 
     def _sync_ntp(self, is_auto=False):
@@ -1724,7 +1728,7 @@ class GPSTimeSyncGUI:
         if self._ntp_worker_running:
             return  # 手動呼び出しでも重複防止
         server = (self.ntp_entry.get() or "").strip() or "pool.ntp.org"
-        self._ntp_worker_running = True  # v2.5.1: スレッド起動前にフラグを立てる（レース耐性）
+        self._ntp_worker_running = True  # v2.5.2: スレッド起動前にフラグを立てる（レース耐性）
         try:
             threading.Thread(target=self._sync_ntp_worker, args=(server, is_auto), daemon=True).start()
         except Exception:
@@ -1791,7 +1795,7 @@ class GPSTimeSyncGUI:
 
                     if not self.sync.is_admin:
                         self._log(f"⚠ {self.loc.get('admin_required') or 'Administrator required'}")
-                        # v2.5.1: monitorモードではポップアップ抑止（NTP監視・表示は継続）
+                        # v2.5.2: monitorモードではポップアップ抑止（NTP監視・表示は継続）
                         is_monitor = bool(self.startup_ctx and getattr(self.startup_ctx, "mode", "") == "monitor")
                         if not is_monitor:
                             messagebox.showerror(
@@ -1815,7 +1819,7 @@ class GPSTimeSyncGUI:
                 elif tag == 'ntp_error':
                     _, err = item
                     self._log(f"✗ NTP error: {err}")
-                    # v2.5.1: monitorモードではポップアップ抑止
+                    # v2.5.2: monitorモードではポップアップ抑止
                     is_monitor = bool(self.startup_ctx and getattr(self.startup_ctx, "mode", "") == "monitor")
                     if not is_monitor:
                         messagebox.showerror(
