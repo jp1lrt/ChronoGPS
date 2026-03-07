@@ -197,6 +197,19 @@ After the build completes, `ChronoGPS.exe` will be created in the `dist` directo
 
 ---
 
+## Quick Start
+
+1. Connect a GNSS receiver to your PC (USB GPS receiver recommended)
+2. Launch `ChronoGPS.exe` — it starts in **Monitor-Only mode** by default
+3. Click the banner **"Enable Time Sync (Restart as Administrator)"** to enable sync
+4. Select the COM port and baud rate (default: 9600), then click **Start**
+5. Click **Sync GPS** or enable **Instant Sync** — ChronoGPS will reference GNSS continuously
+
+> If your COM port does not appear in the list, you can type it manually (e.g. `COM16`).  
+> For NTP-only use, skip steps 1 and 4 — enter an NTP server and click **Sync NTP**.
+
+---
+
 ## Usage
 
 ### GPS Sync
