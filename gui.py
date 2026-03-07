@@ -901,7 +901,7 @@ class GPSTimeSyncGUI:
         com_port_label.grid(row=0, column=0, sticky=tk.W)
         self.widgets['com_port_label'] = com_port_label
 
-        self.port_combo = ttk.Combobox(gps_frame, width=15, state='readonly')
+        self.port_combo = ttk.Combobox(gps_frame, width=15)
         self.port_combo.grid(row=0, column=1, padx=5)
 
         refresh_btn = ttk.Button(gps_frame, text=self.loc.get('refresh') or "Refresh", command=self._update_ports)
@@ -2135,7 +2135,7 @@ class GPSTimeSyncGUI:
         tree.tag_configure('weak', background='#D0F0D0')    # 薄い緑（ペールグリーン）
 
     def _start(self):
-        port = self.port_combo.get()
+        port = self.port_combo.get().strip().upper()
         try:
             baud = int(self.baud_combo.get())
         except (ValueError, TypeError):
