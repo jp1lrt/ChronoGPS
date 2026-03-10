@@ -40,12 +40,17 @@ class TrayIcon:
 
         return image
 
-    def create_menu(self):
+    def create_menu(self, show_label="Show", quit_label="Quit"):
         """トレイアイコンのメニューを作成"""
         return pystray.Menu(
-            pystray.MenuItem("Show / 表示", self._on_show_clicked),
-            pystray.MenuItem("Quit / 終了", self._on_quit_clicked)
+            pystray.MenuItem(show_label, self._on_show_clicked),
+            pystray.MenuItem(quit_label, self._on_quit_clicked)
         )
+
+    def update_menu(self, show_label="Show", quit_label="Quit"):
+        """トレイメニューのラベルを更新"""
+        if self.icon and self.is_running:
+            self.icon.menu = self.create_menu(show_label, quit_label)
 
     def _on_show_clicked(self, icon, item):
         """表示メニューがクリックされた時"""
@@ -58,13 +63,13 @@ class TrayIcon:
         if self.on_quit:
             self.on_quit()
 
-    def start(self):
+    def start(self, show_label="Show", quit_label="Quit"):
         """トレイアイコンを表示"""
         if self.is_running:
             return
 
         image = self.create_icon_image()
-        menu = self.create_menu()
+        menu = self.create_menu(show_label, quit_label)
 
         self.icon = pystray.Icon(
             name="gps_time_sync",
