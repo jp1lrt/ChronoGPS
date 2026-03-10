@@ -1007,7 +1007,7 @@ class Localization:
                 'admin_required': '관리자 권한 필요',
                 'no_gps_time': 'GPS 시간 사용 불가',
                 'ft8_offset_title': 'FT8 시간 오프셋',
-                'ft8_offset_label': '오프   （초）:',
+                'ft8_offset_label': '조정',
                 'ft8_note': '참고: 0.1초 단위로 조정 가능. 양수 값은 시간을 앞당김, 음수 값은 시간을 지연',
                 'sync_time_adjusted': '시간 조정됨',
                 'sync_time_major': '시간 대폭 조정됨',
