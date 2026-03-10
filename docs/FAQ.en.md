@@ -499,3 +499,13 @@ Once ChronoGPS has calibrated the system clock using GNSS, the clock maintains i
 However, for long-term accuracy, continuous GNSS reference is recommended. Without ongoing correction, natural clock drift will gradually accumulate over time.
 
 For short interruptions during normal FT8 / FT4 operation, this is generally not a concern.
+
+---
+
+## Q25. Do I need to press the "GPS Sync" button when using GNSS (GPS) synchronization?
+
+**A. No. Normally, it is not necessary.**
+
+When using GNSS synchronization, simply select "Instant Sync" or "Interval Sync" and press "Start."
+
+Do not press the "GPS Sync" button while GNSS sync mode is active, as it may introduce unintended time corrections.
