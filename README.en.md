@@ -432,8 +432,8 @@ The application contains no malicious code.
 
 All source code is publicly available and you can build the exe yourself.
 
-- VirusTotal scan results (v2.5.3): https://www.virustotal.com/gui/file/0dda2e3ed81740b093ce494209789ab3c8dca8e8e2a04625207b50859bdae8a0/detection  
-  (3/70 detections — Arctic Wolf / Bkav Pro / SecureAge — all heuristic false positives)
+- VirusTotal scan results (v2.5.3): https://www.virustotal.com/gui/file/4955b362af0535a8baea7d6b592405a760bf96948ae7802ca551ed87ca530f5a/detection  
+  (3/72 detections — Arctic Wolf / Bkav Pro / SecureAge — all heuristic false positives)
 - This has been reported to Microsoft as an incorrect detection
 
 ---

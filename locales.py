@@ -945,7 +945,7 @@ class Localization:
                 'tab_satellite': '위성 정보',
                 'tab_options': '옵션',
                 'com_port': 'COM 포트',
-                'baud_rate': '보레이트',
+                'baud_rate': '전송 속도',
                 'gps_sync_mode': 'GPS 동기화 모드',
                 'sync_mode_none': '끔',
                 'sync_mode_instant': '즉시',

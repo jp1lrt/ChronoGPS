@@ -473,8 +473,8 @@ Get-FileHash .\ChronoGPS.exe -Algorithm SHA256
 
 ソースコードはすべて公開されており、ご自身でビルドすることも可能です。
 
-- VirusTotal スキャン結果 (v2.5.3): https://www.virustotal.com/gui/file/0dda2e3ed81740b093ce494209789ab3c8dca8e8e2a04625207b50859bdae8a0/detection  
-  （70エンジン中3件検出 — Arctic Wolf / Bkav Pro / SecureAge によるヒューリスティック誤検知）
+- VirusTotal スキャン結果 (v2.5.3): https://www.virustotal.com/gui/file/4955b362af0535a8baea7d6b592405a760bf96948ae7802ca551ed87ca530f5a/detection  
+  （72エンジン中3件検出 — Arctic Wolf / Bkav Pro / SecureAge によるヒューリスティック誤検知）
 - 誤検知であることを Microsoft に報告済みです。
 
 ---
